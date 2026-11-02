@@ -2,6 +2,8 @@
 
 Owner-first PG operations app. The repository contains the responsive app prototype in `public/`, and a Supabase/Postgres backend schema in `supabase/migrations/`.
 
+See [docs/APP_DESIGN.md](docs/APP_DESIGN.md) for the product design, workflows, electricity calculation rules, data model, technology stack, deployment flow, and roadmap.
+
 ## Backend data model
 
 - Properties owned by an authenticated user
@@ -32,7 +34,7 @@ Owner email/password sign-in and resident reads/writes are connected to Supabase
 
 Connect this Git repository to a commercial hosting provider such as Vercel, set the root to this folder, add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, and deploy. Vite's build command is `npm run build`, output directory `dist`.
 
-Before deployment with real resident data, complete authentication/database integration in the UI, configure production RLS and backups,. Automated WhatsApp delivery also needs a WhatsApp Business Platform account and backend integration.
+Before deployment with real resident data, complete authentication/database integration in the UI and configure production RLS and backups. Automated WhatsApp delivery also needs a WhatsApp Business Platform account and backend integration.
 
 ## Owner sign-in setup
 
