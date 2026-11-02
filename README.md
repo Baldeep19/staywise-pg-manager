@@ -73,3 +73,5 @@ Rent payments are stored as one monthly record per resident. Apply `supabase/mig
 
 
 Electricity meter readings are stored per flat and bill cycle. Apply `supabase/migrations/202611020011_electricity_meter_history.sql` to create the protected history table and enable realtime updates. The form carries forward each flat’s latest saved current readings as the next cycle’s previous readings; the Reports page shows both meters’ previous/current readings and units consumed.
+
+Electricity split inputs add the flat main bill and building common meter total to the cycle history. The main flat amount is allocated by Room 1 · Left meter and Room 2 · Right meter unit consumption, then split between residents mapped to each meter. Common charges are divided by the active flat count and then equally among selected residents in that flat. Resident meter-side assignments persist between cycles. Apply `supabase/migrations/202611020012_electricity_bill_split.sql` before deploying this update.
