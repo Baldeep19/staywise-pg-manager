@@ -62,3 +62,5 @@ Flat setup also has optional per-flat Wi-Fi network and password fields, editabl
 If property setup reports an owner foreign-key error, apply migration `202611020006_property_owner_default.sql`. Property creation now omits a client-supplied owner ID; Postgres assigns `auth.uid()` from the signed-in Supabase request.
 
 Resident entry captures single/double sharing and optional deposit amount. Residents can be archived from the Residents list; their transaction history is retained. Apply migration `202611020007_resident_sharing_deposit.sql` before using these fields.
+
+Electricity bills and their payments are stored in Supabase. The owner can record full or partial payments against each bill; status updates to Paid once payments cover the amount. Apply `supabase/migrations/202611020008_electricity_payments.sql` before using the payment action.
