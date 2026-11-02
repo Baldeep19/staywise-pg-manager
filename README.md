@@ -41,7 +41,7 @@ An optional Aadhaar vault migration and Edge Function are provided separately fr
 - Apply `supabase/migrations/202611020002_aadhaar_vault.sql` after the initial schema.
 - Deploy `supabase/functions/aadhaar-vault` with JWT verification enabled.
 - Configure Edge Function secrets `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, and `AADHAAR_ENCRYPTION_KEY`. The 256-bit AES key must be generated securely and stored only in the server secret manager; never put it in VITE-prefixed variables, browser code, Git, or a mobile bundle.
-- The function encrypts before writing, verifies property ownership on each operation, returns plaintext only on authenticated reads, and logs store/read/delete actions. Set `APP_ORIGIN` to the exact deployed app origin; the function rejects requests from other origins.
+- The function encrypts before writing, verifies property ownership on each operation, returns plaintext only on authenticated reads, and logs store/read/delete actions. Set `APP_ORIGIN` to the exact deployed app origin; it may contain a comma-separated allowlist such as `https://your-production-domain.vercel.app,http://localhost:5173`. The function rejects requests from origins not listed.
 
 This technical design is not by itself proof of Aadhaar compliance. UIDAI guidance for covered entities calls for a dedicated Aadhaar Data Vault, reference keys across business systems, approved key protection, strict access controls, and monitoring. Confirm authorization and current requirements before storing real numbers: [UIDAI Aadhaar Data Vault FAQ](https://uidai.gov.in/images/FAQs_Aadhaar_Data_Vault_03112025_v10.pdf), [UIDAI 2025 circular](https://uidai.gov.in/images/Circular-No.14_of-2025.pdf).
 
