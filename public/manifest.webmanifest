@@ -1,0 +1,9 @@
+{
+  "name": "Staywise PG Manager",
+  "short_name": "Staywise",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f8f6",
+  "theme_color": "#153b30",
+  "description": "Owner dashboard for PG residents, rent and bills"
+}
