@@ -1,0 +1,92 @@
+import { createClient } from '@supabase/supabase-js'
+const { VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: key } = import.meta.env
+const gate = document.getElementById('authGate')
+const form = document.getElementById('authForm')
+const errorBox = document.getElementById('authError')
+if (!url || !key) { errorBox.textContent = 'Supabase connection is not configured for this deployment. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the hosting project settings, then redeploy.'; errorBox.style.color='#b44' }
+const supabase = url && key ? createClient(url, key) : null
+let currentUser, property, flats = []
+const sayError = e => { errorBox.textContent = e?.message || String(e) }
+function addSetupFlat(flat={}) {
+  const row=document.createElement('div');row.className='formgrid setup-flat';row.style.cssText='border:1px solid var(--line);padding:10px;border-radius:10px;align-items:end'
+  row.dataset.id=flat.id||''
+  row.innerHTML=`<div class="field"><label>Flat / room name *</label><input name="flat_number" required value="${String(flat.flat_number||'').replaceAll('"','&quot;')}" placeholder="e.g. Flat 101"></div><div class="field"><label>Floor *</label><input name="floor_name" required value="${String(flat.floor_name||'Ground').replaceAll('"','&quot;')}" placeholder="e.g. First floor"></div><div class="field"><label>Number of rooms *</label><input name="room_count" type="number" min="1" required value="${flat.room_count||2}"></div><div class="field"><label>Wi-Fi network (optional)</label><input name="wifi_ssid" value="${String(flat.wifi_ssid||'').replaceAll('"','&quot;')}" placeholder="Network name"></div><div class="field"><label>Wi-Fi password (optional)</label><input name="wifi_password" type="password" value="${String(flat.wifi_password||'').replaceAll('"','&quot;')}" placeholder="Password"></div><button type="button" class="secondary remove-flat">Remove</button>`
+  row.querySelector('.remove-flat').onclick=()=>{if(document.querySelectorAll('.setup-flat').length===1)return;row.remove()}
+  document.getElementById('setupFlats').append(row)
+}
+function showSetup(existingProperty, existingFlats=[], pending={}) {
+  property=existingProperty||null
+  gate.style.display='none';const setup=document.getElementById('ownerSetupGate');setup.style.display='block'
+  const f=document.getElementById('ownerSetupForm');f.elements.propertyName.value=existingProperty?.name||pending?.name||'';f.elements.propertyAddress.value=existingProperty?.address||pending?.address||''
+  document.getElementById('setupFlats').innerHTML=''
+  ;(existingFlats.length?existingFlats:(pending?.flats?.length?pending.flats:[{flat_number:'',floor_name:'',room_count:1}])).forEach(addSetupFlat)
+  document.getElementById('addFlatRow').onclick=()=>addSetupFlat()
+}
+async function initSession(user) {
+  currentUser=user
+  const {data: found,error}=await supabase.from('properties').select('*').eq('owner_id',user.id).limit(1).maybeSingle()
+  if(error)throw error
+  property=found
+  let foundFlats=[]
+  if(property){const q=await supabase.from('flats').select('*').eq('property_id',property.id).eq('active',true).order('floor_name').order('flat_number');if(q.error)throw q.error;foundFlats=q.data||[]}
+  flats=foundFlats
+  if(!property||!property.setup_complete||!flats.length){showSetup(property,foundFlats,user.user_metadata?.pending_property||{});return}
+  const ownerName=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'Owner'
+  document.getElementById('ownerGreeting').textContent=ownerName;document.getElementById('ownerProfileName').textContent=ownerName;const initials=ownerName.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');document.getElementById('ownerAvatar').textContent=initials||'?';document.getElementById('ownerAvatarTop').textContent=initials||'?';document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
+  const {data:dbResidents,error:rError}=await supabase.from('residents').select('*, flats(flat_number)').eq('property_id',property.id).eq('active',true).order('created_at')
+  if(rError)throw rError
+  const local=dbResidents.map(r=>({id:r.id,name:r.full_name,phone:r.phone,room:r.flats?.flat_number||'',rent:Number(r.monthly_rent),status:'Not tracked',movein:r.move_in||'',address:r.permanent_address||'',aadhaar:'Not recorded'}))
+  localStorage.setItem('staywise_residents',JSON.stringify(local));localStorage.setItem('staywise_cloud','1')
+  const roomSelect=document.querySelector('#residentForm [name=room]')
+  roomSelect.innerHTML='<option value="">Choose flat / room</option>'+flats.map(f=>`<option>${f.flat_number}</option>`).join('')
+  window.pgFlats=flats;window.pgPropertyName=property.name
+  window.refreshDashboard=()=>{const rs=JSON.parse(localStorage.getItem('staywise_residents')||'[]');document.getElementById('residentCount').textContent=rs.length;document.getElementById('residentSummary').textContent=rs.length?'Across '+flats.length+' flats':'No residents added yet';const occupied=new Set(rs.map(r=>r.room).filter(Boolean)).size;document.getElementById('occupancyValue').textContent=occupied+' / '+flats.length;document.getElementById('flatSummary').textContent=flats.length+' flats · '+flats.reduce((n,f)=>n+Number(f.room_count||0),0)+' rooms';document.getElementById('occupancyList').innerHTML=flats.map(f=>{const count=rs.filter(r=>r.room===f.flat_number).length;return '<div class="floor"><div class="floorlabel">'+f.floor_name+'</div><div class="roomrow"><div class="room '+(count?'partial':'empty')+'"><b>'+f.flat_number+'</b><small>'+count+' resident'+(count===1?'':'s')+' · '+f.room_count+' rooms</small></div></div></div>'}).join('')||'<div class="sub">No flats set up yet.</div>'}
+  window.refreshDashboard()
+  window.editPropertySetup=()=>showSetup(property,flats)
+  gate.style.display='none'
+  if(document.getElementById('propertySelect'))document.getElementById('propertySelect').innerHTML='<option>'+property.name+'</option>';document.getElementById('propertyNameHeading').textContent=property.name
+  if(window.location.hash!=='#cloud'){window.location.hash='cloud';location.reload()}
+}
+document.getElementById('ownerSetupForm').addEventListener('submit',async e=>{
+  e.preventDefault();const err=document.getElementById('setupError');err.textContent='Saving property and rooms…';const {data:{user:authUser},error:authErr}=await supabase.auth.getUser();if(authErr||!authUser){err.textContent='Your sign-in session expired. Sign in again, then retry building setup.';return}currentUser=authUser
+  const d=new FormData(e.target), rows=[...document.querySelectorAll('.setup-flat')].map(row=>({id:row.dataset.id||null,flat_number:String(row.querySelector('[name=flat_number]').value).trim(),floor_name:String(row.querySelector('[name=floor_name]').value).trim(),room_count:Number(row.querySelector('[name=room_count]').value),wifi_ssid:row.querySelector('[name=wifi_ssid]').value.trim()||null,wifi_password:row.querySelector('[name=wifi_password]').value||null}))
+  if(!rows.length||rows.some(x=>!x.flat_number||!x.floor_name||x.room_count<1))return err.textContent='Add at least one room and complete its details.'
+  if(new Set(rows.map(x=>x.flat_number.toLowerCase())).size!==rows.length)return err.textContent='Flat / room names must be unique.'
+  let prop=property
+  if(prop){const {data,error}=await supabase.from('properties').update({name:d.get('propertyName'),address:d.get('propertyAddress')||null,setup_complete:true}).eq('id',prop.id).select().single();if(error){err.textContent=error.code==='23503'?'Supabase could not match this session to an Auth user. Sign out, sign back in using the same Supabase project, then retry.':error.message;return}prop=data}
+  else{const {data,error}=await supabase.from('properties').insert({name:d.get('propertyName'),address:d.get('propertyAddress')||null,setup_complete:true}).select().single();if(error){err.textContent=error.code==='23503'?'Supabase could not match this session to an Auth user. Sign out, sign back in using the same Supabase project, then retry.':error.message;return}prop=data}
+  const old=flats
+  for(const r of rows){const payload={property_id:prop.id,flat_number:r.flat_number,floor_name:r.floor_name,room_count:r.room_count,wifi_ssid:r.wifi_ssid,wifi_password:r.wifi_password,active:true};const q=r.id?await supabase.from('flats').update(payload).eq('id',r.id):await supabase.from('flats').insert(payload);if(q.error){err.textContent=q.error.message;return}}
+  const removed=old.filter(f=>!rows.some(r=>r.id===f.id));for(const f of removed){const {count,error}=await supabase.from('residents').select('id',{count:'exact',head:true}).eq('flat_id',f.id).eq('active',true);if(error){err.textContent=error.message;return}if(count){err.textContent=`${f.flat_number} has active residents. Move them before removing this flat.`;return}const q=await supabase.from('flats').update({active:false}).eq('id',f.id);if(q.error){err.textContent=q.error.message;return}}
+  location.hash='';location.reload()
+})
+
+if (supabase) {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (session) { try { await initSession(session.user) } catch (e) { sayError(e) } }
+  let registerMode=false
+  const ownerNameField=document.getElementById('ownerNameField'), authSubmit=document.getElementById('authSubmit'), signupButton=document.getElementById('signupButton')
+  const propertyFields=document.getElementById('signupPropertyFields'), signupFlats=document.getElementById('signupFlats')
+  function addSignupFlatRow(unit={}){const row=document.createElement('div');row.className='formgrid signup-flat';row.style.cssText='border:1px solid var(--line);padding:9px;border-radius:9px;align-items:end';row.innerHTML=`<div class="field"><label>Flat / room name *</label><input name="signup_flat_number" required placeholder="Flat 101" value="${String(unit.flat_number||'').replaceAll('"','&quot;')}"></div><div class="field"><label>Floor *</label><input name="signup_floor_name" required placeholder="Ground" value="${String(unit.floor_name||'').replaceAll('"','&quot;')}"></div><div class="field"><label>Rooms *</label><input name="signup_rooms" required type="number" min="1" value="${unit.room_count||1}"></div><button type="button" class="secondary remove-signup-flat">Remove</button>`;row.querySelector('button').onclick=()=>{if(signupFlats.children.length>1)row.remove()};signupFlats.append(row)}
+  document.getElementById('addSignupFlat').onclick=()=>addSignupFlatRow()
+  signupButton.addEventListener('click',()=>{registerMode=!registerMode;ownerNameField.style.display=registerMode?'flex':'none';propertyFields.style.display=registerMode?'block':'none';form.elements.ownerName.required=registerMode;form.elements.signupPropertyName.required=registerMode;signupFlats.querySelectorAll('input').forEach(i=>i.required=registerMode);if(registerMode&&!signupFlats.children.length)addSignupFlatRow();authSubmit.textContent=registerMode?'Register':'Sign in';signupButton.textContent=registerMode?'Back to sign in':'Create account';errorBox.textContent='';document.querySelector('#authGate h2').textContent=registerMode?'Create owner account':'Owner sign in';document.querySelector('#authGate p').textContent=registerMode?'Add your owner and building details to get started.':'Sign in to access your PG records securely.'})
+  form.addEventListener('submit', async e=>{e.preventDefault();const d=new FormData(form);errorBox.style.color='#b44';if(registerMode){if(!String(d.get('ownerName')||'').trim())return sayError('Enter your name to create the owner account.');if(!String(d.get('signupPropertyName')||'').trim())return sayError('Enter your building or property name.');const signupUnits=[...signupFlats.querySelectorAll('.signup-flat')].map(r=>({flat_number:r.querySelector('[name=signup_flat_number]').value.trim(),floor_name:r.querySelector('[name=signup_floor_name]').value.trim(),room_count:Number(r.querySelector('[name=signup_rooms]').value)}));if(!signupUnits.length||signupUnits.some(x=>!x.flat_number||!x.floor_name||x.room_count<1))return sayError('Add at least one flat or room with its floor and number of rooms.');if(new Set(signupUnits.map(x=>x.flat_number.toLowerCase())).size!==signupUnits.length)return sayError('Flat or room names must be unique.');errorBox.textContent='Creating account…';try{const {data,error}=await supabase.auth.signUp({email:d.get('email'),password:d.get('password'),options:{data:{full_name:String(d.get('ownerName')).trim(),pending_property:{name:String(d.get('signupPropertyName')).trim(),address:String(d.get('signupPropertyAddress')||'').trim(),flats:signupUnits}},emailRedirectTo:window.location.origin}});if(error)sayError(error);else if(data.session){errorBox.style.color='var(--green)';errorBox.textContent='Account created. Signing you in…';location.reload()}else{errorBox.style.color='var(--green)';errorBox.textContent='Account created. Check your inbox for a confirmation link, then return here to sign in.'}}catch(err){sayError(err)}}else{errorBox.textContent='Signing in…';try{const {error}=await supabase.auth.signInWithPassword({email:d.get('email'),password:d.get('password')});if(error)sayError(error);else location.reload()}catch(err){sayError(err)}}})
+  document.getElementById('googleButton').addEventListener('click',async()=>{errorBox.style.color='#b44';errorBox.textContent='Opening Google sign-in…';try{const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});if(error)sayError(error)}catch(err){sayError(err)}})
+  document.getElementById('residentForm').addEventListener('submit', async e=>{
+    if(e.target.dataset.cloudReady==='1'){delete e.target.dataset.cloudReady;return}
+    e.preventDefault();e.stopImmediatePropagation();const d=new FormData(e.target);const flat=flats.find(x=>x.flat_number===d.get('room'))
+    if(!flat)return alert('Could not find the selected flat in Supabase.')
+    const {data:resident,error}=await supabase.from('residents').insert({property_id:property.id,flat_id:flat.id,full_name:d.get('name'),phone:d.get('phone'),permanent_address:d.get('address')||null,emergency_contact:d.get('emergency')||null,monthly_rent:Number(d.get('rent')),move_in:d.get('movein')||null}).select().single()
+    if(error)return alert(error.message)
+    const digits=String(d.get('aadhaar')||'').replace(/\D/g,'')
+    if(digits){const {error:vaultError}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'store',residentId:resident.id,aadhaar:digits}});if(vaultError){await supabase.from('residents').delete().eq('id',resident.id);return alert('Aadhaar vault save failed; resident was not saved. '+vaultError.message)}}
+    e.target.dataset.cloudReady='1';e.target.elements.aadhaar.value='';e.target.requestSubmit()
+  },true)
+  window.revealAadhaar=async id=>{const {data,error}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'read',residentId:id}});if(error){alert(error.message);return}document.getElementById('aadhaarShown').textContent=data.aadhaar;openModal('aadhaarViewModal')}
+  window.removeResident=async id=>{if(!confirm('Remove this resident from the active resident list? Their rent and bill history will be retained.'))return;const {error}=await supabase.from('residents').update({active:false,move_out:new Date().toISOString().slice(0,10)}).eq('id',id).eq('property_id',property.id);if(error){alert(error.message);return}const rs=JSON.parse(localStorage.getItem('staywise_residents')||'[]').filter(r=>r.id!==id);localStorage.setItem('staywise_residents',JSON.stringify(rs));location.reload()}
+  window.addEventListener('online',()=>{})
+} else {
+  document.getElementById('signupButton').addEventListener('click',()=>{errorBox.style.color='#b44';errorBox.textContent='Account creation is unavailable because Supabase is not configured in this app deployment.'})
+  form.addEventListener('submit',e=>{e.preventDefault();errorBox.style.color='#b44';errorBox.textContent='Sign-in is unavailable because Supabase is not configured in this app deployment.'})
+  document.getElementById('googleButton').addEventListener('click',()=>{errorBox.style.color='#b44';errorBox.textContent='Google sign-in is unavailable because Supabase is not configured in this app deployment.'})
+}
