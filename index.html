@@ -13,6 +13,10 @@
 .floor{align-items:stretch}
 .floorlabel{flex:0 0 57px;align-self:center}
 .roomrow{flex:1;min-width:0;justify-content:space-between}
+/* Keep navigation stationary while the workspace scrolls independently. */
+.shell{height:100vh;height:100dvh;min-height:0;overflow:hidden}
+.sidebar{height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior:contain}
+.main{height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior:contain}
 </style>
 </head>
 <body>
