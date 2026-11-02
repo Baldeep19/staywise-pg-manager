@@ -9,12 +9,10 @@
 .busy-overlay{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:rgba(16,37,31,.2);backdrop-filter:blur(2px)}.busy-overlay.show{display:grid}.busy-card{display:flex;align-items:center;gap:12px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:0 18px 55px #10251f2b;font-size:13px;font-weight:700;color:var(--ink)}.busy-spinner{height:20px;width:20px;border:2px solid #dce9e0;border-top-color:var(--green);border-radius:50%;animation:busy-spin .7s linear infinite}@keyframes busy-spin{to{transform:rotate(360deg)}}.room-select{font:inherit;color:inherit;cursor:pointer}.room-select:hover,.room-select:focus-visible{outline:2px solid #83b99a;outline-offset:2px}.room.overfull{background:#fff0ef;border-color:#f0c9c5;color:#a8463e}
 
 .report-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:14px}.report-toolbar label{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:700}.report-toolbar input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px}.report-note{font-size:10px;color:var(--muted)}.report-block{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden}.report-blockhead{padding:17px 19px 12px}.report-blockhead h3{font:700 14px Manrope;margin:0}.report-blockhead p{font-size:10px;color:var(--muted);margin:5px 0 0}.report-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0 18px 16px}.report-metric{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfcfb}.report-metric span{display:block;color:var(--muted);font-size:9px}.report-metric strong{display:block;font:800 17px Manrope;margin-top:6px}.report-metric small{display:block;color:var(--muted);font-size:9px;margin-top:4px}.report-table .table th,.report-table .table td{padding-left:18px;padding-right:18px}@media(max-width:730px){.report-toolbar{align-items:flex-start;flex-direction:column}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-/* Let flat cards use available desktop width and keep one compact row per flat on phones. */
+/* Keep compact flat cards; distribute them across each floor when space allows. */
 .floor{align-items:stretch}
 .floorlabel{flex:0 0 57px;align-self:center}
-.roomrow{flex:1;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
-.room{width:100%;min-width:0;padding:11px 12px}
-@media(max-width:730px){.floor{gap:8px}.floorlabel{flex-basis:45px;width:45px}.roomrow{grid-template-columns:minmax(0,1fr);gap:7px}.room{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;text-align:left}.room b,.room small{display:block}.room small{margin-top:0;text-align:right}}
+.roomrow{flex:1;min-width:0;justify-content:space-between}
 </style>
 </head>
 <body>
