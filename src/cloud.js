@@ -76,13 +76,14 @@ if (supabase) {
     if(e.target.dataset.cloudReady==='1'){delete e.target.dataset.cloudReady;return}
     e.preventDefault();e.stopImmediatePropagation();const d=new FormData(e.target);const flat=flats.find(x=>x.flat_number===d.get('room'))
     if(!flat)return alert('Could not find the selected flat in Supabase.')
-    const {data:resident,error}=await supabase.from('residents').insert({property_id:property.id,flat_id:flat.id,full_name:d.get('name'),phone:d.get('phone'),permanent_address:d.get('address')||null,emergency_contact:d.get('emergency')||null,monthly_rent:Number(d.get('rent')),move_in:d.get('movein')||null}).select().single()
+    const {data:resident,error}=await supabase.from('residents').insert({property_id:property.id,flat_id:flat.id,full_name:d.get('name'),phone:d.get('phone'),permanent_address:d.get('address')||null,emergency_contact:d.get('emergency')||null,monthly_rent:Number(d.get('rent')),deposit_amount:Number(d.get('deposit')||0),sharing_type:d.get('sharing_type'),move_in:d.get('movein')||null}).select().single()
     if(error)return alert(error.message)
     const digits=String(d.get('aadhaar')||'').replace(/\D/g,'')
-    if(digits){const {error:vaultError}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'store',residentId:resident.id,aadhaar:digits}});if(vaultError){await supabase.from('residents').delete().eq('id',resident.id);return alert('Aadhaar vault save failed; resident was not saved. '+vaultError.message)}}
+    if(digits){const {error:vaultError}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'store',residentId:resident.id,aadhaar:digits}});if(vaultError){await supabase.from('residents').delete().eq('id',resident.id);return alert('Aadhaar vault save failed; resident was not saved. '+await functionError(vaultError))}}
     e.target.dataset.cloudReady='1';e.target.elements.aadhaar.value='';e.target.requestSubmit()
   },true)
-  window.revealAadhaar=async id=>{const {data,error}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'read',residentId:id}});if(error){alert(error.message);return}document.getElementById('aadhaarShown').textContent=data.aadhaar;openModal('aadhaarViewModal')}
+  async function functionError(error){let message=error?.message||'Request failed';try{const body=await error.context.clone().json();if(body?.error)message=body.error}catch{}return message}
+  window.revealAadhaar=async id=>{const {data,error}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'read',residentId:id}});if(error){alert('Could not read Aadhaar: '+await functionError(error));return}document.getElementById('aadhaarShown').textContent=data.aadhaar;openModal('aadhaarViewModal')}
   window.removeResident=async id=>{if(!confirm('Remove this resident from the active resident list? Their rent and bill history will be retained.'))return;const {error}=await supabase.from('residents').update({active:false,move_out:new Date().toISOString().slice(0,10)}).eq('id',id).eq('property_id',property.id);if(error){alert(error.message);return}const rs=JSON.parse(localStorage.getItem('staywise_residents')||'[]').filter(r=>r.id!==id);localStorage.setItem('staywise_residents',JSON.stringify(rs));location.reload()}
   window.addEventListener('online',()=>{})
 } else {
