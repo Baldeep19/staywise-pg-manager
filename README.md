@@ -67,3 +67,6 @@ Electricity bills and their payments are stored in Supabase. The owner can recor
 
 
 The owner app refreshes resident, rent, flat, and electricity records through Supabase Realtime. Apply `supabase/migrations/202611020009_enable_realtime.sql` to add these tables to the `supabase_realtime` publication.
+
+
+Rent payments are stored as one monthly record per resident. Apply `supabase/migrations/202611020010_single_monthly_rent_record.sql` before deploying this version. It removes exact duplicate submissions, combines distinct partial payments for the same month, keeps the latest payment date, and adds an atomic monthly payment upsert.
