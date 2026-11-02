@@ -80,7 +80,7 @@ if (supabase) {
     if(error)return alert(error.message)
     const digits=String(d.get('aadhaar')||'').replace(/\D/g,'')
     if(digits){const {error:vaultError}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'store',residentId:resident.id,aadhaar:digits}});if(vaultError){await supabase.from('residents').delete().eq('id',resident.id);return alert('Aadhaar vault save failed; resident was not saved. '+await functionError(vaultError))}}
-    e.target.dataset.cloudReady='1';e.target.elements.aadhaar.value='';e.target.requestSubmit()
+    e.target.dataset.cloudReady='1';e.target.dataset.aadhaarSaved=digits?'1':'0';e.target.elements.aadhaar.value='';e.target.requestSubmit()
   },true)
   async function functionError(error){let message=error?.message||'Request failed';try{const body=await error.context.clone().json();if(body?.error)message=body.error}catch{}return message}
   window.revealAadhaar=async id=>{const {data,error}=await supabase.functions.invoke('aadhaar-vault',{body:{action:'read',residentId:id}});if(error){alert('Could not read Aadhaar: '+await functionError(error));return}document.getElementById('aadhaarShown').textContent=data.aadhaar;openModal('aadhaarViewModal')}
