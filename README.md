@@ -64,3 +64,6 @@ If property setup reports an owner foreign-key error, apply migration `202611020
 Resident entry captures single/double sharing and optional deposit amount. Residents can be archived from the Residents list; their transaction history is retained. Apply migration `202611020007_resident_sharing_deposit.sql` before using these fields.
 
 Electricity bills and their payments are stored in Supabase. The owner can record full or partial payments against each bill; status updates to Paid once payments cover the amount. Apply `supabase/migrations/202611020008_electricity_payments.sql` before using the payment action.
+
+
+The owner app refreshes resident, rent, flat, and electricity records through Supabase Realtime. Apply `supabase/migrations/202611020009_enable_realtime.sql` to add these tables to the `supabase_realtime` publication.
