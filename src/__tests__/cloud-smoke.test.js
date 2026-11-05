@@ -177,6 +177,23 @@ describe('manage partners', () => {
   });
 });
 
+describe('rent collector', () => {
+  it('saves the chosen collector on the building', async () => {
+    calls.length = 0;
+    await window.setRentCollector('u2');
+    expect(calls[0].table).toBe('properties');
+    expect(calls[0].ops).toContainEqual(['update', {rent_collector_user_id: 'u2'}]);
+    expect(calls[0].ops).toContainEqual(['eq', 'id', 'p1']);
+    expect(window.pgProperties.find((p) => p.id === 'p1').rent_collector_user_id).toBe('u2');
+  });
+
+  it('clears the setting (the owner collects) when no one is chosen', async () => {
+    calls.length = 0;
+    await window.setRentCollector('');
+    expect(calls[0].ops).toContainEqual(['update', {rent_collector_user_id: null}]);
+  });
+});
+
 describe('logout', () => {
   it('signs out and clears cached Staywise data', async () => {
     const reload = vi.fn();

@@ -38,6 +38,19 @@ export async function loadPartnerData() {
     window.pgExpenses = [data, ...(window.pgExpenses || [])];
     return data;
   };
+  // Choose which partner holds the collected rent (null = the building owner). Used for profit settlement.
+  window.setRentCollector = async (userId) => {
+    const {data, error} = await supabase
+      .from('properties')
+      .update({rent_collector_user_id: userId || null})
+      .eq('id', session.property.id)
+      .select()
+      .single();
+    if (error) throw error;
+    session.property = {...session.property, ...data};
+    window.pgProperties = (window.pgProperties || []).map((x) => (x.id === data.id ? {...x, ...data} : x));
+    return data;
+  };
   // Change a partner's ownership share.
   window.updatePropertyMember = async (userId, ownershipPercent) => {
     const percent = Number(ownershipPercent);
