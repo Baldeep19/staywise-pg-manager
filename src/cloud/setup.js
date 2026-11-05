@@ -4,6 +4,7 @@
 import {toast} from '../app/ui.js';
 import {supabase} from './client.js';
 import {gate} from './elements.js';
+import {startTourIfFirstTime} from './onboarding.js';
 import {session} from './session.js';
 
 export function addSetupFlat(flat = {}) {
@@ -52,6 +53,9 @@ export function showSetup(existingProperty, existingFlats = [], pending = {}, op
       return;
     }
     localStorage.setItem('staywise_skip_setup', '1');
+    // The app is now visible without a building: allow adding one from Settings, and greet first-time users.
+    window.editPropertySetup = () => showSetup(session.setup.property, session.setup.flats, pending);
+    startTourIfFirstTime(session.currentUser);
     document.getElementById('ownerSetupGate').style.display = 'none';
     gate.style.display = 'none';
     toast('You can add building details later from Settings');

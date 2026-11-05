@@ -4,6 +4,8 @@
 import {supabase} from './client.js';
 import {installDashboard} from './dashboard.js';
 import {gate} from './elements.js';
+import {showOwnerIdentity} from './identity.js';
+import {startTourIfFirstTime} from './onboarding.js';
 import {subscribeToPropertyChanges} from './live.js';
 import {loadPartnerData} from './partners.js';
 import {session} from './session.js';
@@ -11,6 +13,7 @@ import {showSetup} from './setup.js';
 
 export async function initSession(user) {
   session.currentUser = user;
+  showOwnerIdentity(user); // before any early return, so every path greets the person by name
   const {data: foundRows, error} = await supabase.from('properties').select('*').limit(20);
   if (error) throw error;
   // Every building this user can see (their own plus any shared with them as a partner).
@@ -46,42 +49,14 @@ export async function initSession(user) {
     if (localStorage.getItem('staywise_skip_setup') === '1') {
       document.getElementById('ownerSetupGate').style.display = 'none';
       gate.style.display = 'none';
-      document.getElementById('ownerGreeting').textContent =
-        user.user_metadata?.full_name || user.email?.split('@')[0] || 'Owner';
-      document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
       window.editPropertySetup = () =>
         showSetup(session.property, foundFlats, user.user_metadata?.pending_property || {});
+      startTourIfFirstTime(user); // the app is visible even though building setup was skipped
       return;
     }
     showSetup(session.property, foundFlats, user.user_metadata?.pending_property || {});
     return;
   }
-  const ownerName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Owner';
-  const h = new Date().getHours(),
-    g = h < 12 ? ['Good morning', '☀️'] : h < 17 ? ['Good afternoon', '🌤️'] : ['Good evening', '🌙'];
-  document.getElementById('greetingText').textContent = g[0];
-  document.getElementById('greetingIcon').textContent = g[1];
-  document.getElementById('ownerGreeting').textContent = ownerName;
-  document.getElementById('ownerProfileName').textContent = ownerName;
-  const initials = ownerName
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((x) => x[0].toUpperCase())
-    .join('');
-  document.getElementById('ownerAvatar').textContent = initials || '?';
-  document.getElementById('ownerAvatarTop').textContent = initials || '?';
-  document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
   const {data: dbResidents, error: rError} = await supabase
     .from('residents')
     .select('*, flats(flat_number)')
@@ -197,4 +172,5 @@ export async function initSession(user) {
     propertySelect.onchange = () => window.switchProperty(propertySelect.value);
   }
   document.getElementById('propertyNameHeading').textContent = session.property.name;
+  startTourIfFirstTime(user);
 }

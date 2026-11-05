@@ -1,6 +1,8 @@
 /**
  * Settings page: the buildings the user can access (switch, create, edit) and account actions.
  */
+import pkg from '../../package.json';
+import {renderInstallSection} from './install.js';
 import {esc} from './ui.js';
 
 /** Render the Settings page into #pageContent. Buildings come from window.pgProperties (set by the cloud loader). */
@@ -27,6 +29,24 @@ export function renderSettings() {
           <thead><tr><th>Building</th><th>Address</th><th>Your role</th><th></th></tr></thead>
           <tbody>${rows || '<tr><td colspan="4" class="sub">Sign in to manage your buildings.</td></tr>'}</tbody>
         </table></div>
+      </section>
+      ${renderInstallSection()}
+      <section class="report-block" id="aboutSection">
+        <div class="report-blockhead"><h3>About Staywise</h3><p>Version ${esc(pkg.version)}</p></div>
+        <div class="about-grid">
+          <div>Staywise is an owner-first app for running a PG (paying-guest) property: residents, rent, electricity bills, expenses and partners in one place.</div>
+          <div><b>What you can do</b>
+            <ul>
+              <li>Keep resident records and room assignments up to date</li>
+              <li>Record rent and see outstanding dues at a glance</li>
+              <li>Split electricity bills from meter readings</li>
+              <li>Send WhatsApp reminders</li>
+              <li>Track expenses and share profit with co-owners</li>
+              <li>Manage more than one building from one account</li>
+            </ul>
+          </div>
+          <div><button class="secondary" onclick="startTour()">▶ Take the product tour</button></div>
+        </div>
       </section>
       <section class="report-block">
         <div class="report-blockhead"><h3>Account</h3><p>Sign out of Staywise on this device.</p></div>

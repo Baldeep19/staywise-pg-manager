@@ -1,9 +1,16 @@
 {
+  "id": "/",
   "name": "Staywise PG Manager",
   "short_name": "Staywise",
+  "description": "Owner dashboard for PG residents, rent and bills",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f6f8f6",
   "theme_color": "#153b30",
-  "description": "Owner dashboard for PG residents, rent and bills"
+  "icons": [
+    {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
 }

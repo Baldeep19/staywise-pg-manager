@@ -33,6 +33,8 @@ import {renderRooms, initRooms} from './app/rooms.js';
 import {renderReports} from './app/reports.js';
 import {goMessages, renderMessages, draftRent, launchWhatsApp} from './app/messages.js';
 import {initApp} from './app/app.js';
+import {initInstall} from './app/install.js';
+import {startTour} from './app/tour.js';
 
 // Handlers referenced from HTML attributes (legacy inline handlers).
 Object.assign(window, {
@@ -71,7 +73,8 @@ Object.assign(window, {
   goMessages,
   renderMessages,
   draftRent,
-  launchWhatsApp
+  launchWhatsApp,
+  startTour
 });
 
 initUi();
@@ -80,3 +83,4 @@ initRent();
 initElectricity();
 initRooms();
 initApp();
+initInstall();

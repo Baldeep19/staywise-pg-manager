@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#153b30" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Staywise" />
     <title>Staywise · PG Manager</title>
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/overrides.css" />
+    <link rel="stylesheet" href="/src/styles/onboarding.css" />
   </head>
   <body>
     <div class="shell">
@@ -36,7 +42,7 @@
           <div class="help">
             <b>Need a hand?</b>
             <p>See how Staywise can simplify your PG operations.</p>
-            <button onclick="toast('Help centre is coming soon')">Visit help centre ↗</button>
+            <button onclick="startTour()">Take a quick tour ↗</button>
           </div>
           <div class="profile">
             <div class="avatar" id="ownerAvatar">?</div>

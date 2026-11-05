@@ -55,7 +55,10 @@ const channel = {on: () => channel, subscribe: () => channel};
 vi.mock('@supabase/supabase-js', () => ({
   createClient: () => ({
     auth: {
-      getSession: async () => ({data: {session: {user: {id: 'u1', email: 'owner@example.com'}}}, error: null}),
+      getSession: async () => ({
+        data: {session: {user: {id: 'u1', email: 'owner@example.com', user_metadata: {tour_completed: true}}}},
+        error: null
+      }),
       signOut: (...args) => signOut(...args)
     },
     from: (table) => query(table),
