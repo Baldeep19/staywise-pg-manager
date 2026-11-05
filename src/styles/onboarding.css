@@ -127,3 +127,38 @@
   color: #17684f;
   margin-bottom: 8px;
 }
+
+/* Sidebar "Log out": matches the nav items; icon-only on phones where the sidebar is a narrow rail */
+.logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid #416458;
+  border-radius: 9px;
+  background: transparent;
+  color: #c7d9d1;
+  font:
+    600 12px Manrope,
+    sans-serif;
+  cursor: pointer;
+}
+.logout:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.logout .ico {
+  font-size: 14px;
+  line-height: 1;
+}
+@media (max-width: 730px) {
+  .logout {
+    padding: 9px 0;
+  }
+  .logout .label {
+    display: none;
+  }
+}
