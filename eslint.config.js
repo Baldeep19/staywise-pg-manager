@@ -6,6 +6,7 @@ export default [
   {ignores: ['dist/', 'node_modules/', 'coverage/']},
   js.configs.recommended,
   prettier,
+  {files: ['**/__tests__/**', '*.config.js'], languageOptions: {globals: {...globals.node}}},
   {
     languageOptions: {ecmaVersion: 2022, sourceType: 'module', globals: {...globals.browser}},
     rules: {
