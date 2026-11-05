@@ -60,6 +60,37 @@ describe('profit sharing and settlement — worked example', () => {
   });
 });
 
+describe('settlement breakdown (the "how is this calculated" lines)', () => {
+  it("explains partner 1's settlement in three parts", () => {
+    const [one] = example().rows;
+    expect(one.breakdown).toEqual({
+      rentHeld: 102000, // collected 2,04,000, own half is 1,02,000
+      othersShare: 1238, // half of the 2,476 partner 2 paid
+      paidCover: -68495.5 // partner 2's half of the 1,36,991 partner 1 paid
+    });
+  });
+
+  it("explains partner 2's settlement in three parts", () => {
+    const two = example().rows[1];
+    expect(two.breakdown).toEqual({rentHeld: -102000, othersShare: 68495.5, paidCover: -1238});
+  });
+
+  it('always adds up to the net balance, to the cent', () => {
+    const scenarios = [
+      example(),
+      example({members: [{user_id: 'p2', ownership_percent: 35}]}),
+      example({collectorId: 'p2'}),
+      example({income: 100.01, expenses: [spend(33.33, 'p2'), spend(0.07, 'p1')]}),
+      example({people: [P1]}) // a removed partner
+    ];
+    for (const r of scenarios)
+      for (const row of r.rows) {
+        const {rentHeld, othersShare, paidCover} = row.breakdown;
+        expect(Math.round((rentHeld + othersShare + paidCover) * 100)).toBe(Math.round(row.balance * 100));
+      }
+  });
+});
+
 describe('settlement rules', () => {
   it('balances always add up to zero', () => {
     const r = example({members: [{user_id: 'p2', ownership_percent: 35}]});

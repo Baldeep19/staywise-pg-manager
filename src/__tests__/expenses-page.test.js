@@ -70,6 +70,42 @@ describe('Expenses & profit page', () => {
   });
 });
 
+describe('"How is this calculated?" section', () => {
+  const details = () => $('.settle-explain');
+  const person = (name) => [...document.querySelectorAll('.settle-person')].find((p) => p.textContent.includes(name));
+
+  it('is collapsed by default and can be opened', () => {
+    expect(details()).not.toBeNull();
+    expect(details().open).toBe(false);
+    expect(details().querySelector('summary').textContent).toBe('How is this calculated?');
+  });
+
+  it("shows partner 1's three lines and net with the real numbers", () => {
+    const text = person('Partner 1').textContent;
+    expect(text).toContain('Holds rent that belongs to the other partners');
+    expect(text).toContain('+ ₹1,02,000'); // rent held beyond their half
+    expect(text).toContain('+ ₹1,238'); // their half of partner 2's 2,476
+    expect(text).toContain('− ₹68,495.50'); // partner 2's half of partner 1's 1,36,991
+    expect(text).toContain('Pays ₹34,742.50');
+  });
+
+  it("shows partner 2's lines: half of partner 1's expenses is theirs to bear, half of their own is covered", () => {
+    const text = person('Partner 2').textContent;
+    expect(text).toContain('− ₹1,02,000'); // their half of the rent held by partner 1
+    expect(text).toContain('+ ₹68,495.50');
+    expect(text).toContain('− ₹1,238'); // partner 1's half of the 2,476 partner 2 paid
+    expect(text).toContain('Receives ₹34,742.50');
+  });
+
+  it('stays open after the page redraws (e.g. after an edit)', async () => {
+    details().open = true;
+    const {renderExpensesPage} = await import('../expenses-ui.js');
+    renderExpensesPage();
+    expect(details().open).toBe(true);
+    details().open = false;
+  });
+});
+
 describe('editing and deleting expenses', () => {
   const rowFor = (text) => [...document.querySelectorAll('#pageContent tr')].find((r) => r.textContent.includes(text));
   const lastDialog = () => [...document.querySelectorAll('.overlay.show')].at(-1);

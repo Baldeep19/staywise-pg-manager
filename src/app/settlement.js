@@ -59,6 +59,16 @@ export function computeSettlement({income, expenses, people, members, ownerId, c
     const collected = p.user_id === collector ? Number(income || 0) : 0;
     const paid = paidBy[p.user_id] || 0;
     const profitShare = round2((profit * sharePercent) / 100);
+    const balance = round2(collected - paid - profitShare);
+    // Same balance, explained in three parts (positive = owes, negative = is owed):
+    //  rentHeld    rent this person holds beyond their own share of the rent
+    //  othersShare their share of the expenses paid by the other partners
+    //  paidCover   the other partners' share of the expenses this person paid (computed as the remainder so the
+    //              three lines always add up to the balance to the cent)
+    const share = sharePercent / 100;
+    const rentHeld = round2(collected - share * Number(income || 0));
+    const othersShare = round2(share * (totalExpenses - paid));
+    const paidCover = round2(balance - rentHeld - othersShare);
     return {
       ...p,
       name: p.display_name || p.email || p.user_id,
@@ -66,7 +76,8 @@ export function computeSettlement({income, expenses, people, members, ownerId, c
       collected: round2(collected),
       paid: round2(paid),
       profitShare,
-      balance: round2(collected - paid - profitShare)
+      balance,
+      breakdown: {rentHeld, othersShare, paidCover}
     };
   });
 

@@ -193,3 +193,64 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* "How is this calculated?" on the Expenses page */
+.settle-explain {
+  margin: 14px 0 0;
+  border: 1px solid #e3e9e5;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.settle-explain > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #17684f;
+}
+.settle-note {
+  color: #5b7a6e;
+  font-size: 12.5px;
+  margin: 8px 0 12px;
+}
+.settle-person {
+  border: 1px solid #edf1ee;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.settle-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #edf1ee;
+}
+.settle-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  padding: 7px 0;
+  border-bottom: 1px dashed #edf1ee;
+  font-size: 13px;
+}
+.settle-line small {
+  display: block;
+  color: #6b7d75;
+  margin-top: 2px;
+}
+.settle-line .amt {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.settle-line .owe {
+  color: #b42318;
+}
+.settle-line .owed {
+  color: #17684f;
+}
+.settle-line.net {
+  border-bottom: 0;
+  font-weight: 800;
+  padding-top: 9px;
+}

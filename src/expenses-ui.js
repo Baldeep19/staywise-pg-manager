@@ -16,12 +16,56 @@ function settlementCell(balance) {
   return '<span class="sub">Settled</span>';
 }
 
+/** Signed amount for the explanation: "+ ₹X" when the partner owes, "− ₹X" when they are owed. */
+function signed(n) {
+  if (Math.abs(n) < 0.005) return '<span class="amt">₹0</span>';
+  return n > 0 ? `<span class="amt owe">+ ${money(n)}</span>` : `<span class="amt owed">− ${money(-n)}</span>`;
+}
+
+/** Collapsible, line-by-line explanation of each partner's settlement using this month's real numbers. */
+function renderBreakdown(result, collectorId, open) {
+  const people = result.rows
+    .map((r) => {
+      const share = r.sharePercent;
+      const others = 100 - share;
+      const othersSpent = result.totalExpenses - r.paid;
+      const {rentHeld, othersShare, paidCover} = r.breakdown;
+      const lines = [];
+      if (rentHeld > 0.005)
+        lines.push(
+          `<div class="settle-line"><div>Holds rent that belongs to the other partners<small>Collected ${money(r.collected)}; own ${share}% of the ${money(result.income)} rent is ${money((result.income * share) / 100)}</small></div>${signed(rentHeld)}</div>`
+        );
+      else if (rentHeld < -0.005)
+        lines.push(
+          `<div class="settle-line"><div>Rent collected by someone else that is theirs<small>${share}% of the ${money(result.income)} rent = ${money((result.income * share) / 100)}, held by ${esc(nameOf(collectorId))}</small></div>${signed(rentHeld)}</div>`
+        );
+      if (Math.abs(othersShare) > 0.005)
+        lines.push(
+          `<div class="settle-line"><div>${share}% of the expenses the other partners paid<small>Others paid ${money(othersSpent)}; ${share}% of that is ${money(othersShare)}</small></div>${signed(othersShare)}</div>`
+        );
+      if (Math.abs(paidCover) > 0.005)
+        lines.push(
+          `<div class="settle-line"><div>The other partners’ ${others}% of the expenses ${esc(r.name)} paid<small>${esc(r.name)} paid ${money(r.paid)}; ${others}% of that is ${money(-paidCover)}</small></div>${signed(paidCover)}</div>`
+        );
+      return `<div class="settle-person"><div class="settle-head"><b>${esc(r.name)}</b><span>${settlementCell(r.balance)}</span></div>
+        ${lines.join('') || '<div class="settle-line"><div class="sub">Nothing to settle for this month.</div></div>'}
+        <div class="settle-line net"><div>Net</div><span>${settlementCell(r.balance)}</span></div></div>`;
+    })
+    .join('');
+  return `<details class="settle-explain"${open ? ' open' : ''}><summary>How is this calculated?</summary>
+    <p class="settle-note">Rent and expenses are shared by ownership %. Each line shows what one partner owes the others:
+      <b style="color:#b42318">+</b> means they owe money, <b style="color:#17684f">−</b> means they are owed money.
+      Every partner’s lines add up to their net, and the nets add up to zero (what one pays, another receives).</p>
+    ${people}</details>`;
+}
+
 export function renderExpensesPage() {
   const month = document.getElementById('expenseMonth')?.value || new Date().toISOString().slice(0, 7);
   const expenses = (window.pgExpenses || []).filter((x) => String(x.expense_date || '').slice(0, 7) === month);
   const income = (window.pgRentPayments || [])
     .filter((x) => String(x.rent_month || x.paid_on || '').slice(0, 7) === month)
     .reduce((n, x) => n + Number(x.amount || 0), 0);
+  const explainOpen = document.querySelector('.settle-explain')?.open === true; // keep it open after edits
   const building = currentBuilding();
   const collectorId = rentCollectorId(building);
   const result = computeSettlement({
@@ -78,7 +122,7 @@ export function renderExpensesPage() {
         <p>Each partner keeps their ownership share of the profit. “Pays” and “Receives” settle the difference between what each person holds (rent collected minus expenses paid) and their share. Rent is collected by <b>${esc(nameOf(collectorId))}</b> — change this in Manage partner.</p></div>
       <div class="report-table"><table class="table"><thead><tr><th>Partner</th><th>Ownership</th><th>Rent collected</th><th>Expenses paid</th><th>Profit share</th><th>Settlement</th></tr></thead>
         <tbody>${shareRows || '<tr><td colspan="6" class="sub">No partners found for this building.</td></tr>'}</tbody></table></div>
-      <div style="padding:4px 18px 16px"><b>Who pays whom</b>${transfers}${shareWarning}</div>
+      <div style="padding:4px 18px 16px"><b>Who pays whom</b>${transfers}${shareWarning}${renderBreakdown(result, collectorId, explainOpen)}</div>
     </section>
     <section class="report-block"><div class="report-blockhead"><h3>Expenses</h3></div>
       <div class="report-table"><table class="table"><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Paid to</th><th>Paid by</th><th>Amount</th><th>Actions</th></tr></thead>
