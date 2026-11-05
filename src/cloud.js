@@ -1,141 +1,1056 @@
-import { createClient } from '@supabase/supabase-js'
-const { VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: key } = import.meta.env
-const gate = document.getElementById('authGate')
-const form = document.getElementById('authForm')
-const errorBox = document.getElementById('authError')
-if (!url || !key) { errorBox.textContent = 'Supabase connection is not configured for this deployment. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the hosting project settings, then redeploy.'; errorBox.style.color='#b44' }
-const busyOverlay=document.getElementById('appBusy'),busyText=document.getElementById('appBusyText'),nativeFetch=window.fetch.bind(window)
-let busyRequests=0,busyTimer=0,busyHideTimer=0,busyShownAt=0,busyLabelOverride=''
-async function trackedFetch(input,init={}){
-  const method=String(init.method||input?.method||'GET').toUpperCase(),isMutation=['POST','PUT','PATCH','DELETE'].includes(method)
-  if(isMutation){busyRequests++;clearTimeout(busyHideTimer);if(busyRequests===1)busyTimer=setTimeout(()=>{busyText.textContent=busyLabelOverride||(method==='DELETE'?'Removing…':method==='PATCH'||method==='PUT'?'Updating…':'Saving changes…');busyShownAt=Date.now();busyOverlay.classList.add('show')},120)}
-  try{return await nativeFetch(input,init)}finally{if(isMutation){busyRequests=Math.max(0,busyRequests-1);if(!busyRequests){clearTimeout(busyTimer);const hide=()=>{if(!busyRequests){busyOverlay.classList.remove('show');busyShownAt=0}};const remaining=busyShownAt?Math.max(0,320-(Date.now()-busyShownAt)):0;busyHideTimer=setTimeout(hide,remaining)}}}
+import {createClient} from '@supabase/supabase-js';
+const {VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: key} = import.meta.env;
+const gate = document.getElementById('authGate');
+const form = document.getElementById('authForm');
+const errorBox = document.getElementById('authError');
+if (!url || !key) {
+  errorBox.textContent =
+    'Supabase connection is not configured for this deployment. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the hosting project settings, then redeploy.';
+  errorBox.style.color = '#b44';
 }
-const supabase = url && key ? createClient(url, key,{global:{fetch:trackedFetch}}) : null
-let currentUser, property, flats = [], liveChannel=null, livePropertyId=null, liveRefreshTimer=0, liveRefreshing=false, liveRefreshAgain=false
-const sayError = e => { errorBox.textContent = e?.message || String(e) }
-function queueLiveRefresh(){clearTimeout(liveRefreshTimer);liveRefreshTimer=setTimeout(async()=>{if(liveRefreshing){liveRefreshAgain=true;return}liveRefreshing=true;try{if(currentUser)await initSession(currentUser)}catch(error){console.error('Live data refresh failed',error)}finally{liveRefreshing=false;if(liveRefreshAgain){liveRefreshAgain=false;queueLiveRefresh()}}},250)}
-function subscribeToPropertyChanges(){if(!property||!supabase||livePropertyId===property.id&&liveChannel)return;if(liveChannel)supabase.removeChannel(liveChannel);const channel=supabase.channel('pg-property-'+property.id);for(const table of ['residents','flats','rent_payments','electricity_bills','electricity_bill_payments','electricity_meter_readings'])channel.on('postgres_changes',{event:'*',schema:'public',table,filter:'property_id=eq.'+property.id},queueLiveRefresh);liveChannel=channel;livePropertyId=property.id;channel.subscribe()}
-function addSetupFlat(flat={}) {
-  const row=document.createElement('div');row.className='formgrid setup-flat';row.style.cssText='border:1px solid var(--line);padding:10px;border-radius:10px;align-items:end'
-  row.dataset.id=flat.id||''
-  row.innerHTML=`<div class="field"><label>Flat / room name *</label><input name="flat_number" required value="${String(flat.flat_number||'').replaceAll('"','&quot;')}" placeholder="e.g. Flat 101"></div><div class="field"><label>Floor *</label><input name="floor_name" required value="${String(flat.floor_name||'Ground').replaceAll('"','&quot;')}" placeholder="e.g. First floor"></div><div class="field"><label>Number of rooms *</label><input name="room_count" type="number" min="1" required value="${flat.room_count||2}"></div><div class="field"><label>Wi-Fi network (optional)</label><input name="wifi_ssid" value="${String(flat.wifi_ssid||'').replaceAll('"','&quot;')}" placeholder="Network name"></div><div class="field"><label>Wi-Fi password (optional)</label><input name="wifi_password" type="password" value="${String(flat.wifi_password||'').replaceAll('"','&quot;')}" placeholder="Password"></div><button type="button" class="secondary remove-flat">Remove</button>`
-  row.querySelector('.remove-flat').onclick=()=>{if(document.querySelectorAll('.setup-flat').length===1)return;row.remove()}
-  document.getElementById('setupFlats').append(row)
+const busyOverlay = document.getElementById('appBusy'),
+  busyText = document.getElementById('appBusyText'),
+  nativeFetch = window.fetch.bind(window);
+let busyRequests = 0,
+  busyTimer = 0,
+  busyHideTimer = 0,
+  busyShownAt = 0,
+  busyLabelOverride = '';
+async function trackedFetch(input, init = {}) {
+  const method = String(init.method || input?.method || 'GET').toUpperCase(),
+    isMutation = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+  if (isMutation) {
+    busyRequests++;
+    clearTimeout(busyHideTimer);
+    if (busyRequests === 1)
+      busyTimer = setTimeout(() => {
+        busyText.textContent =
+          busyLabelOverride ||
+          (method === 'DELETE'
+            ? 'Removing…'
+            : method === 'PATCH' || method === 'PUT'
+              ? 'Updating…'
+              : 'Saving changes…');
+        busyShownAt = Date.now();
+        busyOverlay.classList.add('show');
+      }, 120);
+  }
+  try {
+    return await nativeFetch(input, init);
+  } finally {
+    if (isMutation) {
+      busyRequests = Math.max(0, busyRequests - 1);
+      if (!busyRequests) {
+        clearTimeout(busyTimer);
+        const hide = () => {
+          if (!busyRequests) {
+            busyOverlay.classList.remove('show');
+            busyShownAt = 0;
+          }
+        };
+        const remaining = busyShownAt ? Math.max(0, 320 - (Date.now() - busyShownAt)) : 0;
+        busyHideTimer = setTimeout(hide, remaining);
+      }
+    }
+  }
 }
-function showSetup(existingProperty, existingFlats=[], pending={}) {
-  property=existingProperty||null
-  gate.style.display='none';const setup=document.getElementById('ownerSetupGate');setup.style.display='block'
-  const f=document.getElementById('ownerSetupForm');f.elements.propertyName.value=existingProperty?.name||pending?.name||'';f.elements.propertyAddress.value=existingProperty?.address||pending?.address||''
-  document.getElementById('setupFlats').innerHTML=''
-  ;(existingFlats.length?existingFlats:(pending?.flats?.length?pending.flats:[{flat_number:'',floor_name:'',room_count:1}])).forEach(addSetupFlat)
-  document.getElementById('addFlatRow').onclick=()=>addSetupFlat();document.getElementById('skipPropertySetup').onclick=()=>{localStorage.setItem("staywise_skip_setup","1");document.getElementById("ownerSetupGate").style.display="none";gate.style.display="none";toast("You can add building details later from Settings")}
+const supabase = url && key ? createClient(url, key, {global: {fetch: trackedFetch}}) : null;
+let currentUser,
+  property,
+  flats = [],
+  liveChannel = null,
+  livePropertyId = null,
+  liveRefreshTimer = 0,
+  liveRefreshing = false,
+  liveRefreshAgain = false;
+const sayError = (e) => {
+  errorBox.textContent = e?.message || String(e);
+};
+function queueLiveRefresh() {
+  clearTimeout(liveRefreshTimer);
+  liveRefreshTimer = setTimeout(async () => {
+    if (liveRefreshing) {
+      liveRefreshAgain = true;
+      return;
+    }
+    liveRefreshing = true;
+    try {
+      if (currentUser) await initSession(currentUser);
+    } catch (error) {
+      console.error('Live data refresh failed', error);
+    } finally {
+      liveRefreshing = false;
+      if (liveRefreshAgain) {
+        liveRefreshAgain = false;
+        queueLiveRefresh();
+      }
+    }
+  }, 250);
+}
+function subscribeToPropertyChanges() {
+  if (!property || !supabase || (livePropertyId === property.id && liveChannel)) return;
+  if (liveChannel) supabase.removeChannel(liveChannel);
+  const channel = supabase.channel('pg-property-' + property.id);
+  for (const table of [
+    'residents',
+    'flats',
+    'rent_payments',
+    'electricity_bills',
+    'electricity_bill_payments',
+    'electricity_meter_readings'
+  ])
+    channel.on(
+      'postgres_changes',
+      {event: '*', schema: 'public', table, filter: 'property_id=eq.' + property.id},
+      queueLiveRefresh
+    );
+  liveChannel = channel;
+  livePropertyId = property.id;
+  channel.subscribe();
+}
+function addSetupFlat(flat = {}) {
+  const row = document.createElement('div');
+  row.className = 'formgrid setup-flat';
+  row.style.cssText = 'border:1px solid var(--line);padding:10px;border-radius:10px;align-items:end';
+  row.dataset.id = flat.id || '';
+  row.innerHTML = `<div class="field"><label>Flat / room name *</label><input name="flat_number" required value="${String(flat.flat_number || '').replaceAll('"', '&quot;')}" placeholder="e.g. Flat 101"></div><div class="field"><label>Floor *</label><input name="floor_name" required value="${String(flat.floor_name || 'Ground').replaceAll('"', '&quot;')}" placeholder="e.g. First floor"></div><div class="field"><label>Number of rooms *</label><input name="room_count" type="number" min="1" required value="${flat.room_count || 2}"></div><div class="field"><label>Wi-Fi network (optional)</label><input name="wifi_ssid" value="${String(flat.wifi_ssid || '').replaceAll('"', '&quot;')}" placeholder="Network name"></div><div class="field"><label>Wi-Fi password (optional)</label><input name="wifi_password" type="password" value="${String(flat.wifi_password || '').replaceAll('"', '&quot;')}" placeholder="Password"></div><button type="button" class="secondary remove-flat">Remove</button>`;
+  row.querySelector('.remove-flat').onclick = () => {
+    if (document.querySelectorAll('.setup-flat').length === 1) return;
+    row.remove();
+  };
+  document.getElementById('setupFlats').append(row);
+}
+function showSetup(existingProperty, existingFlats = [], pending = {}) {
+  property = existingProperty || null;
+  gate.style.display = 'none';
+  const setup = document.getElementById('ownerSetupGate');
+  setup.style.display = 'block';
+  const f = document.getElementById('ownerSetupForm');
+  f.elements.propertyName.value = existingProperty?.name || pending?.name || '';
+  f.elements.propertyAddress.value = existingProperty?.address || pending?.address || '';
+  document.getElementById('setupFlats').innerHTML = '';
+  (existingFlats.length
+    ? existingFlats
+    : pending?.flats?.length
+      ? pending.flats
+      : [{flat_number: '', floor_name: '', room_count: 1}]
+  ).forEach(addSetupFlat);
+  document.getElementById('addFlatRow').onclick = () => addSetupFlat();
+  document.getElementById('skipPropertySetup').onclick = () => {
+    localStorage.setItem('staywise_skip_setup', '1');
+    document.getElementById('ownerSetupGate').style.display = 'none';
+    gate.style.display = 'none';
+    toast('You can add building details later from Settings');
+  };
 }
 async function initSession(user) {
-  currentUser=user
-  const {data: foundRows,error}=await supabase.from('properties').select('*').limit(20)
-  if(error)throw error
-  property=(foundRows||[]).find(x=>x.owner_id===user.id)||(foundRows||[])[0]||null
-  let foundFlats=[]
-  if(property){const q=await supabase.from('flats').select('*').eq('property_id',property.id).eq('active',true).order('floor_name').order('flat_number');if(q.error)throw q.error;foundFlats=q.data||[]}
-  flats=foundFlats
-  if(!property||!property.setup_complete||!flats.length){if(localStorage.getItem("staywise_skip_setup")==="1"){document.getElementById("ownerSetupGate").style.display="none";gate.style.display="none";document.getElementById("ownerGreeting").textContent=user.user_metadata?.full_name||user.email?.split("@")[0]||"Owner";document.getElementById("todayDate").textContent=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});window.editPropertySetup=()=>showSetup(property,foundFlats,user.user_metadata?.pending_property||{});return}showSetup(property,foundFlats,user.user_metadata?.pending_property||{});return}
-  const ownerName=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'Owner'
-  const h=new Date().getHours(),g=h<12?["Good morning","☀️"]:h<17?["Good afternoon","🌤️"]:["Good evening","🌙"];document.getElementById("greetingText").textContent=g[0];document.getElementById("greetingIcon").textContent=g[1];document.getElementById('ownerGreeting').textContent=ownerName;document.getElementById('ownerProfileName').textContent=ownerName;const initials=ownerName.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');document.getElementById('ownerAvatar').textContent=initials||'?';document.getElementById('ownerAvatarTop').textContent=initials||'?';document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
-  const {data:dbResidents,error:rError}=await supabase.from('residents').select('*, flats(flat_number)').eq('property_id',property.id).order('created_at')
-  if(rError)throw rError
-  const activeResidents=(dbResidents||[]).filter(r=>r.active)
-  window.pgReportResidents=(dbResidents||[]).map(r=>({id:r.id,name:r.full_name,room:r.flats?.flat_number||'',rent:Number(r.monthly_rent),movein:r.move_in||'',moveout:r.move_out||'',active:Boolean(r.active)}))
-  const {data:rentRows,error:rentError}=await supabase.from('rent_payments').select('resident_id,amount,paid_on,rent_month').eq('property_id',property.id);if(rentError)throw rentError;window.pgRentPayments=rentRows||[];const {data:expenseRows}=await supabase.from("property_expenses").select("*").eq("property_id",property.id).order("expense_date",{ascending:false});window.pgExpenses=expenseRows||[];const {data:memberRows}=await supabase.from("property_members").select("*").eq("property_id",property.id);window.pgPropertyMembers=memberRows||[];window.refreshPropertyPeople=async()=>{const {data}=await supabase.rpc("property_people",{p_property_id:property.id});window.pgPropertyPeople=data||[]};await window.refreshPropertyPeople();window.savePropertyExpense=async d=>{const {data,error}=await supabase.from("property_expenses").insert({property_id:property.id,expense_date:d.date||new Date().toISOString().slice(0,10),category:d.category||"Other",description:d.description,amount:Number(d.amount),paid_to:d.paidTo||null,paid_by_user_id:d.paidByUserId||null,notes:d.notes||null}).select().single();if(error)throw error;window.pgExpenses=[data,...(window.pgExpenses||[])];return data};window.savePropertyMember=async d=>{const lookup=await supabase.rpc("lookup_partner_by_email",{p_email:d.email});if(lookup.error||!lookup.data?.length)throw new Error("No registered account found for this email");const profile=lookup.data[0];const {data,error}=await supabase.from("property_members").upsert({property_id:property.id,user_id:profile.user_id,display_name:profile.display_name,email:profile.email,role:"partner",ownership_percent:Number(d.ownershipPercent||0),can_manage_residents:true,can_manage_payments:true,can_manage_electricity:true,can_manage_expenses:true,can_view_reports:true},{onConflict:"property_id,user_id"}).select().single();if(error)throw error;window.pgPropertyMembers=[...(window.pgPropertyMembers||[]).filter(x=>x.user_id!==profile.user_id),data];await window.refreshPropertyPeople();return data}
-  const now=new Date(),currentMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0'),rentPaidBy={};for(const payment of window.pgRentPayments){if(String(payment.rent_month||payment.paid_on).slice(0,7)===currentMonth)rentPaidBy[payment.resident_id]=(rentPaidBy[payment.resident_id]||0)+Number(payment.amount)}
-  const local=activeResidents.map(r=>{const paid=rentPaidBy[r.id]||0,rent=Number(r.monthly_rent),balance=Math.max(0,rent-paid),dueDate=currentMonth+'-02',today=new Date().toISOString().slice(0,10),status=balance<=0?'Paid':paid>0?'Part paid':dueDate<today?'Overdue':'Due';return {id:r.id,name:r.full_name,phone:r.phone,room:r.flats?.flat_number||'',sharing_type:r.sharing_type||'',rent,deposit:Number(r.deposit_amount||0),status,movein:r.move_in||'',address:r.permanent_address||'',emergency:r.emergency_contact||'',meter_side:r.meter_side||''}})
-  localStorage.setItem('staywise_cloud','1')
-  const {data:billRows,error:billError}=await supabase.from('electricity_bills').select('*, residents(full_name,phone), flats(flat_number)').eq('property_id',property.id).order('billing_month',{ascending:false}).order('created_at',{ascending:false});if(billError)throw billError
-  const {data:billPayments,error:billPaymentError}=await supabase.from('electricity_bill_payments').select('bill_id,amount').eq('property_id',property.id);if(billPaymentError)throw billPaymentError
-  const billTotals={};for(const payment of billPayments||[])billTotals[payment.bill_id]=(billTotals[payment.bill_id]||0)+Number(payment.amount)
-  const savedBills=(billRows||[]).map(b=>{const paid=billTotals[b.id]||0;return {id:b.id,name:b.residents?.full_name||'',phone:b.residents?.phone||'',flat:b.flats?.flat_number||'',amount:Number(b.amount),paid_amount:paid,billing_month:b.billing_month,due:b.due_date,month:new Date(b.billing_month+'T00:00:00').toLocaleDateString('en-IN',{month:'long',year:'numeric'}),status:b.status==='paid'?'Paid':b.status==='partial'?'Part paid':b.status==='waived'?'Waived':'Due'}})
-  window.pgElectricityBills=savedBills
-  const {data:meterRows,error:meterError}=await supabase.from('electricity_meter_readings').select('*, flats(flat_number)').eq('property_id',property.id).order('billing_month',{ascending:false});if(meterError)throw meterError
-  window.pgElectricityReadings=(meterRows||[]).map(m=>({...m,flat:m.flats?.flat_number||''}))
-  const roomSelect=document.querySelector('#residentForm [name=room]')
-  roomSelect.innerHTML='<option value="">Choose flat / room</option>'+flats.map(f=>`<option>${f.flat_number}</option>`).join('')
-  window.pgFlats=flats;window.pgPropertyName=property.name;window.applyCloudState?.(local,savedBills)
-  window.refreshDashboard=()=>{const rs=JSON.parse(localStorage.getItem('staywise_residents')||'[]'),date=new Date(),month=date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0'),dueDate=month+'-02',today=date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0'),reportResidents=window.pgReportResidents||rs,eligible=reportResidents.filter(r=>r.active!==false&&(!r.movein||r.movein<=dueDate)&&(!r.moveout||r.moveout>=dueDate)),paidBy={};(window.pgRentPayments||[]).filter(p=>String(p.rent_month||p.paid_on||'').slice(0,7)===month).forEach(p=>paidBy[p.resident_id]=(paidBy[p.resident_id]||0)+Number(p.amount));const rentCollected=eligible.reduce((n,r)=>n+(paidBy[r.id]||0),0),pendingDues=eligible.reduce((n,r)=>n+Math.max(0,Number(r.rent||0)-(paidBy[r.id]||0)),0),fullyPaid=eligible.filter(r=>(paidBy[r.id]||0)>=Number(r.rent||0)).length,pendingCount=eligible.filter(r=>(paidBy[r.id]||0)<Number(r.rent||0)).length,depositTotal=rs.reduce((n,r)=>n+Number(r.deposit||0),0),depositResidents=rs.filter(r=>Number(r.deposit||0)>0).length,money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2}),monthLabel=date.toLocaleDateString('en-IN',{month:'long',year:'numeric'});document.getElementById('residentCount').textContent=rs.length;document.getElementById('residentSummary').textContent=rs.length?'Across '+flats.length+' flats':'No residents added yet';const occupied=new Set(flats.filter(f=>window.flatOccupancyInfo(f,rs).used>0).map(f=>f.flat_number)).size;document.getElementById('occupancyValue').textContent=occupied+' / '+flats.length;document.getElementById('flatSummary').textContent=flats.length+' flats · '+flats.reduce((n,f)=>n+Number(f.room_count||0),0)+' rooms';document.getElementById('rentCollectedValue').textContent=money(rentCollected);document.getElementById('rentCollectedSummary').textContent=monthLabel+' · '+fullyPaid+' paid in full';document.getElementById('pendingDuesValue').textContent=money(pendingDues);document.getElementById('pendingDuesSummary').textContent=pendingCount?pendingCount+' resident'+(pendingCount===1?'':'s')+' unpaid or part paid':'No pending rent';document.getElementById('depositTotalValue').textContent=money(depositTotal);document.getElementById('depositTotalSummary').textContent=depositResidents?depositResidents+' tenant deposit'+(depositResidents===1?'':'s')+' recorded':'No deposits recorded yet';document.getElementById('occupancyList').innerHTML=flats.map(f=>{const o=window.flatOccupancyInfo(f,rs),used=Number.isInteger(o.used)?o.used:o.used.toFixed(1);return '<div class="floor"><div class="floorlabel">'+window.esc(f.floor_name)+'</div><div class="roomrow"><button type="button" class="room room-select '+o.state+'" data-flat="'+window.esc(f.flat_number)+'" aria-label="Open residents in '+window.esc(f.flat_number)+'"><b>'+window.esc(f.flat_number)+'</b><small>'+o.count+' resident'+(o.count===1?'':'s')+' · '+used+' / '+o.capacity+' rooms occupied</small></button></div></div>'}).join('')||'<div class="sub">No flats set up yet.</div>'}
-  const renderDashboardDues=()=>{const list=document.getElementById('dueList');if(!list)return;const month=new Date().toISOString().slice(0,7),payments=window.pgRentPayments||[],dueRows=(window.pgReportResidents||[]).filter(r=>r.active!==false).map(r=>{const paid=payments.filter(p=>String(p.resident_id)===String(r.id)&&String(p.rent_month||p.paid_on||'').slice(0,7)===month).reduce((n,p)=>n+Number(p.amount||0),0),balance=Math.max(0,Number(r.rent||0)-paid);return {...r,balance}}).filter(r=>r.balance>0);const electricity=(window.pgElectricityBills||[]).filter(b=>String(b.billing_month||'').slice(0,7)===month&&b.status!=='Paid'&&b.status!=='Waived').map(b=>({name:b.name,room:b.flat,balance:Math.max(0,Number(b.amount||0)-Number(b.paid_amount||0)),type:'Electricity'})).filter(b=>b.balance>0);const rows=[...dueRows.map(r=>({name:r.name,room:r.room,balance:r.balance,type:'Rent'})),...electricity];list.innerHTML=rows.length?rows.slice(0,8).map(r=>'<div class=\"due-item\"><div><b>'+window.esc(r.name)+'</b><small>'+window.esc(r.type)+' · '+window.esc(r.room||'')+'</small></div><strong>₹'+Number(r.balance).toLocaleString('en-IN',{maximumFractionDigits:2})+'</strong></div>').join(''):'<div class=\"sub\" style=\"padding:12px 0\">No rent or electricity dues recorded.</div>'};const previousRefreshDashboard=window.refreshDashboard;window.refreshDashboard=()=>{previousRefreshDashboard();renderDashboardDues()};window.refreshDashboard();subscribeToPropertyChanges()
-  window.editPropertySetup=()=>showSetup(property,flats)
-  gate.style.display='none'
-  if(document.getElementById('propertySelect'))document.getElementById('propertySelect').innerHTML='<option>'+property.name+'</option>';document.getElementById('propertyNameHeading').textContent=property.name
+  currentUser = user;
+  const {data: foundRows, error} = await supabase.from('properties').select('*').limit(20);
+  if (error) throw error;
+  property = (foundRows || []).find((x) => x.owner_id === user.id) || (foundRows || [])[0] || null;
+  let foundFlats = [];
+  if (property) {
+    const q = await supabase
+      .from('flats')
+      .select('*')
+      .eq('property_id', property.id)
+      .eq('active', true)
+      .order('floor_name')
+      .order('flat_number');
+    if (q.error) throw q.error;
+    foundFlats = q.data || [];
+  }
+  flats = foundFlats;
+  if (!property || !property.setup_complete || !flats.length) {
+    if (localStorage.getItem('staywise_skip_setup') === '1') {
+      document.getElementById('ownerSetupGate').style.display = 'none';
+      gate.style.display = 'none';
+      document.getElementById('ownerGreeting').textContent =
+        user.user_metadata?.full_name || user.email?.split('@')[0] || 'Owner';
+      document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      window.editPropertySetup = () => showSetup(property, foundFlats, user.user_metadata?.pending_property || {});
+      return;
+    }
+    showSetup(property, foundFlats, user.user_metadata?.pending_property || {});
+    return;
+  }
+  const ownerName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Owner';
+  const h = new Date().getHours(),
+    g = h < 12 ? ['Good morning', '☀️'] : h < 17 ? ['Good afternoon', '🌤️'] : ['Good evening', '🌙'];
+  document.getElementById('greetingText').textContent = g[0];
+  document.getElementById('greetingIcon').textContent = g[1];
+  document.getElementById('ownerGreeting').textContent = ownerName;
+  document.getElementById('ownerProfileName').textContent = ownerName;
+  const initials = ownerName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((x) => x[0].toUpperCase())
+    .join('');
+  document.getElementById('ownerAvatar').textContent = initials || '?';
+  document.getElementById('ownerAvatarTop').textContent = initials || '?';
+  document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  const {data: dbResidents, error: rError} = await supabase
+    .from('residents')
+    .select('*, flats(flat_number)')
+    .eq('property_id', property.id)
+    .order('created_at');
+  if (rError) throw rError;
+  const activeResidents = (dbResidents || []).filter((r) => r.active);
+  window.pgReportResidents = (dbResidents || []).map((r) => ({
+    id: r.id,
+    name: r.full_name,
+    room: r.flats?.flat_number || '',
+    rent: Number(r.monthly_rent),
+    movein: r.move_in || '',
+    moveout: r.move_out || '',
+    active: Boolean(r.active)
+  }));
+  const {data: rentRows, error: rentError} = await supabase
+    .from('rent_payments')
+    .select('resident_id,amount,paid_on,rent_month')
+    .eq('property_id', property.id);
+  if (rentError) throw rentError;
+  window.pgRentPayments = rentRows || [];
+  const {data: expenseRows} = await supabase
+    .from('property_expenses')
+    .select('*')
+    .eq('property_id', property.id)
+    .order('expense_date', {ascending: false});
+  window.pgExpenses = expenseRows || [];
+  const {data: memberRows} = await supabase.from('property_members').select('*').eq('property_id', property.id);
+  window.pgPropertyMembers = memberRows || [];
+  window.refreshPropertyPeople = async () => {
+    const {data} = await supabase.rpc('property_people', {p_property_id: property.id});
+    window.pgPropertyPeople = data || [];
+  };
+  await window.refreshPropertyPeople();
+  window.savePropertyExpense = async (d) => {
+    const {data, error} = await supabase
+      .from('property_expenses')
+      .insert({
+        property_id: property.id,
+        expense_date: d.date || new Date().toISOString().slice(0, 10),
+        category: d.category || 'Other',
+        description: d.description,
+        amount: Number(d.amount),
+        paid_to: d.paidTo || null,
+        paid_by_user_id: d.paidByUserId || null,
+        notes: d.notes || null
+      })
+      .select()
+      .single();
+    if (error) throw error;
+    window.pgExpenses = [data, ...(window.pgExpenses || [])];
+    return data;
+  };
+  window.savePropertyMember = async (d) => {
+    const lookup = await supabase.rpc('lookup_partner_by_email', {p_email: d.email});
+    if (lookup.error || !lookup.data?.length) throw new Error('No registered account found for this email');
+    const profile = lookup.data[0];
+    const {data, error} = await supabase
+      .from('property_members')
+      .upsert(
+        {
+          property_id: property.id,
+          user_id: profile.user_id,
+          display_name: profile.display_name,
+          email: profile.email,
+          role: 'partner',
+          ownership_percent: Number(d.ownershipPercent || 0),
+          can_manage_residents: true,
+          can_manage_payments: true,
+          can_manage_electricity: true,
+          can_manage_expenses: true,
+          can_view_reports: true
+        },
+        {onConflict: 'property_id,user_id'}
+      )
+      .select()
+      .single();
+    if (error) throw error;
+    window.pgPropertyMembers = [...(window.pgPropertyMembers || []).filter((x) => x.user_id !== profile.user_id), data];
+    await window.refreshPropertyPeople();
+    return data;
+  };
+  const now = new Date(),
+    currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0'),
+    rentPaidBy = {};
+  for (const payment of window.pgRentPayments) {
+    if (String(payment.rent_month || payment.paid_on).slice(0, 7) === currentMonth)
+      rentPaidBy[payment.resident_id] = (rentPaidBy[payment.resident_id] || 0) + Number(payment.amount);
+  }
+  const local = activeResidents.map((r) => {
+    const paid = rentPaidBy[r.id] || 0,
+      rent = Number(r.monthly_rent),
+      balance = Math.max(0, rent - paid),
+      dueDate = currentMonth + '-02',
+      today = new Date().toISOString().slice(0, 10),
+      status = balance <= 0 ? 'Paid' : paid > 0 ? 'Part paid' : dueDate < today ? 'Overdue' : 'Due';
+    return {
+      id: r.id,
+      name: r.full_name,
+      phone: r.phone,
+      room: r.flats?.flat_number || '',
+      sharing_type: r.sharing_type || '',
+      rent,
+      deposit: Number(r.deposit_amount || 0),
+      status,
+      movein: r.move_in || '',
+      address: r.permanent_address || '',
+      emergency: r.emergency_contact || '',
+      meter_side: r.meter_side || ''
+    };
+  });
+  localStorage.setItem('staywise_cloud', '1');
+  const {data: billRows, error: billError} = await supabase
+    .from('electricity_bills')
+    .select('*, residents(full_name,phone), flats(flat_number)')
+    .eq('property_id', property.id)
+    .order('billing_month', {ascending: false})
+    .order('created_at', {ascending: false});
+  if (billError) throw billError;
+  const {data: billPayments, error: billPaymentError} = await supabase
+    .from('electricity_bill_payments')
+    .select('bill_id,amount')
+    .eq('property_id', property.id);
+  if (billPaymentError) throw billPaymentError;
+  const billTotals = {};
+  for (const payment of billPayments || [])
+    billTotals[payment.bill_id] = (billTotals[payment.bill_id] || 0) + Number(payment.amount);
+  const savedBills = (billRows || []).map((b) => {
+    const paid = billTotals[b.id] || 0;
+    return {
+      id: b.id,
+      name: b.residents?.full_name || '',
+      phone: b.residents?.phone || '',
+      flat: b.flats?.flat_number || '',
+      amount: Number(b.amount),
+      paid_amount: paid,
+      billing_month: b.billing_month,
+      due: b.due_date,
+      month: new Date(b.billing_month + 'T00:00:00').toLocaleDateString('en-IN', {month: 'long', year: 'numeric'}),
+      status:
+        b.status === 'paid' ? 'Paid' : b.status === 'partial' ? 'Part paid' : b.status === 'waived' ? 'Waived' : 'Due'
+    };
+  });
+  window.pgElectricityBills = savedBills;
+  const {data: meterRows, error: meterError} = await supabase
+    .from('electricity_meter_readings')
+    .select('*, flats(flat_number)')
+    .eq('property_id', property.id)
+    .order('billing_month', {ascending: false});
+  if (meterError) throw meterError;
+  window.pgElectricityReadings = (meterRows || []).map((m) => ({...m, flat: m.flats?.flat_number || ''}));
+  const roomSelect = document.querySelector('#residentForm [name=room]');
+  roomSelect.innerHTML =
+    '<option value="">Choose flat / room</option>' + flats.map((f) => `<option>${f.flat_number}</option>`).join('');
+  window.pgFlats = flats;
+  window.pgPropertyName = property.name;
+  window.applyCloudState?.(local, savedBills);
+  window.refreshDashboard = () => {
+    const rs = JSON.parse(localStorage.getItem('staywise_residents') || '[]'),
+      date = new Date(),
+      month = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0'),
+      dueDate = month + '-02',
+      today =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0'),
+      reportResidents = window.pgReportResidents || rs,
+      eligible = reportResidents.filter(
+        (r) => r.active !== false && (!r.movein || r.movein <= dueDate) && (!r.moveout || r.moveout >= dueDate)
+      ),
+      paidBy = {};
+    (window.pgRentPayments || [])
+      .filter((p) => String(p.rent_month || p.paid_on || '').slice(0, 7) === month)
+      .forEach((p) => (paidBy[p.resident_id] = (paidBy[p.resident_id] || 0) + Number(p.amount)));
+    const rentCollected = eligible.reduce((n, r) => n + (paidBy[r.id] || 0), 0),
+      pendingDues = eligible.reduce((n, r) => n + Math.max(0, Number(r.rent || 0) - (paidBy[r.id] || 0)), 0),
+      fullyPaid = eligible.filter((r) => (paidBy[r.id] || 0) >= Number(r.rent || 0)).length,
+      pendingCount = eligible.filter((r) => (paidBy[r.id] || 0) < Number(r.rent || 0)).length,
+      depositTotal = rs.reduce((n, r) => n + Number(r.deposit || 0), 0),
+      depositResidents = rs.filter((r) => Number(r.deposit || 0) > 0).length,
+      money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN', {maximumFractionDigits: 2}),
+      monthLabel = date.toLocaleDateString('en-IN', {month: 'long', year: 'numeric'});
+    document.getElementById('residentCount').textContent = rs.length;
+    document.getElementById('residentSummary').textContent = rs.length
+      ? 'Across ' + flats.length + ' flats'
+      : 'No residents added yet';
+    const occupied = new Set(flats.filter((f) => window.flatOccupancyInfo(f, rs).used > 0).map((f) => f.flat_number))
+      .size;
+    document.getElementById('occupancyValue').textContent = occupied + ' / ' + flats.length;
+    document.getElementById('flatSummary').textContent =
+      flats.length + ' flats · ' + flats.reduce((n, f) => n + Number(f.room_count || 0), 0) + ' rooms';
+    document.getElementById('rentCollectedValue').textContent = money(rentCollected);
+    document.getElementById('rentCollectedSummary').textContent = monthLabel + ' · ' + fullyPaid + ' paid in full';
+    document.getElementById('pendingDuesValue').textContent = money(pendingDues);
+    document.getElementById('pendingDuesSummary').textContent = pendingCount
+      ? pendingCount + ' resident' + (pendingCount === 1 ? '' : 's') + ' unpaid or part paid'
+      : 'No pending rent';
+    document.getElementById('depositTotalValue').textContent = money(depositTotal);
+    document.getElementById('depositTotalSummary').textContent = depositResidents
+      ? depositResidents + ' tenant deposit' + (depositResidents === 1 ? '' : 's') + ' recorded'
+      : 'No deposits recorded yet';
+    document.getElementById('occupancyList').innerHTML =
+      flats
+        .map((f) => {
+          const o = window.flatOccupancyInfo(f, rs),
+            used = Number.isInteger(o.used) ? o.used : o.used.toFixed(1);
+          return (
+            '<div class="floor"><div class="floorlabel">' +
+            window.esc(f.floor_name) +
+            '</div><div class="roomrow"><button type="button" class="room room-select ' +
+            o.state +
+            '" data-flat="' +
+            window.esc(f.flat_number) +
+            '" aria-label="Open residents in ' +
+            window.esc(f.flat_number) +
+            '"><b>' +
+            window.esc(f.flat_number) +
+            '</b><small>' +
+            o.count +
+            ' resident' +
+            (o.count === 1 ? '' : 's') +
+            ' · ' +
+            used +
+            ' / ' +
+            o.capacity +
+            ' rooms occupied</small></button></div></div>'
+          );
+        })
+        .join('') || '<div class="sub">No flats set up yet.</div>';
+  };
+  const renderDashboardDues = () => {
+    const list = document.getElementById('dueList');
+    if (!list) return;
+    const month = new Date().toISOString().slice(0, 7),
+      payments = window.pgRentPayments || [],
+      dueRows = (window.pgReportResidents || [])
+        .filter((r) => r.active !== false)
+        .map((r) => {
+          const paid = payments
+              .filter(
+                (p) =>
+                  String(p.resident_id) === String(r.id) &&
+                  String(p.rent_month || p.paid_on || '').slice(0, 7) === month
+              )
+              .reduce((n, p) => n + Number(p.amount || 0), 0),
+            balance = Math.max(0, Number(r.rent || 0) - paid);
+          return {...r, balance};
+        })
+        .filter((r) => r.balance > 0);
+    const electricity = (window.pgElectricityBills || [])
+      .filter(
+        (b) => String(b.billing_month || '').slice(0, 7) === month && b.status !== 'Paid' && b.status !== 'Waived'
+      )
+      .map((b) => ({
+        name: b.name,
+        room: b.flat,
+        balance: Math.max(0, Number(b.amount || 0) - Number(b.paid_amount || 0)),
+        type: 'Electricity'
+      }))
+      .filter((b) => b.balance > 0);
+    const rows = [
+      ...dueRows.map((r) => ({name: r.name, room: r.room, balance: r.balance, type: 'Rent'})),
+      ...electricity
+    ];
+    list.innerHTML = rows.length
+      ? rows
+          .slice(0, 8)
+          .map(
+            (r) =>
+              '<div class=\"due-item\"><div><b>' +
+              window.esc(r.name) +
+              '</b><small>' +
+              window.esc(r.type) +
+              ' · ' +
+              window.esc(r.room || '') +
+              '</small></div><strong>₹' +
+              Number(r.balance).toLocaleString('en-IN', {maximumFractionDigits: 2}) +
+              '</strong></div>'
+          )
+          .join('')
+      : '<div class=\"sub\" style=\"padding:12px 0\">No rent or electricity dues recorded.</div>';
+  };
+  const previousRefreshDashboard = window.refreshDashboard;
+  window.refreshDashboard = () => {
+    previousRefreshDashboard();
+    renderDashboardDues();
+  };
+  window.refreshDashboard();
+  subscribeToPropertyChanges();
+  window.editPropertySetup = () => showSetup(property, flats);
+  gate.style.display = 'none';
+  if (document.getElementById('propertySelect'))
+    document.getElementById('propertySelect').innerHTML = '<option>' + property.name + '</option>';
+  document.getElementById('propertyNameHeading').textContent = property.name;
 }
-document.getElementById('ownerSetupForm').addEventListener('submit',async e=>{
-  e.preventDefault();const err=document.getElementById('setupError');err.textContent='Saving property and rooms…';const {data:{user:authUser},error:authErr}=await supabase.auth.getUser();if(authErr||!authUser){err.textContent='Your sign-in session expired. Sign in again, then retry building setup.';return}currentUser=authUser
-  const d=new FormData(e.target), rows=[...document.querySelectorAll('.setup-flat')].map(row=>({id:row.dataset.id||null,flat_number:String(row.querySelector('[name=flat_number]').value).trim(),floor_name:String(row.querySelector('[name=floor_name]').value).trim(),room_count:Number(row.querySelector('[name=room_count]').value),wifi_ssid:row.querySelector('[name=wifi_ssid]').value.trim()||null,wifi_password:row.querySelector('[name=wifi_password]').value||null}))
-  if(!rows.length||rows.some(x=>!x.flat_number||!x.floor_name||x.room_count<1))return err.textContent='Add at least one room and complete its details.'
-  if(new Set(rows.map(x=>x.flat_number.toLowerCase())).size!==rows.length)return err.textContent='Flat / room names must be unique.'
-  let prop=property
-  if(prop){const {data,error}=await supabase.from('properties').update({name:d.get('propertyName'),address:d.get('propertyAddress')||null,setup_complete:true}).eq('id',prop.id).select().single();if(error){err.textContent=error.code==='23503'?'Supabase could not match this session to an Auth user. Sign out, sign back in using the same Supabase project, then retry.':error.message;return}prop=data}
-  else{const {data,error}=await supabase.from('properties').insert({name:d.get('propertyName'),address:d.get('propertyAddress')||null,setup_complete:true}).select().single();if(error){err.textContent=error.code==='23503'?'Supabase could not match this session to an Auth user. Sign out, sign back in using the same Supabase project, then retry.':error.message;return}prop=data}
-  const old=flats
-  for(const r of rows){const payload={property_id:prop.id,flat_number:r.flat_number,floor_name:r.floor_name,room_count:r.room_count,wifi_ssid:r.wifi_ssid,wifi_password:r.wifi_password,active:true};const q=r.id?await supabase.from('flats').update(payload).eq('id',r.id):await supabase.from('flats').insert(payload);if(q.error){err.textContent=q.error.message;return}}
-  const removed=old.filter(f=>!rows.some(r=>r.id===f.id));for(const f of removed){const {count,error}=await supabase.from('residents').select('id',{count:'exact',head:true}).eq('flat_id',f.id).eq('active',true);if(error){err.textContent=error.message;return}if(count){err.textContent=`${f.flat_number} has active residents. Move them before removing this flat.`;return}const q=await supabase.from('flats').update({active:false}).eq('id',f.id);if(q.error){err.textContent=q.error.message;return}}
-  location.hash='';location.reload()
-})
+document.getElementById('ownerSetupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const err = document.getElementById('setupError');
+  err.textContent = 'Saving property and rooms…';
+  const {
+    data: {user: authUser},
+    error: authErr
+  } = await supabase.auth.getUser();
+  if (authErr || !authUser) {
+    err.textContent = 'Your sign-in session expired. Sign in again, then retry building setup.';
+    return;
+  }
+  currentUser = authUser;
+  const d = new FormData(e.target),
+    rows = [...document.querySelectorAll('.setup-flat')].map((row) => ({
+      id: row.dataset.id || null,
+      flat_number: String(row.querySelector('[name=flat_number]').value).trim(),
+      floor_name: String(row.querySelector('[name=floor_name]').value).trim(),
+      room_count: Number(row.querySelector('[name=room_count]').value),
+      wifi_ssid: row.querySelector('[name=wifi_ssid]').value.trim() || null,
+      wifi_password: row.querySelector('[name=wifi_password]').value || null
+    }));
+  if (!rows.length || rows.some((x) => !x.flat_number || !x.floor_name || x.room_count < 1))
+    return (err.textContent = 'Add at least one room and complete its details.');
+  if (new Set(rows.map((x) => x.flat_number.toLowerCase())).size !== rows.length)
+    return (err.textContent = 'Flat / room names must be unique.');
+  let prop = property;
+  if (prop) {
+    const {data, error} = await supabase
+      .from('properties')
+      .update({name: d.get('propertyName'), address: d.get('propertyAddress') || null, setup_complete: true})
+      .eq('id', prop.id)
+      .select()
+      .single();
+    if (error) {
+      err.textContent =
+        error.code === '23503'
+          ? 'Supabase could not match this session to an Auth user. Sign out, sign back in using the same Supabase project, then retry.'
+          : error.message;
+      return;
+    }
+    prop = data;
+  } else {
+    const {data, error} = await supabase
+      .from('properties')
+      .insert({name: d.get('propertyName'), address: d.get('propertyAddress') || null, setup_complete: true})
+      .select()
+      .single();
+    if (error) {
+      err.textContent =
+        error.code === '23503'
+          ? 'Supabase could not match this session to an Auth user. Sign out, sign back in using the same Supabase project, then retry.'
+          : error.message;
+      return;
+    }
+    prop = data;
+  }
+  const old = flats;
+  for (const r of rows) {
+    const payload = {
+      property_id: prop.id,
+      flat_number: r.flat_number,
+      floor_name: r.floor_name,
+      room_count: r.room_count,
+      wifi_ssid: r.wifi_ssid,
+      wifi_password: r.wifi_password,
+      active: true
+    };
+    const q = r.id
+      ? await supabase.from('flats').update(payload).eq('id', r.id)
+      : await supabase.from('flats').insert(payload);
+    if (q.error) {
+      err.textContent = q.error.message;
+      return;
+    }
+  }
+  const removed = old.filter((f) => !rows.some((r) => r.id === f.id));
+  for (const f of removed) {
+    const {count, error} = await supabase
+      .from('residents')
+      .select('id', {count: 'exact', head: true})
+      .eq('flat_id', f.id)
+      .eq('active', true);
+    if (error) {
+      err.textContent = error.message;
+      return;
+    }
+    if (count) {
+      err.textContent = `${f.flat_number} has active residents. Move them before removing this flat.`;
+      return;
+    }
+    const q = await supabase.from('flats').update({active: false}).eq('id', f.id);
+    if (q.error) {
+      err.textContent = q.error.message;
+      return;
+    }
+  }
+  location.hash = '';
+  location.reload();
+});
 
 if (supabase) {
-  gate.style.display='none';busyText.textContent='Loading your PG…';busyOverlay.classList.add('show')
-  try{const {data:{session},error}=await supabase.auth.getSession();if(error)throw error;if(session)await initSession(session.user);else gate.style.display='grid'}catch(e){gate.style.display='grid';sayError(e)}finally{busyOverlay.classList.remove('show')}
-  let registerMode=false
-  const ownerNameField=document.getElementById('ownerNameField'), authSubmit=document.getElementById('authSubmit'), signupButton=document.getElementById('signupButton')
-  const propertyFields=document.getElementById('signupPropertyFields'), showPropertyButton=document.getElementById('showSignupPropertyFields'), signupFlats=document.getElementById('signupFlats')
-  function addSignupFlatRow(unit={}){const row=document.createElement('div');row.className='formgrid signup-flat';row.style.cssText='border:1px solid var(--line);padding:9px;border-radius:9px;align-items:end';row.innerHTML=`<div class="field"><label>Flat / room name *</label><input name="signup_flat_number" required placeholder="Flat 101" value="${String(unit.flat_number||'').replaceAll('"','&quot;')}"></div><div class="field"><label>Floor *</label><input name="signup_floor_name" required placeholder="Ground" value="${String(unit.floor_name||'').replaceAll('"','&quot;')}"></div><div class="field"><label>Rooms *</label><input name="signup_rooms" required type="number" min="1" value="${unit.room_count||1}"></div><button type="button" class="secondary remove-signup-flat">Remove</button>`;row.querySelector('button').onclick=()=>{if(signupFlats.children.length>1)row.remove()};signupFlats.append(row)}
-  showPropertyButton.onclick=()=>{propertyFields.style.display="block";showPropertyButton.style.display="none";signupFlats.querySelectorAll("input").forEach(i=>i.required=true);if(!signupFlats.children.length)addSignupFlatRow()};document.getElementById('addSignupFlat').onclick=()=>addSignupFlatRow()
-  signupButton.addEventListener('click',()=>{registerMode=!registerMode;ownerNameField.style.display=registerMode?'flex':'none';propertyFields.style.display='none';showPropertyButton.style.display=registerMode?'inline-flex':'none';form.elements.ownerName.required=registerMode;form.elements.signupPropertyName.required=false;authSubmit.textContent=registerMode?'Register':'Sign in';signupButton.textContent=registerMode?'Back to sign in':'Create account';errorBox.textContent='';document.querySelector('#authGate h2').textContent=registerMode?'Create owner account':'Owner sign in';document.querySelector('#authGate p').textContent=registerMode?'Add your name and account details. Building setup is optional and can be added later.':'Sign in to access your PG records securely.'})
-  form.addEventListener('submit', async e=>{e.preventDefault();const d=new FormData(form);errorBox.style.color='#b44';if(registerMode){if(!String(d.get('ownerName')||'').trim())return sayError('Enter your name to create the owner account.');const hasProperty=String(d.get('signupPropertyName')||'').trim().length>0;const signupUnits=hasProperty?[...signupFlats.querySelectorAll('.signup-flat')].map(r=>({flat_number:r.querySelector('[name=signup_flat_number]').value.trim(),floor_name:r.querySelector('[name=signup_floor_name]').value.trim(),room_count:Number(r.querySelector('[name=signup_rooms]').value)})):[];if(hasProperty&&(signupUnits.some(x=>!x.flat_number||!x.floor_name||x.room_count<1)||new Set(signupUnits.map(x=>x.flat_number.toLowerCase())).size!==signupUnits.length))return sayError('Complete unique flat details or leave building setup blank.');errorBox.textContent='Creating account…';try{const {data,error}=await supabase.auth.signUp({email:d.get('email'),password:d.get('password'),options:{data:{full_name:String(d.get('ownerName')).trim(),pending_property:{name:String(d.get('signupPropertyName')).trim(),address:String(d.get('signupPropertyAddress')||'').trim(),flats:signupUnits}},emailRedirectTo:window.location.origin}});if(error)sayError(error);else if(data.session){errorBox.style.color='var(--green)';errorBox.textContent='Account created. Signing you in…';location.reload()}else{errorBox.style.color='var(--green)';errorBox.textContent='Account created. Check your inbox for a confirmation link, then return here to sign in.'}}catch(err){sayError(err)}}else{errorBox.textContent='Signing in…';try{const {error}=await supabase.auth.signInWithPassword({email:d.get('email'),password:d.get('password')});if(error)sayError(error);else location.reload()}catch(err){sayError(err)}}})
-  document.getElementById('electricityForm').addEventListener('submit',async e=>{
-    const form=e.target;if(form.dataset.cloudReady==='1'){delete form.dataset.cloudReady;return}
-    e.preventDefault();e.stopImmediatePropagation()
-    const fd=new FormData(form),month=String(fd.get('month')||''),readingDate=String(fd.get('readingDate')||''),due=String(fd.get('due')||''),mainAmount=Number(fd.get('mainBillAmount')),commonTotal=Number(fd.get('commonMeterTotal')||0),selectedFlat=flats.find(f=>f.flat_number===fd.get('selectedFlat')),flatIndex=flats.findIndex(f=>f.id===selectedFlat?.id)
-    if(!selectedFlat)return alert('Choose a flat.')
-    const selected=[];let invalidResident=''
-    residents.forEach((r,i)=>{if(r.room===selectedFlat.flat_number&&fd.has('include_'+i)){const rawAmount=String(fd.get('amount_'+i)||''),amount=Number(rawAmount),side=String(fd.get('meter_side_'+i)||'');if(rawAmount.trim()===''||!Number.isFinite(amount)||amount<0||!['left','right'].includes(side))invalidResident=r.name;else selected.push({r,amount,side})}})
-    if(invalidResident)return alert('Assign '+invalidResident+' to Room 1 · Left meter or Room 2 · Right meter and check their calculated amount.')
-    if(!selected.length)return alert('Select at least one resident and assign them to Room 1 · Left meter or Room 2 · Right meter.')
-    const readingValues={previous_room1_reading:String(fd.get('prev_room1_'+flatIndex)||''),current_room1_reading:String(fd.get('current_room1_'+flatIndex)||''),previous_room2_reading:String(fd.get('prev_room2_'+flatIndex)||''),current_room2_reading:String(fd.get('current_room2_'+flatIndex)||'')}
-    if(Object.values(readingValues).some(v=>v.trim()===''))return alert('Enter previous and current readings for both the left and right meters.')
-    for(const room of [1,2])if(Number(readingValues['current_room'+room+'_reading'])<Number(readingValues['previous_room'+room+'_reading']))return alert('Current reading cannot be lower than the previous reading for Room '+room+'.')
-    const leftUnits=Number(readingValues.current_room1_reading)-Number(readingValues.previous_room1_reading),rightUnits=Number(readingValues.current_room2_reading)-Number(readingValues.previous_room2_reading),totalUnits=leftUnits+rightUnits
-    if(!(mainAmount>=0)||!Number.isFinite(mainAmount))return alert('Enter a valid main bill amount for this flat.')
-    if(!(commonTotal>=0)||!Number.isFinite(commonTotal))return alert('Enter a valid building common meter charge.')
-    if(mainAmount>0&&totalUnits<=0)return alert('Meter units are required to split the main bill.')
-    if(leftUnits>0&&!selected.some(x=>x.side==='left'))return alert('Room 1 · Left meter has units consumed. Assign at least one resident to it.')
-    if(rightUnits>0&&!selected.some(x=>x.side==='right'))return alert('Room 2 · Right meter has units consumed. Assign at least one resident to it.')
-    for(const item of selected){if(item.r.id&&item.r.meter_side!==item.side){const {error}=await supabase.from('residents').update({meter_side:item.side}).eq('id',item.r.id).eq('property_id',property.id);if(error)return alert('Could not save the meter-room mapping for '+item.r.name+': '+error.message);item.r.meter_side=item.side}}
-    const meterPayload={property_id:property.id,flat_id:selectedFlat.id,billing_month:month+'-01',reading_date:readingDate,main_bill_amount:mainAmount,common_meter_total:commonTotal,...Object.fromEntries(Object.entries(readingValues).map(([k,v])=>[k,Number(v)]))}
-    const {data:storedReadings,error:readingError}=await supabase.from('electricity_meter_readings').upsert(meterPayload,{onConflict:'property_id,flat_id,billing_month'}).select().single()
-    if(readingError)return alert('Meter readings and bill amounts were not saved: '+readingError.message)
-    window.pgElectricityReadings=(window.pgElectricityReadings||[]).filter(old=>!(String(old.flat_id)===String(storedReadings.flat_id)&&String(old.billing_month).slice(0,7)===month)).concat({...storedReadings,flat:selectedFlat.flat_number})
-    const payload=selected.map(x=>({property_id:property.id,flat_id:selectedFlat.id,resident_id:x.r.id,billing_month:month+'-01',amount:x.amount,due_date:due,status:'due'}))
-    const {data,error}=await supabase.from('electricity_bills').insert(payload).select('*, residents(full_name,phone), flats(flat_number)')
-    if(error)return alert('Readings and meter-room mappings were saved, but electricity bills were not: '+error.message)
-    window.cloudElectricBills=data.map(b=>({id:b.id,name:b.residents?.full_name||'',phone:b.residents?.phone||'',flat:b.flats?.flat_number||'',amount:Number(b.amount),paid_amount:0,billing_month:b.billing_month,due:b.due_date,month:new Date(b.billing_month+'T00:00:00').toLocaleDateString('en-IN',{month:'long',year:'numeric'}),status:'Due'}))
-    form.dataset.cloudReady='1';form.requestSubmit()
-  },true)
-  window.openElectricityPayment=id=>{const bill=(JSON.parse(localStorage.getItem('staywise_bills')||'[]')).find(b=>String(b.id)===String(id));if(!bill)return alert('Bill not found; refresh the page and try again.');const form=document.getElementById('electricityPaymentForm');form.elements.billId.value=bill.id;form.elements.amount.value=Math.max(0,Number(bill.amount)-Number(bill.paid_amount||0));const now=new Date();form.elements.date.value=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);document.getElementById('electricityPaymentSubtitle').textContent=bill.name+' · '+bill.month+' · Remaining ₹'+Math.max(0,Number(bill.amount)-Number(bill.paid_amount||0)).toLocaleString('en-IN');openModal('electricityPaymentModal')}
-  document.getElementById('electricityPaymentForm').addEventListener('submit',async e=>{e.preventDefault();const d=new FormData(e.target),billId=d.get('billId'),bill=(JSON.parse(localStorage.getItem('staywise_bills')||'[]')).find(b=>String(b.id)===String(billId));if(!bill)return alert('Bill not found.');const amount=Number(d.get('amount')),remaining=Number(bill.amount)-Number(bill.paid_amount||0);if(bill.status==='Paid'||bill.status==='Waived'||remaining<=0)return alert('This electricity bill has no outstanding balance.');if(!(amount>0))return alert('Enter a payment amount greater than zero.');if(amount>remaining)return alert('Payment cannot exceed the remaining balance of ₹'+remaining.toLocaleString('en-IN')+'.');const {error}=await supabase.from('electricity_bill_payments').insert({property_id:property.id,bill_id:billId,amount,paid_on:d.get('date'),method:d.get('method'),reference:d.get('note')||null});if(error)return alert('Payment was not recorded: '+error.message);const {data:rows,error:sumError}=await supabase.from('electricity_bill_payments').select('amount').eq('bill_id',billId);if(sumError)return alert('Payment saved, but status could not refresh: '+sumError.message);const paid=(rows||[]).reduce((n,x)=>n+Number(x.amount),0),status=paid>=Number(bill.amount)?'paid':'partial';const {error:updateError}=await supabase.from('electricity_bills').update({status,paid_at:status==='paid'?new Date().toISOString():null}).eq('id',billId).eq('property_id',property.id);if(updateError)return alert('Payment saved, but bill status update failed: '+updateError.message);closeModal('electricityPaymentModal');e.target.reset();toast(status==='paid'?'Electricity bill marked paid.':'Partial electricity payment recorded.');await initSession(currentUser)},true)
-  document.getElementById('rentForm').addEventListener('submit',async e=>{const form=e.target;if(form.dataset.cloudReady==='1'){delete form.dataset.cloudReady;return}if(form.dataset.rentSaving==='1')return;e.preventDefault();e.stopImmediatePropagation();const d=new FormData(form),resident=residents.find(r=>r.name===d.get('resident'));if(!resident?.id)return alert('Resident record not found in Supabase.');const paidOn=d.get('date')||new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10),paidAmount=Number(d.get('amount'));if(!(paidAmount>0))return alert('Enter an amount greater than zero.');const saveButton=form.querySelector('button.primary');form.dataset.rentSaving='1';if(saveButton)saveButton.disabled=true;const {error}=await supabase.rpc('record_rent_payment',{p_property_id:property.id,p_resident_id:resident.id,p_amount:paidAmount,p_paid_on:paidOn,p_method:d.get('method'),p_reference:d.get('note')||null});if(error){delete form.dataset.rentSaving;if(saveButton)saveButton.disabled=false;return alert('Payment was not recorded: '+error.message)}const rentMonth=paidOn.slice(0,7)+'-01';const {data:monthlyPayment,error:refreshError}=await supabase.from('rent_payments').select('resident_id,amount,paid_on,rent_month').eq('property_id',property.id).eq('resident_id',resident.id).eq('rent_month',rentMonth).maybeSingle();if(refreshError||!monthlyPayment){delete form.dataset.rentSaving;if(saveButton)saveButton.disabled=false;return alert('Payment was saved, but the monthly record could not refresh. Refresh the page before trying again.')}window.pgRentPayments=(window.pgRentPayments||[]).filter(p=>!(String(p.resident_id)===String(resident.id)&&String(p.rent_month||p.paid_on).slice(0,7)===rentMonth.slice(0,7))).concat(monthlyPayment);window.rentStatusAfterPayment=Number(monthlyPayment.amount)>=Number(resident.rent)?'Paid':'Part paid';delete form.dataset.rentSaving;if(saveButton)saveButton.disabled=false;form.dataset.cloudReady='1';form.requestSubmit()},true)
-  document.getElementById('residentForm').addEventListener('submit', async e=>{
-    const form=e.target;if(form.dataset.cloudReady==='1'){delete form.dataset.cloudReady;return}
-    e.preventDefault();e.stopImmediatePropagation();const d=new FormData(form),editId=form.dataset.editResidentId,flat=flats.find(x=>x.flat_number===d.get('room'))
-    if(!flat)return alert('Could not find the selected flat in Supabase.')
-    const payload={property_id:property.id,flat_id:flat.id,full_name:d.get('name'),phone:d.get('phone'),permanent_address:d.get('address')||null,emergency_contact:d.get('emergency')||null,monthly_rent:Number(d.get('rent')),deposit_amount:Number(d.get('deposit')||0),sharing_type:d.get('sharing_type'),move_in:d.get('movein')||null}
-    const result=editId?await supabase.from('residents').update(payload).eq('id',editId).eq('property_id',property.id).select().single():await supabase.from('residents').insert(payload).select().single()
-    if(result.error)return alert(result.error.message)
-    const resident=result.data
-    form.dataset.cloudReady='1';form.dataset.cloudResidentId=resident.id;form.requestSubmit()
-  },true)
-  window.removeResident=async id=>{if(!confirm('Remove this resident from the active resident list? Their rent and bill history will be retained.'))return;const moveOut=new Date().toISOString().slice(0,10),{error}=await supabase.from('residents').update({active:false,move_out:moveOut}).eq('id',id).eq('property_id',property.id);if(error){alert(error.message);return}const rs=JSON.parse(localStorage.getItem('staywise_residents')||'[]').filter(r=>r.id!==id);window.pgReportResidents=(window.pgReportResidents||[]).map(r=>String(r.id)===String(id)?{...r,active:false,moveout:moveOut}:r);window.applyCloudState(rs,JSON.parse(localStorage.getItem('staywise_bills')||'[]'));toast('Resident removed from the active list.')}
-  window.addEventListener('online',queueLiveRefresh);window.addEventListener('focus',queueLiveRefresh);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')queueLiveRefresh()})
+  gate.style.display = 'none';
+  busyText.textContent = 'Loading your PG…';
+  busyOverlay.classList.add('show');
+  try {
+    const {
+      data: {session},
+      error
+    } = await supabase.auth.getSession();
+    if (error) throw error;
+    if (session) await initSession(session.user);
+    else gate.style.display = 'grid';
+  } catch (e) {
+    gate.style.display = 'grid';
+    sayError(e);
+  } finally {
+    busyOverlay.classList.remove('show');
+  }
+  let registerMode = false;
+  const ownerNameField = document.getElementById('ownerNameField'),
+    authSubmit = document.getElementById('authSubmit'),
+    signupButton = document.getElementById('signupButton');
+  const propertyFields = document.getElementById('signupPropertyFields'),
+    showPropertyButton = document.getElementById('showSignupPropertyFields'),
+    signupFlats = document.getElementById('signupFlats');
+  function addSignupFlatRow(unit = {}) {
+    const row = document.createElement('div');
+    row.className = 'formgrid signup-flat';
+    row.style.cssText = 'border:1px solid var(--line);padding:9px;border-radius:9px;align-items:end';
+    row.innerHTML = `<div class="field"><label>Flat / room name *</label><input name="signup_flat_number" required placeholder="Flat 101" value="${String(unit.flat_number || '').replaceAll('"', '&quot;')}"></div><div class="field"><label>Floor *</label><input name="signup_floor_name" required placeholder="Ground" value="${String(unit.floor_name || '').replaceAll('"', '&quot;')}"></div><div class="field"><label>Rooms *</label><input name="signup_rooms" required type="number" min="1" value="${unit.room_count || 1}"></div><button type="button" class="secondary remove-signup-flat">Remove</button>`;
+    row.querySelector('button').onclick = () => {
+      if (signupFlats.children.length > 1) row.remove();
+    };
+    signupFlats.append(row);
+  }
+  showPropertyButton.onclick = () => {
+    propertyFields.style.display = 'block';
+    showPropertyButton.style.display = 'none';
+    signupFlats.querySelectorAll('input').forEach((i) => (i.required = true));
+    if (!signupFlats.children.length) addSignupFlatRow();
+  };
+  document.getElementById('addSignupFlat').onclick = () => addSignupFlatRow();
+  signupButton.addEventListener('click', () => {
+    registerMode = !registerMode;
+    ownerNameField.style.display = registerMode ? 'flex' : 'none';
+    propertyFields.style.display = 'none';
+    showPropertyButton.style.display = registerMode ? 'inline-flex' : 'none';
+    form.elements.ownerName.required = registerMode;
+    form.elements.signupPropertyName.required = false;
+    authSubmit.textContent = registerMode ? 'Register' : 'Sign in';
+    signupButton.textContent = registerMode ? 'Back to sign in' : 'Create account';
+    errorBox.textContent = '';
+    document.querySelector('#authGate h2').textContent = registerMode ? 'Create owner account' : 'Owner sign in';
+    document.querySelector('#authGate p').textContent = registerMode
+      ? 'Add your name and account details. Building setup is optional and can be added later.'
+      : 'Sign in to access your PG records securely.';
+  });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    errorBox.style.color = '#b44';
+    if (registerMode) {
+      if (!String(d.get('ownerName') || '').trim()) return sayError('Enter your name to create the owner account.');
+      const hasProperty = String(d.get('signupPropertyName') || '').trim().length > 0;
+      const signupUnits = hasProperty
+        ? [...signupFlats.querySelectorAll('.signup-flat')].map((r) => ({
+            flat_number: r.querySelector('[name=signup_flat_number]').value.trim(),
+            floor_name: r.querySelector('[name=signup_floor_name]').value.trim(),
+            room_count: Number(r.querySelector('[name=signup_rooms]').value)
+          }))
+        : [];
+      if (
+        hasProperty &&
+        (signupUnits.some((x) => !x.flat_number || !x.floor_name || x.room_count < 1) ||
+          new Set(signupUnits.map((x) => x.flat_number.toLowerCase())).size !== signupUnits.length)
+      )
+        return sayError('Complete unique flat details or leave building setup blank.');
+      errorBox.textContent = 'Creating account…';
+      try {
+        const {data, error} = await supabase.auth.signUp({
+          email: d.get('email'),
+          password: d.get('password'),
+          options: {
+            data: {
+              full_name: String(d.get('ownerName')).trim(),
+              pending_property: {
+                name: String(d.get('signupPropertyName')).trim(),
+                address: String(d.get('signupPropertyAddress') || '').trim(),
+                flats: signupUnits
+              }
+            },
+            emailRedirectTo: window.location.origin
+          }
+        });
+        if (error) sayError(error);
+        else if (data.session) {
+          errorBox.style.color = 'var(--green)';
+          errorBox.textContent = 'Account created. Signing you in…';
+          location.reload();
+        } else {
+          errorBox.style.color = 'var(--green)';
+          errorBox.textContent =
+            'Account created. Check your inbox for a confirmation link, then return here to sign in.';
+        }
+      } catch (err) {
+        sayError(err);
+      }
+    } else {
+      errorBox.textContent = 'Signing in…';
+      try {
+        const {error} = await supabase.auth.signInWithPassword({email: d.get('email'), password: d.get('password')});
+        if (error) sayError(error);
+        else location.reload();
+      } catch (err) {
+        sayError(err);
+      }
+    }
+  });
+  document.getElementById('electricityForm').addEventListener(
+    'submit',
+    async (e) => {
+      const form = e.target;
+      if (form.dataset.cloudReady === '1') {
+        delete form.dataset.cloudReady;
+        return;
+      }
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const fd = new FormData(form),
+        month = String(fd.get('month') || ''),
+        readingDate = String(fd.get('readingDate') || ''),
+        due = String(fd.get('due') || ''),
+        mainAmount = Number(fd.get('mainBillAmount')),
+        commonTotal = Number(fd.get('commonMeterTotal') || 0),
+        selectedFlat = flats.find((f) => f.flat_number === fd.get('selectedFlat')),
+        flatIndex = flats.findIndex((f) => f.id === selectedFlat?.id);
+      if (!selectedFlat) return alert('Choose a flat.');
+      const selected = [];
+      let invalidResident = '';
+      residents.forEach((r, i) => {
+        if (r.room === selectedFlat.flat_number && fd.has('include_' + i)) {
+          const rawAmount = String(fd.get('amount_' + i) || ''),
+            amount = Number(rawAmount),
+            side = String(fd.get('meter_side_' + i) || '');
+          if (rawAmount.trim() === '' || !Number.isFinite(amount) || amount < 0 || !['left', 'right'].includes(side))
+            invalidResident = r.name;
+          else selected.push({r, amount, side});
+        }
+      });
+      if (invalidResident)
+        return alert(
+          'Assign ' +
+            invalidResident +
+            ' to Room 1 · Left meter or Room 2 · Right meter and check their calculated amount.'
+        );
+      if (!selected.length)
+        return alert('Select at least one resident and assign them to Room 1 · Left meter or Room 2 · Right meter.');
+      const readingValues = {
+        previous_room1_reading: String(fd.get('prev_room1_' + flatIndex) || ''),
+        current_room1_reading: String(fd.get('current_room1_' + flatIndex) || ''),
+        previous_room2_reading: String(fd.get('prev_room2_' + flatIndex) || ''),
+        current_room2_reading: String(fd.get('current_room2_' + flatIndex) || '')
+      };
+      if (Object.values(readingValues).some((v) => v.trim() === ''))
+        return alert('Enter previous and current readings for both the left and right meters.');
+      for (const room of [1, 2])
+        if (
+          Number(readingValues['current_room' + room + '_reading']) <
+          Number(readingValues['previous_room' + room + '_reading'])
+        )
+          return alert('Current reading cannot be lower than the previous reading for Room ' + room + '.');
+      const leftUnits = Number(readingValues.current_room1_reading) - Number(readingValues.previous_room1_reading),
+        rightUnits = Number(readingValues.current_room2_reading) - Number(readingValues.previous_room2_reading),
+        totalUnits = leftUnits + rightUnits;
+      if (!(mainAmount >= 0) || !Number.isFinite(mainAmount))
+        return alert('Enter a valid main bill amount for this flat.');
+      if (!(commonTotal >= 0) || !Number.isFinite(commonTotal))
+        return alert('Enter a valid building common meter charge.');
+      if (mainAmount > 0 && totalUnits <= 0) return alert('Meter units are required to split the main bill.');
+      if (leftUnits > 0 && !selected.some((x) => x.side === 'left'))
+        return alert('Room 1 · Left meter has units consumed. Assign at least one resident to it.');
+      if (rightUnits > 0 && !selected.some((x) => x.side === 'right'))
+        return alert('Room 2 · Right meter has units consumed. Assign at least one resident to it.');
+      for (const item of selected) {
+        if (item.r.id && item.r.meter_side !== item.side) {
+          const {error} = await supabase
+            .from('residents')
+            .update({meter_side: item.side})
+            .eq('id', item.r.id)
+            .eq('property_id', property.id);
+          if (error) return alert('Could not save the meter-room mapping for ' + item.r.name + ': ' + error.message);
+          item.r.meter_side = item.side;
+        }
+      }
+      const meterPayload = {
+        property_id: property.id,
+        flat_id: selectedFlat.id,
+        billing_month: month + '-01',
+        reading_date: readingDate,
+        main_bill_amount: mainAmount,
+        common_meter_total: commonTotal,
+        ...Object.fromEntries(Object.entries(readingValues).map(([k, v]) => [k, Number(v)]))
+      };
+      const {data: storedReadings, error: readingError} = await supabase
+        .from('electricity_meter_readings')
+        .upsert(meterPayload, {onConflict: 'property_id,flat_id,billing_month'})
+        .select()
+        .single();
+      if (readingError) return alert('Meter readings and bill amounts were not saved: ' + readingError.message);
+      window.pgElectricityReadings = (window.pgElectricityReadings || [])
+        .filter(
+          (old) =>
+            !(String(old.flat_id) === String(storedReadings.flat_id) && String(old.billing_month).slice(0, 7) === month)
+        )
+        .concat({...storedReadings, flat: selectedFlat.flat_number});
+      const payload = selected.map((x) => ({
+        property_id: property.id,
+        flat_id: selectedFlat.id,
+        resident_id: x.r.id,
+        billing_month: month + '-01',
+        amount: x.amount,
+        due_date: due,
+        status: 'due'
+      }));
+      const {data, error} = await supabase
+        .from('electricity_bills')
+        .insert(payload)
+        .select('*, residents(full_name,phone), flats(flat_number)');
+      if (error)
+        return alert('Readings and meter-room mappings were saved, but electricity bills were not: ' + error.message);
+      window.cloudElectricBills = data.map((b) => ({
+        id: b.id,
+        name: b.residents?.full_name || '',
+        phone: b.residents?.phone || '',
+        flat: b.flats?.flat_number || '',
+        amount: Number(b.amount),
+        paid_amount: 0,
+        billing_month: b.billing_month,
+        due: b.due_date,
+        month: new Date(b.billing_month + 'T00:00:00').toLocaleDateString('en-IN', {month: 'long', year: 'numeric'}),
+        status: 'Due'
+      }));
+      form.dataset.cloudReady = '1';
+      form.requestSubmit();
+    },
+    true
+  );
+  window.openElectricityPayment = (id) => {
+    const bill = JSON.parse(localStorage.getItem('staywise_bills') || '[]').find((b) => String(b.id) === String(id));
+    if (!bill) return alert('Bill not found; refresh the page and try again.');
+    const form = document.getElementById('electricityPaymentForm');
+    form.elements.billId.value = bill.id;
+    form.elements.amount.value = Math.max(0, Number(bill.amount) - Number(bill.paid_amount || 0));
+    const now = new Date();
+    form.elements.date.value = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    document.getElementById('electricityPaymentSubtitle').textContent =
+      bill.name +
+      ' · ' +
+      bill.month +
+      ' · Remaining ₹' +
+      Math.max(0, Number(bill.amount) - Number(bill.paid_amount || 0)).toLocaleString('en-IN');
+    openModal('electricityPaymentModal');
+  };
+  document.getElementById('electricityPaymentForm').addEventListener(
+    'submit',
+    async (e) => {
+      e.preventDefault();
+      const d = new FormData(e.target),
+        billId = d.get('billId'),
+        bill = JSON.parse(localStorage.getItem('staywise_bills') || '[]').find((b) => String(b.id) === String(billId));
+      if (!bill) return alert('Bill not found.');
+      const amount = Number(d.get('amount')),
+        remaining = Number(bill.amount) - Number(bill.paid_amount || 0);
+      if (bill.status === 'Paid' || bill.status === 'Waived' || remaining <= 0)
+        return alert('This electricity bill has no outstanding balance.');
+      if (!(amount > 0)) return alert('Enter a payment amount greater than zero.');
+      if (amount > remaining)
+        return alert('Payment cannot exceed the remaining balance of ₹' + remaining.toLocaleString('en-IN') + '.');
+      const {error} = await supabase
+        .from('electricity_bill_payments')
+        .insert({
+          property_id: property.id,
+          bill_id: billId,
+          amount,
+          paid_on: d.get('date'),
+          method: d.get('method'),
+          reference: d.get('note') || null
+        });
+      if (error) return alert('Payment was not recorded: ' + error.message);
+      const {data: rows, error: sumError} = await supabase
+        .from('electricity_bill_payments')
+        .select('amount')
+        .eq('bill_id', billId);
+      if (sumError) return alert('Payment saved, but status could not refresh: ' + sumError.message);
+      const paid = (rows || []).reduce((n, x) => n + Number(x.amount), 0),
+        status = paid >= Number(bill.amount) ? 'paid' : 'partial';
+      const {error: updateError} = await supabase
+        .from('electricity_bills')
+        .update({status, paid_at: status === 'paid' ? new Date().toISOString() : null})
+        .eq('id', billId)
+        .eq('property_id', property.id);
+      if (updateError) return alert('Payment saved, but bill status update failed: ' + updateError.message);
+      closeModal('electricityPaymentModal');
+      e.target.reset();
+      toast(status === 'paid' ? 'Electricity bill marked paid.' : 'Partial electricity payment recorded.');
+      await initSession(currentUser);
+    },
+    true
+  );
+  document.getElementById('rentForm').addEventListener(
+    'submit',
+    async (e) => {
+      const form = e.target;
+      if (form.dataset.cloudReady === '1') {
+        delete form.dataset.cloudReady;
+        return;
+      }
+      if (form.dataset.rentSaving === '1') return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const d = new FormData(form),
+        resident = residents.find((r) => r.name === d.get('resident'));
+      if (!resident?.id) return alert('Resident record not found in Supabase.');
+      const paidOn =
+          d.get('date') || new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10),
+        paidAmount = Number(d.get('amount'));
+      if (!(paidAmount > 0)) return alert('Enter an amount greater than zero.');
+      const saveButton = form.querySelector('button.primary');
+      form.dataset.rentSaving = '1';
+      if (saveButton) saveButton.disabled = true;
+      const {error} = await supabase.rpc('record_rent_payment', {
+        p_property_id: property.id,
+        p_resident_id: resident.id,
+        p_amount: paidAmount,
+        p_paid_on: paidOn,
+        p_method: d.get('method'),
+        p_reference: d.get('note') || null
+      });
+      if (error) {
+        delete form.dataset.rentSaving;
+        if (saveButton) saveButton.disabled = false;
+        return alert('Payment was not recorded: ' + error.message);
+      }
+      const rentMonth = paidOn.slice(0, 7) + '-01';
+      const {data: monthlyPayment, error: refreshError} = await supabase
+        .from('rent_payments')
+        .select('resident_id,amount,paid_on,rent_month')
+        .eq('property_id', property.id)
+        .eq('resident_id', resident.id)
+        .eq('rent_month', rentMonth)
+        .maybeSingle();
+      if (refreshError || !monthlyPayment) {
+        delete form.dataset.rentSaving;
+        if (saveButton) saveButton.disabled = false;
+        return alert(
+          'Payment was saved, but the monthly record could not refresh. Refresh the page before trying again.'
+        );
+      }
+      window.pgRentPayments = (window.pgRentPayments || [])
+        .filter(
+          (p) =>
+            !(
+              String(p.resident_id) === String(resident.id) &&
+              String(p.rent_month || p.paid_on).slice(0, 7) === rentMonth.slice(0, 7)
+            )
+        )
+        .concat(monthlyPayment);
+      window.rentStatusAfterPayment = Number(monthlyPayment.amount) >= Number(resident.rent) ? 'Paid' : 'Part paid';
+      delete form.dataset.rentSaving;
+      if (saveButton) saveButton.disabled = false;
+      form.dataset.cloudReady = '1';
+      form.requestSubmit();
+    },
+    true
+  );
+  document.getElementById('residentForm').addEventListener(
+    'submit',
+    async (e) => {
+      const form = e.target;
+      if (form.dataset.cloudReady === '1') {
+        delete form.dataset.cloudReady;
+        return;
+      }
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const d = new FormData(form),
+        editId = form.dataset.editResidentId,
+        flat = flats.find((x) => x.flat_number === d.get('room'));
+      if (!flat) return alert('Could not find the selected flat in Supabase.');
+      const payload = {
+        property_id: property.id,
+        flat_id: flat.id,
+        full_name: d.get('name'),
+        phone: d.get('phone'),
+        permanent_address: d.get('address') || null,
+        emergency_contact: d.get('emergency') || null,
+        monthly_rent: Number(d.get('rent')),
+        deposit_amount: Number(d.get('deposit') || 0),
+        sharing_type: d.get('sharing_type'),
+        move_in: d.get('movein') || null
+      };
+      const result = editId
+        ? await supabase
+            .from('residents')
+            .update(payload)
+            .eq('id', editId)
+            .eq('property_id', property.id)
+            .select()
+            .single()
+        : await supabase.from('residents').insert(payload).select().single();
+      if (result.error) return alert(result.error.message);
+      const resident = result.data;
+      form.dataset.cloudReady = '1';
+      form.dataset.cloudResidentId = resident.id;
+      form.requestSubmit();
+    },
+    true
+  );
+  window.removeResident = async (id) => {
+    if (!confirm('Remove this resident from the active resident list? Their rent and bill history will be retained.'))
+      return;
+    const moveOut = new Date().toISOString().slice(0, 10),
+      {error} = await supabase
+        .from('residents')
+        .update({active: false, move_out: moveOut})
+        .eq('id', id)
+        .eq('property_id', property.id);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    const rs = JSON.parse(localStorage.getItem('staywise_residents') || '[]').filter((r) => r.id !== id);
+    window.pgReportResidents = (window.pgReportResidents || []).map((r) =>
+      String(r.id) === String(id) ? {...r, active: false, moveout: moveOut} : r
+    );
+    window.applyCloudState(rs, JSON.parse(localStorage.getItem('staywise_bills') || '[]'));
+    toast('Resident removed from the active list.');
+  };
+  window.addEventListener('online', queueLiveRefresh);
+  window.addEventListener('focus', queueLiveRefresh);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') queueLiveRefresh();
+  });
 } else {
-  gate.style.display='grid'
-  document.getElementById('signupButton').addEventListener('click',()=>{errorBox.style.color='#b44';errorBox.textContent='Account creation is unavailable because Supabase is not configured in this app deployment.'})
-  form.addEventListener('submit',e=>{e.preventDefault();errorBox.style.color='#b44';errorBox.textContent='Sign-in is unavailable because Supabase is not configured in this app deployment.'})
+  gate.style.display = 'grid';
+  document.getElementById('signupButton').addEventListener('click', () => {
+    errorBox.style.color = '#b44';
+    errorBox.textContent = 'Account creation is unavailable because Supabase is not configured in this app deployment.';
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    errorBox.style.color = '#b44';
+    errorBox.textContent = 'Sign-in is unavailable because Supabase is not configured in this app deployment.';
+  });
 }

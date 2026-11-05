@@ -54,12 +54,9 @@ Resident entry captures single/double sharing and optional deposit amount. Resid
 
 Electricity bills and their payments are stored in Supabase. The owner can record full or partial payments against each bill; status updates to Paid once payments cover the amount. Apply `supabase/migrations/202611020008_electricity_payments.sql` before using the payment action.
 
-
 The owner app refreshes resident, rent, flat, and electricity records through Supabase Realtime. Apply `supabase/migrations/202611020009_enable_realtime.sql` to add these tables to the `supabase_realtime` publication.
 
-
 Rent payments are stored as one monthly record per resident. Apply `supabase/migrations/202611020010_single_monthly_rent_record.sql` before deploying this version. It removes exact duplicate submissions, combines distinct partial payments for the same month, keeps the latest payment date, and adds an atomic monthly payment upsert.
-
 
 Electricity meter readings are stored per flat and bill cycle. Apply `supabase/migrations/202611020011_electricity_meter_history.sql` to create the protected history table and enable realtime updates. The form carries forward each flat’s latest saved current readings as the next cycle’s previous readings; the Reports page shows both meters’ previous/current readings and units consumed.
 

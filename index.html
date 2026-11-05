@@ -1,102 +1,2657 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><meta name="theme-color" content="#153b30"><link rel="manifest" href="/manifest.webmanifest"><title>Staywise · PG Manager</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
-:root{--ink:#172a25;--muted:#75847e;--line:#e8eeea;--bg:#f6f8f6;--green:#17684f;--lime:#d9f26a;--mint:#eaf4ee;--orange:#f2a75b;--red:#d7615c;--white:#fff;--shadow:0 12px 35px rgba(31,57,47,.07)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif}button,input,select{font:inherit}button{cursor:pointer}.shell{display:flex;min-height:100vh}.sidebar{width:248px;background:#153b30;color:#fff;padding:25px 16px;display:flex;flex-direction:column;flex-shrink:0}.brand{display:flex;align-items:center;gap:11px;padding:0 12px 30px}.brandmark{height:38px;width:38px;background:var(--lime);border-radius:13px;display:grid;place-items:center;color:#153b30;font-size:21px;font-weight:800}.brand strong{font:800 18px Manrope}.brand small{display:block;color:#a5c4b6;font-size:11px;margin-top:1px}.navlabel{color:#85a799;text-transform:uppercase;letter-spacing:1.4px;font-size:10px;font-weight:700;padding:12px 12px 9px}.nav{display:grid;gap:5px}.nav button{border:0;color:#c7d9d1;background:transparent;text-align:left;padding:12px 13px;border-radius:11px;display:flex;align-items:center;gap:13px;font-size:13px}.nav button .ico{width:18px;text-align:center;font-size:16px}.nav button.active,.nav button:hover{background:#275448;color:white}.nav button.active{box-shadow:inset 3px 0 var(--lime)}.sidebottom{margin-top:auto}.help{border:1px solid #416458;background:#1c4539;border-radius:14px;padding:15px;margin:15px 4px}.help b{font:700 12px Manrope}.help p{color:#a9c1b7;font-size:11px;line-height:1.5;margin:7px 0 12px}.help button{border:0;background:var(--lime);color:#173e32;border-radius:8px;padding:8px 10px;font-weight:700;font-size:11px}.profile{display:flex;gap:10px;align-items:center;padding:18px 8px 4px;border-top:1px solid #416458}.avatar{width:34px;height:34px;border-radius:50%;background:#f5c99c;color:#59402d;display:grid;place-items:center;font-weight:700;font-size:12px}.profile b{font-size:12px}.profile small{display:block;font-size:10px;color:#9db8ac;margin-top:2px}.main{flex:1;min-width:0}.topbar{height:75px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 38px}.crumb{font-size:12px;color:var(--muted)}.crumb strong{color:var(--ink);font-weight:600}.topright{display:flex;gap:15px;align-items:center}.property-select{border:1px solid var(--line);border-radius:9px;padding:9px 12px;color:var(--ink);background:#fff;font-size:12px}.bell{border:0;background:#f7f9f7;border-radius:10px;padding:9px 11px;font-size:16px;position:relative}.bell:after{content:'';position:absolute;width:6px;height:6px;background:#ed846e;border:2px solid white;border-radius:50%;right:6px;top:6px}.content{max-width:1440px;margin:auto;padding:32px 38px 55px}.welcome{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:25px}.eyebrow{color:var(--green);font-size:11px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase}.welcome h1{font:800 27px Manrope;margin:7px 0 4px;letter-spacing:-.7px}.welcome p{font-size:13px;color:var(--muted);margin:0}.primary{border:0;border-radius:10px;background:var(--green);color:white;padding:12px 16px;font-size:12px;font-weight:700;display:inline-flex;gap:8px;align-items:center}.primary:hover{background:#0f503b}.secondary{border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);padding:10px 13px;font-size:11px;font-weight:600}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:19px}.stat{background:white;border:1px solid var(--line);border-radius:15px;padding:18px 19px;box-shadow:0 2px 8px #143b3007}.stathead{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}.staticon{width:29px;height:29px;border-radius:9px;background:var(--mint);display:grid;place-items:center;font-size:14px}.stat strong{font:800 25px Manrope;display:block;margin:13px 0 5px;letter-spacing:-.6px}.statfoot{font-size:10px;color:var(--muted)}.good{color:var(--green);font-weight:700}.warn{color:#cf8a3c;font-weight:700}.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.9fr);gap:17px}.card{background:white;border:1px solid var(--line);border-radius:15px;box-shadow:0 2px 8px #143b3005}.cardhead{padding:19px 21px 14px;display:flex;align-items:center;justify-content:space-between}.cardhead h2{font:700 14px Manrope;margin:0}.sub{font-size:10px;color:var(--muted);margin-top:5px}.link{color:var(--green);border:0;background:none;font-size:11px;font-weight:700}.occupancy{padding:2px 21px 20px}.floor{display:flex;align-items:center;gap:12px;margin-top:16px}.floorlabel{font-size:10px;color:var(--muted);width:57px}.roomrow{display:flex;gap:9px;flex-wrap:wrap}.room{border:1px solid var(--line);border-radius:9px;min-width:78px;padding:8px 10px;text-align:center;background:#fbfcfb}.room b{font-size:11px;display:block}.room small{font-size:9px;color:var(--muted);display:block;margin-top:3px}.room.full{background:#eef6ef;border-color:#dfede2}.room.partial{background:#fff6e9;border-color:#f7ead3}.room.empty{background:#f7f8f7}.legend{display:flex;gap:15px;font-size:9px;color:var(--muted)}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}.activity-list{padding:0 21px 8px}.activity{display:flex;gap:11px;padding:13px 0;border-top:1px solid #f0f3f1;align-items:flex-start}.activity:first-child{border-top:0}.acticon{width:30px;height:30px;background:#f4f7f4;border-radius:9px;display:grid;place-items:center;font-size:13px;flex-shrink:0}.actbody{flex:1;font-size:11px;line-height:1.4}.actbody b{font-weight:700}.actbody small{display:block;color:var(--muted);font-size:9px;margin-top:4px}.amount{font-size:10px;font-weight:700}.bottomgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:17px;margin-top:17px}.due-list{padding:0 20px 12px}.dueitem{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid #f0f3f1}.duetext{flex:1}.duetext b{display:block;font-size:11px}.duetext small{display:block;font-size:9px;color:var(--muted);margin-top:3px}.pill{border-radius:99px;padding:5px 8px;font-size:9px;font-weight:700}.pill.late{color:#b42318;background:#fee4e2}.pill.soon{color:#8a5a00;background:#fff3bf}.rent-reminder-placeholder{display:inline-block;min-width:120px;text-align:center;color:var(--muted)}.actions{padding:0 19px 18px;display:grid;grid-template-columns:1fr 1fr;gap:9px}.action{border:1px solid var(--line);background:#fff;border-radius:11px;padding:13px;text-align:left}.action:hover{border-color:#bcd5c7;background:#fbfdfb}.action span{font-size:16px}.action b{display:block;font-size:11px;margin-top:8px}.action small{font-size:9px;color:var(--muted)}.overlay{position:fixed;inset:0;background:#10251fc9;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.overlay.show{display:flex}.modal{background:white;width:min(540px,100%);max-height:90vh;overflow:auto;border-radius:18px;padding:24px;box-shadow:0 25px 80px #0003}.modalhead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}.modalhead h2{font:800 19px Manrope;margin:0}.modalhead p{font-size:11px;color:var(--muted);margin:6px 0}.close{border:0;background:#f4f7f4;border-radius:8px;width:31px;height:31px;font-size:17px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:700;color:#52655d}.field input,.field select{border:1px solid #dfe8e2;border-radius:9px;padding:10px 11px;outline:none;font-size:12px;color:var(--ink);background:#fff}.field input:focus,.field select:focus{border-color:#73a88d;box-shadow:0 0 0 3px #e8f3ec}.hint{font-size:9px;color:var(--muted);line-height:1.4}.formactions{display:flex;justify-content:flex-end;gap:8px;margin-top:19px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th{text-align:left;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-size:9px;padding:10px 20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.table td{font-size:11px;padding:13px 20px;border-bottom:1px solid #f0f3f1;white-space:nowrap}.residentcell{display:flex;align-items:center;gap:9px}.miniava{width:27px;height:27px;border-radius:50%;background:#e4f1e9;display:grid;place-items:center;color:var(--green);font-size:9px;font-weight:700}.tiny{font-size:9px;color:var(--muted)}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#173b30;color:white;border-radius:11px;padding:12px 17px;font-size:11px;box-shadow:var(--shadow);opacity:0;transition:.2s;z-index:20}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.pagehead{display:flex;justify-content:space-between;align-items:center;margin:0 0 15px}.pagehead h2{font:700 15px Manrope;margin:0}.search{border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:11px;width:210px}.hidden{display:none!important}.mobilemenu{display:none}
-@media(max-width:1000px){.sidebar{width:205px}.content{padding:27px 23px}.topbar{padding:0 23px}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:730px){.sidebar{width:63px;padding:18px 8px}.brand{padding:0 5px 25px}.brandtext,.navlabel,.nav button .label,.help,.profile>div:not(.avatar){display:none}.nav button{justify-content:center;padding:12px 0}.nav button .ico{font-size:17px}.profile{justify-content:center;padding:15px 0 3px}.topbar{height:62px;padding:0 14px}.property-select{max-width:145px}.content{padding:23px 14px}.welcome{align-items:flex-start;gap:12px;flex-direction:column}.welcome h1{font-size:23px}.stats{gap:9px}.stat{padding:14px}.stat strong{font-size:22px}.grid,.bottomgrid{grid-template-columns:1fr}.legend{gap:8px}.floorlabel{width:45px}.room{min-width:67px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.topright{gap:8px}.crumb{font-size:10px}}@media(max-width:390px){.stats{grid-template-columns:1fr 1fr}.statfoot{font-size:9px}.room{min-width:58px;padding:7px}.roomrow{gap:5px}}
-.busy-overlay{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:rgba(16,37,31,.2);backdrop-filter:blur(2px)}.busy-overlay.show{display:grid}.busy-card{display:flex;align-items:center;gap:12px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:0 18px 55px #10251f2b;font-size:13px;font-weight:700;color:var(--ink)}.busy-spinner{height:20px;width:20px;border:2px solid #dce9e0;border-top-color:var(--green);border-radius:50%;animation:busy-spin .7s linear infinite}@keyframes busy-spin{to{transform:rotate(360deg)}}.room-select{font:inherit;color:inherit;cursor:pointer}.room-select:hover,.room-select:focus-visible{outline:2px solid #83b99a;outline-offset:2px}.room.overfull{background:#fff0ef;border-color:#f0c9c5;color:#a8463e}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#153b30" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Staywise · PG Manager</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+      :root {
+        --ink: #172a25;
+        --muted: #75847e;
+        --line: #e8eeea;
+        --bg: #f6f8f6;
+        --green: #17684f;
+        --lime: #d9f26a;
+        --mint: #eaf4ee;
+        --orange: #f2a75b;
+        --red: #d7615c;
+        --white: #fff;
+        --shadow: 0 12px 35px rgba(31, 57, 47, 0.07);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'DM Sans', sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .shell {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 248px;
+        background: #153b30;
+        color: #fff;
+        padding: 25px 16px;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 0 12px 30px;
+      }
+      .brandmark {
+        height: 38px;
+        width: 38px;
+        background: var(--lime);
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        color: #153b30;
+        font-size: 21px;
+        font-weight: 800;
+      }
+      .brand strong {
+        font: 800 18px Manrope;
+      }
+      .brand small {
+        display: block;
+        color: #a5c4b6;
+        font-size: 11px;
+        margin-top: 1px;
+      }
+      .navlabel {
+        color: #85a799;
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 12px 12px 9px;
+      }
+      .nav {
+        display: grid;
+        gap: 5px;
+      }
+      .nav button {
+        border: 0;
+        color: #c7d9d1;
+        background: transparent;
+        text-align: left;
+        padding: 12px 13px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        font-size: 13px;
+      }
+      .nav button .ico {
+        width: 18px;
+        text-align: center;
+        font-size: 16px;
+      }
+      .nav button.active,
+      .nav button:hover {
+        background: #275448;
+        color: white;
+      }
+      .nav button.active {
+        box-shadow: inset 3px 0 var(--lime);
+      }
+      .sidebottom {
+        margin-top: auto;
+      }
+      .help {
+        border: 1px solid #416458;
+        background: #1c4539;
+        border-radius: 14px;
+        padding: 15px;
+        margin: 15px 4px;
+      }
+      .help b {
+        font: 700 12px Manrope;
+      }
+      .help p {
+        color: #a9c1b7;
+        font-size: 11px;
+        line-height: 1.5;
+        margin: 7px 0 12px;
+      }
+      .help button {
+        border: 0;
+        background: var(--lime);
+        color: #173e32;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-weight: 700;
+        font-size: 11px;
+      }
+      .profile {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 18px 8px 4px;
+        border-top: 1px solid #416458;
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #f5c99c;
+        color: #59402d;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 12px;
+      }
+      .profile b {
+        font-size: 12px;
+      }
+      .profile small {
+        display: block;
+        font-size: 10px;
+        color: #9db8ac;
+        margin-top: 2px;
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+      .topbar {
+        height: 75px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 38px;
+      }
+      .crumb {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .crumb strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .topright {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+      .property-select {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 9px 12px;
+        color: var(--ink);
+        background: #fff;
+        font-size: 12px;
+      }
+      .bell {
+        border: 0;
+        background: #f7f9f7;
+        border-radius: 10px;
+        padding: 9px 11px;
+        font-size: 16px;
+        position: relative;
+      }
+      .bell:after {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #ed846e;
+        border: 2px solid white;
+        border-radius: 50%;
+        right: 6px;
+        top: 6px;
+      }
+      .content {
+        max-width: 1440px;
+        margin: auto;
+        padding: 32px 38px 55px;
+      }
+      .welcome {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 25px;
+      }
+      .eyebrow {
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+      }
+      .welcome h1 {
+        font: 800 27px Manrope;
+        margin: 7px 0 4px;
+        letter-spacing: -0.7px;
+      }
+      .welcome p {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .primary {
+        border: 0;
+        border-radius: 10px;
+        background: var(--green);
+        color: white;
+        padding: 12px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .primary:hover {
+        background: #0f503b;
+      }
+      .secondary {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: white;
+        color: var(--ink);
+        padding: 10px 13px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 19px;
+      }
+      .stat {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 18px 19px;
+        box-shadow: 0 2px 8px #143b3007;
+      }
+      .stathead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .staticon {
+        width: 29px;
+        height: 29px;
+        border-radius: 9px;
+        background: var(--mint);
+        display: grid;
+        place-items: center;
+        font-size: 14px;
+      }
+      .stat strong {
+        font: 800 25px Manrope;
+        display: block;
+        margin: 13px 0 5px;
+        letter-spacing: -0.6px;
+      }
+      .statfoot {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .good {
+        color: var(--green);
+        font-weight: 700;
+      }
+      .warn {
+        color: #cf8a3c;
+        font-weight: 700;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.9fr);
+        gap: 17px;
+      }
+      .card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        box-shadow: 0 2px 8px #143b3005;
+      }
+      .cardhead {
+        padding: 19px 21px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .cardhead h2 {
+        font: 700 14px Manrope;
+        margin: 0;
+      }
+      .sub {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 5px;
+      }
+      .link {
+        color: var(--green);
+        border: 0;
+        background: none;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .occupancy {
+        padding: 2px 21px 20px;
+      }
+      .floor {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .floorlabel {
+        font-size: 10px;
+        color: var(--muted);
+        width: 57px;
+      }
+      .roomrow {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+      }
+      .room {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        min-width: 78px;
+        padding: 8px 10px;
+        text-align: center;
+        background: #fbfcfb;
+      }
+      .room b {
+        font-size: 11px;
+        display: block;
+      }
+      .room small {
+        font-size: 9px;
+        color: var(--muted);
+        display: block;
+        margin-top: 3px;
+      }
+      .room.full {
+        background: #eef6ef;
+        border-color: #dfede2;
+      }
+      .room.partial {
+        background: #fff6e9;
+        border-color: #f7ead3;
+      }
+      .room.empty {
+        background: #f7f8f7;
+      }
+      .legend {
+        display: flex;
+        gap: 15px;
+        font-size: 9px;
+        color: var(--muted);
+      }
+      .dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+      .activity-list {
+        padding: 0 21px 8px;
+      }
+      .activity {
+        display: flex;
+        gap: 11px;
+        padding: 13px 0;
+        border-top: 1px solid #f0f3f1;
+        align-items: flex-start;
+      }
+      .activity:first-child {
+        border-top: 0;
+      }
+      .acticon {
+        width: 30px;
+        height: 30px;
+        background: #f4f7f4;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .actbody {
+        flex: 1;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      .actbody b {
+        font-weight: 700;
+      }
+      .actbody small {
+        display: block;
+        color: var(--muted);
+        font-size: 9px;
+        margin-top: 4px;
+      }
+      .amount {
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .bottomgrid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 17px;
+        margin-top: 17px;
+      }
+      .due-list {
+        padding: 0 20px 12px;
+      }
+      .dueitem {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 0;
+        border-top: 1px solid #f0f3f1;
+      }
+      .duetext {
+        flex: 1;
+      }
+      .duetext b {
+        display: block;
+        font-size: 11px;
+      }
+      .duetext small {
+        display: block;
+        font-size: 9px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .pill {
+        border-radius: 99px;
+        padding: 5px 8px;
+        font-size: 9px;
+        font-weight: 700;
+      }
+      .pill.late {
+        color: #b42318;
+        background: #fee4e2;
+      }
+      .pill.soon {
+        color: #8a5a00;
+        background: #fff3bf;
+      }
+      .rent-reminder-placeholder {
+        display: inline-block;
+        min-width: 120px;
+        text-align: center;
+        color: var(--muted);
+      }
+      .actions {
+        padding: 0 19px 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+      .action {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 11px;
+        padding: 13px;
+        text-align: left;
+      }
+      .action:hover {
+        border-color: #bcd5c7;
+        background: #fbfdfb;
+      }
+      .action span {
+        font-size: 16px;
+      }
+      .action b {
+        display: block;
+        font-size: 11px;
+        margin-top: 8px;
+      }
+      .action small {
+        font-size: 9px;
+        color: var(--muted);
+      }
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: #10251fc9;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 10;
+      }
+      .overlay.show {
+        display: flex;
+      }
+      .modal {
+        background: white;
+        width: min(540px, 100%);
+        max-height: 90vh;
+        overflow: auto;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 25px 80px #0003;
+      }
+      .modalhead {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .modalhead h2 {
+        font: 800 19px Manrope;
+        margin: 0;
+      }
+      .modalhead p {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 6px 0;
+      }
+      .close {
+        border: 0;
+        background: #f4f7f4;
+        border-radius: 8px;
+        width: 31px;
+        height: 31px;
+        font-size: 17px;
+      }
+      .formgrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 13px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .field.full {
+        grid-column: 1/-1;
+      }
+      .field label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #52655d;
+      }
+      .field input,
+      .field select {
+        border: 1px solid #dfe8e2;
+        border-radius: 9px;
+        padding: 10px 11px;
+        outline: none;
+        font-size: 12px;
+        color: var(--ink);
+        background: #fff;
+      }
+      .field input:focus,
+      .field select:focus {
+        border-color: #73a88d;
+        box-shadow: 0 0 0 3px #e8f3ec;
+      }
+      .hint {
+        font-size: 9px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .formactions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 19px;
+      }
+      .tablewrap {
+        overflow: auto;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .table th {
+        text-align: left;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-size: 9px;
+        padding: 10px 20px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .table td {
+        font-size: 11px;
+        padding: 13px 20px;
+        border-bottom: 1px solid #f0f3f1;
+        white-space: nowrap;
+      }
+      .residentcell {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .miniava {
+        width: 27px;
+        height: 27px;
+        border-radius: 50%;
+        background: #e4f1e9;
+        display: grid;
+        place-items: center;
+        color: var(--green);
+        font-size: 9px;
+        font-weight: 700;
+      }
+      .tiny {
+        font-size: 9px;
+        color: var(--muted);
+      }
+      .toast {
+        position: fixed;
+        bottom: 22px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #173b30;
+        color: white;
+        border-radius: 11px;
+        padding: 12px 17px;
+        font-size: 11px;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        transition: 0.2s;
+        z-index: 20;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .pagehead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 0 15px;
+      }
+      .pagehead h2 {
+        font: 700 15px Manrope;
+        margin: 0;
+      }
+      .search {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 9px 11px;
+        font-size: 11px;
+        width: 210px;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .mobilemenu {
+        display: none;
+      }
+      @media (max-width: 1000px) {
+        .sidebar {
+          width: 205px;
+        }
+        .content {
+          padding: 27px 23px;
+        }
+        .topbar {
+          padding: 0 23px;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 730px) {
+        .sidebar {
+          width: 63px;
+          padding: 18px 8px;
+        }
+        .brand {
+          padding: 0 5px 25px;
+        }
+        .brandtext,
+        .navlabel,
+        .nav button .label,
+        .help,
+        .profile > div:not(.avatar) {
+          display: none;
+        }
+        .nav button {
+          justify-content: center;
+          padding: 12px 0;
+        }
+        .nav button .ico {
+          font-size: 17px;
+        }
+        .profile {
+          justify-content: center;
+          padding: 15px 0 3px;
+        }
+        .topbar {
+          height: 62px;
+          padding: 0 14px;
+        }
+        .property-select {
+          max-width: 145px;
+        }
+        .content {
+          padding: 23px 14px;
+        }
+        .welcome {
+          align-items: flex-start;
+          gap: 12px;
+          flex-direction: column;
+        }
+        .welcome h1 {
+          font-size: 23px;
+        }
+        .stats {
+          gap: 9px;
+        }
+        .stat {
+          padding: 14px;
+        }
+        .stat strong {
+          font-size: 22px;
+        }
+        .grid,
+        .bottomgrid {
+          grid-template-columns: 1fr;
+        }
+        .legend {
+          gap: 8px;
+        }
+        .floorlabel {
+          width: 45px;
+        }
+        .room {
+          min-width: 67px;
+        }
+        .formgrid {
+          grid-template-columns: 1fr;
+        }
+        .field.full {
+          grid-column: auto;
+        }
+        .topright {
+          gap: 8px;
+        }
+        .crumb {
+          font-size: 10px;
+        }
+      }
+      @media (max-width: 390px) {
+        .stats {
+          grid-template-columns: 1fr 1fr;
+        }
+        .statfoot {
+          font-size: 9px;
+        }
+        .room {
+          min-width: 58px;
+          padding: 7px;
+        }
+        .roomrow {
+          gap: 5px;
+        }
+      }
+      .busy-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: none;
+        place-items: center;
+        background: rgba(16, 37, 31, 0.2);
+        backdrop-filter: blur(2px);
+      }
+      .busy-overlay.show {
+        display: grid;
+      }
+      .busy-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px 18px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        box-shadow: 0 18px 55px #10251f2b;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .busy-spinner {
+        height: 20px;
+        width: 20px;
+        border: 2px solid #dce9e0;
+        border-top-color: var(--green);
+        border-radius: 50%;
+        animation: busy-spin 0.7s linear infinite;
+      }
+      @keyframes busy-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .room-select {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+      .room-select:hover,
+      .room-select:focus-visible {
+        outline: 2px solid #83b99a;
+        outline-offset: 2px;
+      }
+      .room.overfull {
+        background: #fff0ef;
+        border-color: #f0c9c5;
+        color: #a8463e;
+      }
 
-.report-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:14px}.report-toolbar label{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:700}.report-toolbar input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px}.report-note{font-size:10px;color:var(--muted)}.report-block{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden}.report-blockhead{padding:17px 19px 12px}.report-blockhead h3{font:700 14px Manrope;margin:0}.report-blockhead p{font-size:10px;color:var(--muted);margin:5px 0 0}.report-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0 18px 16px}.report-metric{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfcfb}.report-metric span{display:block;color:var(--muted);font-size:9px}.report-metric strong{display:block;font:800 17px Manrope;margin-top:6px}.report-metric small{display:block;color:var(--muted);font-size:9px;margin-top:4px}.report-table .table th,.report-table .table td{padding-left:18px;padding-right:18px}@media(max-width:730px){.report-toolbar{align-items:flex-start;flex-direction:column}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-/* Keep compact flat cards; distribute them across each floor when space allows. */
-.floor{align-items:stretch}
-.floorlabel{flex:0 0 57px;align-self:center}
-.roomrow{flex:1;min-width:0;justify-content:space-between}
-/* Keep navigation stationary while the workspace scrolls independently. */
-.shell{height:100vh;height:100dvh;min-height:0;overflow:hidden}
-.sidebar{height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior:contain}
-.main{height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior:contain}
-.stats{grid-template-columns:repeat(5,minmax(0,1fr))}
-@media(max-width:1000px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:730px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-</style>
-<style>
-@media (max-width: 700px){
-  .tablewrap{position:relative;overscroll-behavior-x:contain}
-  .table th:first-child,.table td:first-child{position:sticky;left:0;width:118px;min-width:118px;max-width:118px;background:#fff;z-index:2;box-shadow:5px 0 8px rgba(23,42,37,.08);overflow:hidden}
-  .table th:first-child{z-index:3}
-  .table td:first-child b{display:block;max-width:82px;overflow:hidden;text-overflow:ellipsis}
-  .table td:first-child .tiny{max-width:90px;overflow:hidden;text-overflow:ellipsis}
-}
-</style>
-</head>
-<body>
-<div class="shell">
-<aside class="sidebar"><div class="brand"><div class="brandmark">⌂</div><div class="brandtext"><strong>staywise</strong><small>PG management</small></div></div>
-<div class="navlabel">Workspace</div><nav class="nav"><button class="active" data-page="dashboard"><span class="ico">▦</span><span class="label">Overview</span></button><button data-page="residents"><span class="ico">♙</span><span class="label">Residents</span></button><button data-page="rooms"><span class="ico">⌂</span><span class="label">Rooms & flats</span></button><button data-page="rent"><span class="ico">₹</span><span class="label">Rent & payments</span></button><button data-page="electricity"><span class="ico">ϟ</span><span class="label">Electricity bills</span></button><button data-page="messages"><span class="ico">◌</span><span class="label">Messages</span></button></nav>
-<div class="sidebottom"><div class="navlabel">Manage</div><nav class="nav"><button data-page="reports"><span class="ico">▤</span><span class="label">Reports</span></button><button data-page="settings"><span class="ico">⚙</span><span class="label">Settings</span></button></nav><div class="help"><b>Need a hand?</b><p>See how Staywise can simplify your PG operations.</p><button onclick="toast('Help centre is coming soon')">Visit help centre ↗</button></div><div class="profile"><div class="avatar" id="ownerAvatar">?</div><div><b id="ownerProfileName">Owner</b><small>PG Owner</small></div></div></div>
-</aside>
-<main class="main"><header class="topbar"><div class="crumb">Workspace <span style="color:#c3cdc7"> / </span> <strong id="crumbPage">Overview</strong></div><div class="topright"><select class="property-select" id="propertySelect"><option>Loading property…</option></select><button class="bell" onclick="toast('You’re all caught up')">♧</button><div class="avatar" id="ownerAvatarTop">?</div></div></header>
-<div class="content">
-<section id="dashboardPage"><div class="welcome"><div><div class="eyebrow" id="todayDate"></div><h1><span id="greetingText">Good morning</span>, <span id="ownerGreeting">Owner</span> <span id="greetingIcon">☀️</span></h1><p>Here’s what’s happening at your property today.</p></div><button class="primary" onclick="openModal('residentModal')">＋ Add resident</button></div>
-<div class="stats"><div class="stat"><div class="stathead">Residents <span class="staticon">♙</span></div><strong id="residentCount">0</strong><div class="statfoot" id="residentSummary">No residents added yet</div></div><div class="stat"><div class="stathead">Flats occupied <span class="staticon">⌂</span></div><strong id="occupancyValue">0 / 0</strong><div class="statfoot" id="flatSummary">Add your flats in building setup</div></div><div class="stat"><div class="stathead">Rent collected <span class="staticon">₹</span></div><strong id="rentCollectedValue">₹0</strong><div class="statfoot" id="rentCollectedSummary">This month · no payments recorded</div></div><div class="stat"><div class="stathead">Pending dues <span class="staticon">◷</span></div><strong id="pendingDuesValue">₹0</strong><div class="statfoot" id="pendingDuesSummary">No pending rent</div></div><div class="stat"><div class="stathead">Deposits collected <span class="staticon">₹</span></div><strong id="depositTotalValue">₹0</strong><div class="statfoot" id="depositTotalSummary">No deposits recorded yet</div></div></div>
-<div class="grid"><div class="card"><div class="cardhead"><div><h2>Room occupancy</h2><div class="sub">Your saved flats and assigned residents</div></div></div><div class="occupancy" id="occupancyList"><div class="sub">No flats to show yet.</div></div></div><div class="card"><div class="cardhead"><div><h2>Recent activity</h2><div class="sub">Updates from your property</div></div></div><div class="activity-list" id="activityList"><div class="sub" style="padding:16px 0">No activity yet.</div></div></div></div>
-<div class="bottomgrid"><div class="card"><div class="cardhead"><div><h2>Rent due</h2><div class="sub">Residents with unpaid rent</div></div><button class="link" onclick="goPage('rent')">See all →</button></div><div class="due-list" id="dueList"><div class="sub" style="padding:12px 0">No rent dues recorded yet.</div></div></div><div class="card"><div class="cardhead"><div><h2>Quick actions</h2><div class="sub">Common owner tasks</div></div></div><div class="actions"><button class="action" onclick="openModal('residentModal')"><span>♙</span><b>Add a resident</b><small>Register a new move-in</small></button><button class="action" onclick="openModal('rentModal')"><span>₹</span><b>Record a payment</b><small>Log rent received</small></button><button class="action" onclick="openModal('electricityModal')"><span>ϟ</span><b>Create electricity bill</b><small>Enter individual shares</small></button><button class="action" onclick="goPage('messages')"><span>◌</span><b>Send a reminder</b><small>Prepare a WhatsApp draft</small></button></div></div></div></section>
-<section id="genericPage" class="hidden"><div class="welcome"><div><div class="eyebrow" id="propertyNameHeading"></div><h1 id="pageTitle">Residents</h1><p id="pageDesc">Manage your property in one place.</p></div><button class="primary" id="pageCta" onclick="openModal('residentModal')">＋ Add resident</button></div><div class="card"><div class="pagehead" style="padding:18px 20px 12px"><h2 id="tableTitle">Residents</h2><input class="search" id="searchInput" placeholder="Search residents..." oninput="renderResidents()"></div><div class="tablewrap" id="pageContent"></div></div></section>
-</div></main></div>
-<div id="ownerSetupGate" style="display:none;position:fixed;inset:0;background:#153b30;z-index:60;overflow:auto;padding:24px"><form id="ownerSetupForm" style="background:white;border-radius:18px;padding:26px;width:min(760px,100%);margin:25px auto"><div class="eyebrow">Property setup</div><h2 style="font:800 21px Manrope;margin:7px 0">Set up your building</h2><p class="sub" style="margin:0 0 18px">Add your property and the flats or rooms you manage.</p><div class="formgrid"><div class="field"><label>Property name *</label><input name="propertyName" required placeholder="e.g. Greenwood Residency"></div><div class="field"><label>Property address</label><input name="propertyAddress" placeholder="Street, area, city"></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px"><b style="font:700 13px Manrope">Flats / rooms</b><button type="button" class="secondary" id="addFlatRow">＋ Add flat</button></div><div id="setupFlats" style="display:grid;gap:9px"></div><p class="hint">Wi-Fi details are optional and visible only in owner settings; they are not included in resident messages.</p><div id="setupError" class="hint" style="color:#b44;margin-top:12px"></div><div class="formactions"><button type="button" class="secondary" id="skipPropertySetup">Skip for now</button><button class="primary" id="savePropertySetup">Save property setup</button></div></form></div>
-<div id="authGate" style="position:fixed;inset:0;background:#153b30;z-index:50;display:none;place-items:center;padding:20px"><form id="authForm" style="background:white;border-radius:18px;padding:24px;width:min(520px,100%);max-height:92vh;overflow:auto;box-shadow:0 25px 80px #0004"><div class="brandmark" style="margin-bottom:16px">⌂</div><h2 style="font:800 20px Manrope;margin:0 0 6px">Owner sign in</h2><p class="sub" style="margin:0 0 18px">Sign in to access your PG records securely.</p><div class="field"><label>Email</label><input name="email" required type="email" autocomplete="username"></div><div class="field" style="margin-top:12px"><label>Password</label><input name="password" required type="password" autocomplete="current-password" minlength="8"></div><div class="field" id="ownerNameField" style="margin-top:12px;display:none"><label>Your name *</label><input name="ownerName" autocomplete="name" placeholder="Name to show in your owner dashboard"></div><button type="button" class="secondary" id="showSignupPropertyFields" style="display:none;margin-top:16px">＋ Add building details</button><div id="signupPropertyFields" style="display:none;margin-top:16px"><div class="formgrid"><div class="field"><label>Building / property name *</label><input name="signupPropertyName" placeholder="e.g. Greenwood Residency"></div><div class="field"><label>Building address</label><input name="signupPropertyAddress" placeholder="Street, area, city"></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px"><b style="font:700 12px Manrope">Flats / rooms</b><button type="button" class="secondary" id="addSignupFlat">＋ Add flat</button></div><div id="signupFlats" style="display:grid;gap:8px"></div></div><div id="authError" class="hint" role="status" aria-live="polite" style="color:#b44;margin-top:10px"></div><div class="formactions"><button type="button" class="secondary" id="signupButton">Create account</button><button class="primary" id="authSubmit">Sign in</button></div></form></div>
-<div class="overlay" id="residentModal"><div class="modal"><div class="modalhead"><div><h2 id="residentModalTitle">Add a resident</h2><p>Add their details and assign a flat and sharing type.</p></div><button class="close" onclick="closeModal('residentModal')">×</button></div><form id="residentForm"><div class="formgrid"><div class="field"><label>Full name *</label><input name="name" required placeholder="e.g. Aditi Sharma"></div><div class="field"><label>Phone number *</label><input name="phone" required type="tel" placeholder="+91 98765 43210"></div><div class="field"><label>Room / flat *</label><select name="room" required><option value="">Choose flat</option><option>Flat 1</option><option>Flat 2</option><option>Flat 3</option><option>Flat 4</option><option>Flat 5</option><option>Flat 6</option></select></div><div class="field"><label>Sharing type *</label><select name="sharing_type" required><option value="">Choose sharing</option><option value="single">Single sharing</option><option value="double">Double sharing</option></select></div><div class="field"><label>Monthly rent (₹) *</label><input name="rent" required type="number" placeholder="Monthly rent"></div><div class="field"><label>Deposit amount (₹) (optional)</label><input name="deposit" required type="number" min="0" placeholder="Security deposit"></div><div class="field"><label>Move-in date</label><input name="movein" type="date"></div><div class="field"><label>Emergency contact</label><input name="emergency" placeholder="Name and phone"></div><div class="field full"><label>Address</label><input name="address" placeholder="Permanent address"></div></div><div class="formactions"><button type="button" class="secondary" onclick="closeModal('residentModal')">Cancel</button><button class="primary" id="residentSubmitButton">Add resident</button></div></form></div></div>
-<div class="overlay" id="rentModal"><div class="modal"><div class="modalhead"><div><h2>Record a rent payment</h2><p>Payments for the same resident and month stay in one record; later payments add to the total and update its date.</p></div><button class="close" onclick="closeModal('rentModal')">×</button></div><form id="rentForm"><div class="formgrid"><div class="field full"><label>Resident *</label><select name="resident" class="residentOptions" required></select></div><div class="field"><label>Amount (₹) *</label><input name="amount" required type="number" placeholder="8500"></div><div class="field"><label>Payment date</label><input name="date" type="date"></div><div class="field"><label>Payment method</label><select name="method"><option>UPI</option><option>Bank transfer</option><option>Cash</option><option>Other</option></select></div><div class="field"><label>Reference / note</label><input name="note" placeholder="UPI reference or note"></div></div><div class="formactions"><button type="button" class="secondary" onclick="closeModal('rentModal')">Cancel</button><button class="primary">Save payment</button></div></form></div></div>
-<div class="overlay" id="electricityModal"><div class="modal"><div class="modalhead"><div><h2>Create electricity bills</h2><p>Select residents and enter each person’s amount and due date.</p></div><button class="close" onclick="closeModal('electricityModal')">×</button></div><form id="electricityForm"><div class="formgrid"><div class="field"><label>Bill received month *</label><input name="month" type="month" required onchange="refreshMeterPreviousReadings()"><span class="hint">Bills arrive every two months. Previous readings use this flat’s last saved cycle when available.</span></div><div class="field"><label>Reading date *</label><input name="readingDate" type="date" required></div><div class="field"><label>Due date *</label><input name="due" type="date" required></div><div class="field"><label>Flat *</label><select name="selectedFlat" required onchange="renderBillResidents()"><option value="">Choose a flat</option></select></div><div class="field"><label>Main electricity bill for this flat (₹) *</label><input name="mainBillAmount" type="number" min="0" step="0.01" required placeholder="Flat meter bill" oninput="markElectricityManual(this)"></div><div class="field"><label>Total common meter charges for building (₹)</label><input name="commonMeterTotal" type="number" min="0" step="0.01" value="0" oninput="markElectricityManual(this)"><span class="hint">Building total is divided across active flats, then equally among this flat’s selected residents.</span></div><div class="field full"><label>Meter readings and residents *</label><div id="billResidents" style="display:grid;gap:8px"></div><span class="hint">Room 1 is the left meter; Room 2 is the right meter. Main bill is split by units used, then by residents mapped to each room. Calculated resident amounts stay editable.</span></div><div class="field"><label>Common bill note</label><input name="commonNote" value="This includes common electricity bill"></div><div class="field"><label>GPay number</label><input name="gpay" type="tel" value="9041869283"></div><div class="field full"><label>Extra note (optional)</label><input name="note" placeholder="Optional message note"></div></div><div class="formactions"><button type="button" class="secondary" onclick="closeModal('electricityModal')">Cancel</button><button class="primary">Review bills</button></div></form></div></div>
-<div class="overlay" id="electricityPaymentModal"><div class="modal"><div class="modalhead"><div><h2>Record electricity payment</h2><p id="electricityPaymentSubtitle">Record an amount received for this bill.</p></div><button class="close" onclick="closeModal('electricityPaymentModal')">×</button></div><form id="electricityPaymentForm"><input type="hidden" name="billId"><div class="formgrid"><div class="field"><label>Amount received (₹) *</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Payment date *</label><input name="date" type="date" required></div><div class="field"><label>Payment method</label><select name="method"><option>UPI</option><option>Bank transfer</option><option>Cash</option><option>Other</option></select></div><div class="field"><label>Reference / note</label><input name="note" placeholder="Optional reference"></div></div><div class="formactions"><button type="button" class="secondary" onclick="closeModal('electricityPaymentModal')">Cancel</button><button class="primary">Save payment</button></div></form></div></div>
-<div class="overlay" id="messageModal"><div class="modal"><div class="modalhead"><div><h2 id="messageTitle">WhatsApp message</h2><p>Review this draft before opening WhatsApp.</p></div><button class="close" onclick="closeModal('messageModal')">×</button></div><div class="field"><label>Message draft</label><textarea id="messageText" rows="7" style="border:1px solid #dfe8e2;border-radius:9px;padding:11px;font:12px/1.6 'DM Sans';resize:vertical"></textarea><span class="hint">WhatsApp will open with the message ready. You still need to press Send. Automated sending requires an approved WhatsApp Business setup.</span></div><div class="formactions"><button class="secondary" onclick="closeModal('messageModal')">Close</button><button class="primary" onclick="launchWhatsApp()">Open WhatsApp ↗</button></div></div></div>
-<div class="toast" id="toast"></div>
-<div class="busy-overlay" id="appBusy" role="status" aria-live="polite" aria-atomic="true"><div class="busy-card"><span class="busy-spinner" aria-hidden="true"></span><span id="appBusyText">Saving changes…</span></div></div>
-<script>
-function readStore(k,f){try{return JSON.parse(localStorage.getItem('staywise_'+k))||f}catch{return f}}let residents=readStore('residents',[]).map(r=>{delete r.aadhaar;return r});let activities=readStore('activities',[]);let bills=readStore('bills',[]);let payments=readStore('payments',[]);let lastMessage='';function persist(){localStorage.setItem('staywise_residents',JSON.stringify(residents.map(r=>{const clean={...r};delete clean.aadhaar;return clean})));localStorage.setItem('staywise_activities',JSON.stringify(activities));localStorage.setItem('staywise_bills',JSON.stringify(bills));localStorage.setItem('staywise_payments',JSON.stringify(payments))}
-window.applyCloudState=(nextResidents,nextBills)=>{residents=nextResidents;bills=nextBills;localStorage.setItem('staywise_residents',JSON.stringify(nextResidents));localStorage.setItem('staywise_bills',JSON.stringify(nextBills));window.refreshDashboard?.();window.renderCurrentPage?.()}
-const pages={dashboard:['Overview','Your property at a glance'],residents:['Residents','Keep resident details, room assignments, and rent status up to date.'],rooms:['Rooms & flats','Manage floors, rooms, bed capacity, and availability.'],rent:['Rent & payments','Track monthly rent, payments received, and outstanding balances.'],electricity:['Electricity bills','Calculate and review electricity charges for each resident.'],messages:['Messages','Prepare WhatsApp reminders and keep a record of communication.'],reports:['Reports','Review occupancy, collections, expenses, and dues.'],settings:['Settings','Manage your property, billing rules, and team access.']};
-function toast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}function applyDateDefaults(form){const now=new Date(),today=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0'),month=today.slice(0,7);form?.querySelectorAll('input[type="date"],input[type="month"]').forEach(input=>{if(!input.value)input.value=input.type==='month'?month:today})}function resetResidentForm(){const f=document.getElementById('residentForm');f.reset();delete f.dataset.editResidentId;delete f.dataset.cloudResidentId;document.getElementById('residentModalTitle').textContent='Add a resident';document.getElementById('residentSubmitButton').textContent='Add resident';}function openModal(id){if(id==='residentModal'&&!document.getElementById('residentForm').dataset.editResidentId)resetResidentForm();if(id==='rentModal'||id==='messageModal')refreshOptions();applyDateDefaults(document.querySelector('#'+id+' form'));if(id==='electricityModal')renderBillResidents();document.getElementById(id).classList.add('show')}function closeModal(id){document.getElementById(id).classList.remove('show');if(id==='residentModal')resetResidentForm()}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')}));
-function goPage(p){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));document.getElementById('crumbPage').textContent=pages[p][0];document.getElementById('dashboardPage').classList.toggle('hidden',p!=='dashboard');document.getElementById('genericPage').classList.toggle('hidden',p==='dashboard');if(p!=='dashboard'){document.getElementById('pageTitle').textContent=pages[p][0];document.getElementById('pageDesc').textContent=pages[p][1];document.getElementById('tableTitle').textContent=pages[p][0];document.getElementById('searchInput').classList.toggle('hidden',!['residents','rent'].includes(p));let cta=document.getElementById('pageCta');cta.classList.remove('hidden');if(p==='reports'){cta.classList.add('hidden')}else if(p==='residents'){cta.textContent='＋ Add resident';cta.onclick=()=>openModal('residentModal')}else if(p==='rent'){cta.textContent='＋ Record payment';cta.onclick=()=>openModal('rentModal')}else if(p==='electricity'){cta.textContent='＋ Create bills';cta.onclick=()=>openModal('electricityModal')}else{cta.textContent=p==='messages'?'＋ Draft reminder':p==='settings'?'Edit building details':'＋ Add new';cta.onclick=()=>p==='messages'?goMessages():p==='settings'?(window.editPropertySetup?window.editPropertySetup():toast('Sign in to edit building details')):toast(pages[p][0]+' setup is ready for the next build step')}renderPage(p)}window.scrollTo({top:0,behavior:'smooth'})}document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>goPage(b.dataset.page));
-function rentBalanceForResident(r){const now=new Date(),month=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0'),paid=(window.pgRentPayments||[]).filter(p=>String(p.resident_id)===String(r.id)&&String(p.rent_month||p.paid_on||'').slice(0,7)===month).reduce((sum,p)=>sum+Number(p.amount||0),0);return Math.max(0,Number(r.rent||0)-paid)}
-function draftResidentRentReminder(id){const r=residents.find(x=>String(x.id)===String(id));if(!r)return toast('Resident record not found');const balance=rentBalanceForResident(r);if(balance<=0)return toast('This resident has no rent balance due');const now=new Date(),dueDate=new Date(now.getFullYear(),now.getMonth(),2),monthLabel=now.toLocaleDateString('en-IN',{month:'long',year:'numeric'}),dueLabel=dueDate.toLocaleDateString('en-IN',{day:'numeric',month:'long'});document.getElementById('messageTitle').textContent='Rent reminder · '+r.name;document.getElementById('messageText').value='Hello '+r.name+', this is a friendly reminder that ₹'+balance.toLocaleString('en-IN',{maximumFractionDigits:2})+' rent for '+monthLabel+' was due on '+dueLabel+'. If you have already paid, kindly ignore this message. Thank you — '+(window.pgPropertyName||'your property');openModal('messageModal')}
-function renderResidents(){const query=(document.getElementById('searchInput')?.value||'').toLowerCase(),rows=residents.filter(r=>(r.name+r.room+r.phone).toLowerCase().includes(query));if(!rows.length){document.getElementById('pageContent').innerHTML='<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No residents found'+(query?' in '+esc(query):'')+'</h3><p class="sub">Try another flat or clear the filter.</p><button class="secondary" onclick="document.getElementById(\'searchInput\').value=\'\';renderResidents()">Clear filter</button></div>';return}const body=rows.map(r=>{const reminder=r.id&&rentBalanceForResident(r)>0?'<button class="link" onclick="draftResidentRentReminder(\''+r.id+'\')">Rent reminder</button>':'<span class="rent-reminder-placeholder">—</span>';return '<tr><td><div class="residentcell"><div class="miniava">'+initials(r.name)+'</div><div><b>'+esc(r.name)+'</b><div class="tiny">+91 '+esc(r.phone)+' · Deposit ₹'+Number(r.deposit||0).toLocaleString('en-IN')+'</div></div></div></td><td>'+esc(r.room)+'</td><td>'+esc(r.sharing_type==='single'?'Single':r.sharing_type==='double'?'Double':'—')+'</td><td>₹'+Number(r.rent).toLocaleString('en-IN')+'</td><td><span class="pill '+(r.status==='Overdue'?'late':(['Due','Due soon'].includes(r.status)?'soon':''))+'" style="'+(r.status==='Paid'?'color:#357551;background:#edf7ef':'')+'">'+esc(r.status)+'</span></td><td>'+esc(r.movein||'—')+'</td><td>'+reminder+'</td><td>'+(r.id?'<button class="link" onclick="editResident(\''+r.id+'\')">Edit</button> <button class="secondary" style="color:#b44;border-color:#eed2d0" onclick="removeResident(\''+r.id+'\')">Remove</button>':'')+'</td></tr>'}).join('');document.getElementById('pageContent').innerHTML='<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Sharing</th><th>Rent</th><th>Status</th><th>Move-in</th><th>Rent reminder</th><th></th></tr></thead><tbody>'+body+'</tbody></table>'}
-function renderRent(){const body=residents.map(r=>{const balance=rentBalanceForResident(r),reminder=r.id&&balance>0?'<button class="link" onclick="draftResidentRentReminder(\''+r.id+'\')">WhatsApp reminder</button>':'<span class="rent-reminder-placeholder">—</span>';return '<tr><td><b>'+esc(r.name)+'</b><div class="tiny">+91 '+esc(r.phone)+' · Deposit ₹'+Number(r.deposit||0).toLocaleString('en-IN')+'</div></td><td>'+esc(r.room)+'</td><td>₹'+Number(r.rent).toLocaleString('en-IN')+'</td><td><span class="pill '+(r.status==='Overdue'?'late':(['Due','Due soon'].includes(r.status)?'soon':''))+'" style="'+(r.status==='Paid'?'color:#357551;background:#edf7ef':'')+'">'+esc(r.status)+'</span></td><td><button class="link" onclick="openForResident(\''+esc(r.name)+'\')">Record payment</button> '+reminder+'</td></tr>'}).join('');document.getElementById('pageContent').innerHTML='<table class="table"><thead><tr><th>Resident</th><th>Room</th><th>Rent due</th><th>Status</th><th>Action</th></tr></thead><tbody>'+body+'</tbody></table>'}
-function renderElectricity(){document.getElementById('pageContent').innerHTML=bills.length?`<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Received</th><th>Amount</th><th>Due date</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>${bills.map(b=>`<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.flat)}</td><td>${esc(b.month)}</td><td>₹${Number(b.amount).toLocaleString('en-IN')}</td><td>${esc(b.due)}</td><td><span class="pill">${esc(b.status)}</span></td><td>${['Paid','Waived'].includes(b.status)?'—':`<button class="link" onclick="openElectricityPayment('${b.id}')">Record payment</button>`}</td><td><button class="link" onclick="shareBill('${b.id}')">WhatsApp</button></td></tr>`).join('')}</tbody></table>`:`<div style="padding:25px;text-align:center"><div style="font-size:30px">ϟ</div><h3 style="font:700 14px Manrope">No electricity bills created yet</h3><p class="sub">Select flats and enter individual shares.</p><button class="primary" onclick="openModal('electricityModal')">＋ Create electricity bills</button></div>`}function shareBill(id){let b=bills.find(x=>String(x.id)===String(id));if(!b)return;document.getElementById('messageTitle').textContent='Electricity bill · '+b.name;document.getElementById('messageText').value=`Hello ${b.name}, your electricity bill for ${b.month} is ₹${Number(b.amount).toLocaleString('en-IN')}, due ${new Date(b.due+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}. — ${window.pgPropertyName||'your property'}`;openModal('messageModal')}
-function renderRooms(){const fs=window.pgFlats||[],rs=residents||[];const body=fs.map(f=>{const o=window.flatOccupancyInfo(f,rs),used=Number.isInteger(o.used)?o.used:o.used.toFixed(1);return '<div class="floor"><div class="floorlabel">'+esc(f.floor_name)+'</div><div class="roomrow"><button type="button" class="room room-select '+o.state+'" data-flat="'+esc(f.flat_number)+'" aria-label="Open details for '+esc(f.flat_number)+'"><b>'+esc(f.flat_number)+'</b><small>'+o.count+' resident'+(o.count===1?'':'s')+' · '+used+' / '+o.capacity+' rooms occupied</small></button></div></div>'}).join('');document.getElementById('pageContent').innerHTML=fs.length?'<div class="occupancy">'+body+'</div>':'<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No flats added yet</h3><p class="sub">Add your building and flats in Settings.</p><button class="primary" onclick="window.editPropertySetup?.()">Set up building</button></div>'}
-function renderReports(){const now=new Date(),defaultMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0'),month=document.getElementById('reportMonth')?.value||defaultMonth,[year,monthNum]=month.split('-').map(Number),dueDate=month+'-02',today=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0'),monthLabel=new Date(year,monthNum-1,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'}),dueLabel=new Date(year,monthNum-1,2).toLocaleDateString('en-IN',{day:'numeric',month:'short'});const people=(window.pgReportResidents||residents||[]).filter(r=>(!r.movein||r.movein<=dueDate)&&(!r.moveout||r.moveout>=dueDate)),payments=(window.pgRentPayments||[]).filter(p=>String(p.rent_month||p.paid_on||'').slice(0,7)===month),paidBy={};payments.forEach(p=>paidBy[p.resident_id]=(paidBy[p.resident_id]||0)+Number(p.amount));const rentRows=people.map(r=>{const paid=paidBy[r.id]||0,due=Number(r.rent)||0,balance=Math.max(0,due-paid),status=balance<=0?'Paid':paid>0?'Part paid':dueDate<today?'Overdue':'Due';return {...r,paid,due,balance,status}}),rentDue=rentRows.reduce((n,r)=>n+r.due,0),rentCollected=rentRows.reduce((n,r)=>n+r.paid,0),rentOutstanding=rentRows.reduce((n,r)=>n+r.balance,0),rentPaidCount=rentRows.filter(r=>r.status==='Paid').length,rentOpenCount=rentRows.filter(r=>r.balance>0).length;const electricity=(window.pgElectricityBills||bills||[]).filter(b=>String(b.billing_month||'').slice(0,7)===month),meterRows=(window.pgElectricityReadings||[]).filter(m=>String(m.billing_month||'').slice(0,7)===month),billRows=electricity.map(b=>{const amount=Number(b.amount)||0,paid=Math.min(amount,Number(b.paid_amount)||0),waived=b.status==='Waived',balance=waived?0:Math.max(0,amount-paid),status=waived?'Waived':balance<=0?'Paid':paid>0?'Part paid':'Due';return {...b,paid,balance,status,waived}}),billable=billRows.filter(b=>!b.waived),billTotal=billable.reduce((n,b)=>n+b.amount,0),billCollected=billable.reduce((n,b)=>n+b.paid,0),billOutstanding=billable.reduce((n,b)=>n+b.balance,0),billPaidCount=billable.filter(b=>b.status==='Paid').length,billOpenCount=billable.filter(b=>b.balance>0).length;const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2}),units=n=>Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2}),rentStatus=r=>`<span class="pill ${r.status==='Overdue'?'late':r.status==='Due'?'soon':''}" style="${r.status==='Paid'?'color:#357551;background:#edf7ef':''}">${r.status}</span>`,billStatus=b=>`<span class="pill ${b.status==='Due'?'soon':''}" style="${b.status==='Paid'?'color:#357551;background:#edf7ef':b.status==='Waived'?'color:#75847e;background:#f1f3f1':''}">${b.status}</span>`;document.getElementById('pageContent').innerHTML=`<div class="report-toolbar"><label>Report month <input id="reportMonth" type="month" value="${esc(month)}" onchange="renderReports()"></label><span class="report-note">Rent is due on the 2nd of each month · ${esc(monthLabel)}</span></div><section class="report-block"><div class="report-blockhead"><h3>Rent collection</h3><p>Expected rent compared with recorded payments. Due date: ${esc(dueLabel)}.</p></div><div class="report-metrics"><div class="report-metric"><span>Expected rent</span><strong>${money(rentDue)}</strong><small>${rentRows.length} residents due</small></div><div class="report-metric"><span>Collected</span><strong>${money(rentCollected)}</strong><small>${rentPaidCount} paid in full</small></div><div class="report-metric"><span>Outstanding</span><strong>${money(rentOutstanding)}</strong><small>${rentOpenCount} unpaid or part paid</small></div><div class="report-metric"><span>Collection rate</span><strong>${rentDue?Math.min(100,Math.round(rentCollected/rentDue*100))+'%':'—'}</strong><small>For ${esc(monthLabel)}</small></div></div><div class="report-table"><table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Due date</th><th>Rent</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody>${rentRows.length?rentRows.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td>${esc(r.room||'—')}</td><td>${esc(dueLabel)}</td><td>${money(r.due)}</td><td>${money(r.paid)}</td><td>${money(r.balance)}</td><td>${rentStatus(r)}</td></tr>`).join(''):'<tr><td colspan="7" class="sub">No residents were due for rent in this month.</td></tr>'}</tbody></table></div></section><section class="report-block"><div class="report-blockhead"><h3>Electricity collection</h3><p>Electricity bills received in ${esc(monthLabel)}. Bills arrive every two months, so months without a bill may have no records. Partial payments count toward collected; waived bills are excluded from totals.</p></div><div class="report-metrics"><div class="report-metric"><span>Total billed</span><strong>${money(billTotal)}</strong><small>${billable.length} active bills</small></div><div class="report-metric"><span>Collected</span><strong>${money(billCollected)}</strong><small>${billPaidCount} bills paid in full</small></div><div class="report-metric"><span>Outstanding</span><strong>${money(billOutstanding)}</strong><small>${billOpenCount} unpaid or part paid</small></div><div class="report-metric"><span>Collection rate</span><strong>${billTotal?Math.min(100,Math.round(billCollected/billTotal*100))+'%':'—'}</strong><small>${billRows.filter(b=>b.waived).length} waived</small></div></div><div class="report-table"><table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Due date</th><th>Status</th></tr></thead><tbody>${billRows.length?billRows.map(b=>`<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.flat||'—')}</td><td>${money(b.amount)}</td><td>${money(b.paid)}</td><td>${money(b.balance)}</td><td>${esc(b.due||'—')}</td><td>${billStatus(b)}</td></tr>`).join(''):'<tr><td colspan="7" class="sub">No electricity bills were created for this month.</td></tr>'}</tbody></table></div></section><section class="report-block"><div class="report-blockhead"><h3>Meter readings by flat</h3><p>Room 1 · Left meter and Room 2 · Right meter readings and units used for ${esc(monthLabel)}.</p></div><div class="report-metrics"><div class="report-metric"><span>Total units consumed</span><strong>${units(meterRows.reduce((n,m)=>n+Number(m.current_room1_reading-m.previous_room1_reading)+Number(m.current_room2_reading-m.previous_room2_reading),0))}</strong><small>${meterRows.length} flats with readings</small></div></div><div class="report-table"><table class="table"><thead><tr><th>Flat</th><th>Reading date</th><th>Room 1 · Left previous</th><th>Room 1 · Left current</th><th>Left units</th><th>Room 2 · Right previous</th><th>Room 2 · Right current</th><th>Right units</th><th>Total units</th><th>Main bill</th><th>Common meter total</th></tr></thead><tbody>${meterRows.length?meterRows.map(m=>{const left=Number(m.current_room1_reading)-Number(m.previous_room1_reading),right=Number(m.current_room2_reading)-Number(m.previous_room2_reading);return `<tr><td><b>${esc(m.flat||'—')}</b></td><td>${esc(m.reading_date||'—')}</td><td>${units(m.previous_room1_reading)}</td><td>${units(m.current_room1_reading)}</td><td>${units(left)}</td><td>${units(m.previous_room2_reading)}</td><td>${units(m.current_room2_reading)}</td><td>${units(right)}</td><td>${units(left+right)}</td><td>${money(m.main_bill_amount)}</td><td>${money(m.common_meter_total)}</td></tr>`}).join(''):'<tr><td colspan="11" class="sub">No meter readings were saved for this bill cycle.</td></tr>'}</tbody></table></div></section>`}function renderPage(p){if(p==='residents')renderResidents();else if(p==='rent')renderRent();else if(p==='rooms')renderRooms();else if(p==='electricity')renderElectricity();else if(p==='reports')renderReports();else if(p==='messages')renderMessages();else document.getElementById('pageContent').innerHTML=`<div style="padding:28px;text-align:center"><div style="font-size:28px">▤</div><h3 style="font:700 14px Manrope">${pages[p][0]} workspace</h3><p class="sub">Your ${pages[p][0].toLowerCase()} tools will live here.</p></div>`}
-window.renderCurrentPage=()=>{const page=Object.keys(pages).find(key=>pages[key][0]===document.getElementById('crumbPage').textContent);if(page&&page!=='dashboard')renderPage(page)}
-function initials(n){return n.split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase()}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function editResident(id){const r=residents.find(x=>String(x.id)===String(id));if(!r)return;const f=document.getElementById('residentForm');f.reset();f.dataset.editResidentId=r.id;f.elements.name.value=r.name||'';f.elements.phone.value=r.phone||'';f.elements.room.value=r.room||'';f.elements.sharing_type.value=r.sharing_type||'';f.elements.rent.value=r.rent||0;f.elements.deposit.value=r.deposit||0;f.elements.movein.value=r.movein||'';f.elements.address.value=r.address||'';f.elements.emergency.value=r.emergency||'';document.getElementById('residentModalTitle').textContent='Edit resident';document.getElementById('residentSubmitButton').textContent='Save changes';openModal('residentModal')}
-window.flatOccupancyInfo=(flat,list)=>{const assigned=list.filter(r=>r.room===flat.flat_number),capacity=Math.max(0,Number(flat.room_count)||0),used=assigned.reduce((n,r)=>n+(r.sharing_type==='double'?0.5:1),0),state=capacity>0&&used>capacity?'overfull':capacity>0&&used>=capacity?'full':assigned.length?'partial':'empty';return {count:assigned.length,used,capacity,state}};
-window.showFlatDetails=flatNumber=>{const flat=(window.pgFlats||[]).find(f=>f.flat_number===flatNumber)||{},assigned=(residents||[]).filter(r=>r.room===flatNumber),wifiName=flat.wifi_ssid||'',wifiPassword=flat.wifi_password||'';document.getElementById('flatDetailsModal')?.remove();const modal=document.createElement('div');modal.id='flatDetailsModal';modal.className='modal-backdrop';modal.innerHTML='<div class="modal-card" style="max-width:520px"><div class="modal-head"><div><h3>'+esc(flatNumber)+' details</h3><p class="sub">'+esc(flat.floor_name||'')+' · '+assigned.length+' resident'+(assigned.length===1?'':'s')+'</p></div><button class="iconbtn" onclick="closeModal(\'flatDetailsModal\')">×</button></div><div class="formgrid"><label>Wi-Fi name<div style="display:flex;gap:8px"><input id="flatWifiName" readonly value="'+esc(wifiName||'Not configured')+'"><button class="secondary" type="button" onclick="copyFlatWifi(\'name\')">Copy</button></div></label><label>Wi-Fi password<div style="display:flex;gap:8px"><input id="flatWifiPassword" readonly type="password" value="'+esc(wifiPassword||'Not configured')+'"><button class="secondary" type="button" onclick="toggleFlatWifiPassword()">Show</button><button class="secondary" type="button" onclick="copyFlatWifi(\'password\')">Copy</button></div></label></div><h4 style="margin:18px 0 8px">Residents</h4><div class="sub">'+(assigned.length?assigned.map(r=>'<div style="padding:7px 0;border-bottom:1px solid #edf0ee">'+esc(r.name)+'</div>').join(''):'No residents assigned to this flat.')+'</div></div>';document.body.appendChild(modal)};
-window.toggleFlatWifiPassword=()=>{const input=document.getElementById('flatWifiPassword'),button=input?.parentElement?.querySelector('button');if(!input)return;input.type=input.type==='password'?'text':'password';if(button)button.textContent=input.type==='password'?'Show':'Hide'};
-window.copyFlatWifi=kind=>{const input=document.getElementById(kind==='name'?'flatWifiName':'flatWifiPassword');if(!input)return;const done=()=>toast((kind==='name'?'Wi-Fi name':'Wi-Fi password')+' copied');if(navigator.clipboard?.writeText)navigator.clipboard.writeText(input.value).then(done);else{input.select();document.execCommand('copy');done()}};
-document.addEventListener('click',e=>{const tile=e.target.closest&&e.target.closest('.room-select');if(tile){e.preventDefault();e.stopPropagation();window.showFlatResidents(tile.dataset.flat)}})
-window.showFlatDetails=flatNumber=>{const flat=(window.pgFlats||[]).find(f=>f.flat_number===flatNumber)||{},box=document.createElement('div');box.id='flatDetailsModal';box.className='overlay show';box.innerHTML='<div class="modal"><div class="modalhead"><div><h2>'+esc(flatNumber)+' details</h2><p>Wi-Fi details</p></div><button class="close" type="button">×</button></div><div class="field"><label>Wi-Fi name</label><div style="display:flex;gap:8px"><input id="flatWifiName" readonly value="'+esc(flat.wifi_ssid||'Not configured')+'"><button class="secondary" type="button">Copy</button></div></div><div class="field" style="margin-top:12px"><label>Wi-Fi password</label><div style="display:flex;gap:8px"><input id="flatWifiPassword" readonly value="'+esc(flat.wifi_password||'Not configured')+'"><button class="secondary" type="button">Copy</button></div></div></div>';const buttons=box.querySelectorAll('.secondary');buttons[0].onclick=()=>navigator.clipboard.writeText(box.querySelector('#flatWifiName').value).then(()=>toast('Wi-Fi name copied'));buttons[1].onclick=()=>navigator.clipboard.writeText(box.querySelector('#flatWifiPassword').value).then(()=>toast('Wi-Fi password copied'));box.querySelector('.close').onclick=()=>box.remove();document.body.appendChild(box)}
-window.showFlatDetails=flatNumber=>{const flat=(window.pgFlats||[]).find(f=>f.flat_number===flatNumber)||{},box=document.createElement('div');box.id='flatDetailsModal';box.className='overlay show';box.innerHTML='<div class="modal"><div class="modalhead"><div><h2>'+esc(flatNumber)+' details</h2><p>Wi-Fi details</p></div><button class="close" type="button">×</button></div><div class="field"><label>Wi-Fi name</label><input readonly value="'+esc(flat.wifi_ssid||'Not configured')+'"></div><div class="field" style="margin-top:12px"><label>Wi-Fi password</label><input readonly type="password" value="'+esc(flat.wifi_password||'Not configured')+'"></div></div>';box.querySelector('.close').onclick=()=>box.remove();document.body.appendChild(box)}
-function refreshOptions(){let html='<option value="">Choose resident</option>'+residents.map(r=>`<option>${esc(r.name)}</option>`).join('');document.querySelectorAll('.residentOptions').forEach(x=>x.innerHTML=html)}function openForResident(n){openModal('rentModal');document.querySelector('#rentForm [name=resident]').value=n;document.querySelector('#rentModal h2').textContent='Record rent payment · '+n}
-document.getElementById('residentForm').addEventListener('submit',e=>{e.preventDefault();const form=e.target,d=Object.fromEntries(new FormData(form)),editId=form.dataset.editResidentId,existing=editId?residents.find(r=>String(r.id)===String(editId)):null;if(editId&&existing){Object.assign(existing,{name:d.name,phone:d.phone.replace(/\D/g,'').slice(-10),room:d.room,sharing_type:d.sharing_type,rent:Number(d.rent),deposit:Number(d.deposit||0),movein:d.movein||'',address:d.address||'',emergency:d.emergency||'',meter_side:d.meter_side||existing.meter_side||''});activities.unshift(`<div class="activity"><div class="acticon">♙</div><div class="actbody"><b>Resident details updated</b><small>${esc(d.name)} · Room ${esc(d.room)} · Just now</small></div></div>`)}else{residents.unshift({id:form.dataset.cloudResidentId||undefined,name:d.name,phone:d.phone.replace(/\D/g,'').slice(-10),room:d.room,sharing_type:d.sharing_type,rent:+d.rent,deposit:Number(d.deposit||0),status:'Not tracked',movein:d.movein||new Date().toISOString().slice(0,10),address:d.address||'',emergency:d.emergency||'',meter_side:d.meter_side||''});activities.unshift(`<div class="activity"><div class="acticon">♙</div><div class="actbody"><b>New resident added</b><small>${esc(d.name)} · Room ${esc(d.room)} · Just now</small></div></div>`)}document.getElementById('residentCount').textContent=residents.length;window.refreshDashboard?.();document.getElementById('activityList').innerHTML=activities.join('')+document.getElementById('activityList').innerHTML;persist();closeModal('residentModal');toast(editId?'Resident details updated.':'Resident added successfully.');if(!document.getElementById('genericPage').classList.contains('hidden')&&document.getElementById('crumbPage').textContent==='Residents')renderResidents()});
-document.getElementById('rentForm').addEventListener('submit',e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target));let r=residents.find(x=>x.name===d.resident);if(r)r.status=window.rentStatusAfterPayment||'Paid';window.rentStatusAfterPayment=null;payments.unshift({resident:d.resident,amount:Number(d.amount),date:d.date||new Date().toISOString().slice(0,10),method:d.method,note:d.note});activities.unshift(`<div class="activity"><div class="acticon">₹</div><div class="actbody"><b>${esc(d.resident)}</b> paid rent<small>${esc(r?.room||'')} · ${esc(d.method)} · Just now</small></div><div class="amount">+₹${Number(d.amount).toLocaleString('en-IN')}</div></div>`);document.getElementById('activityList').innerHTML=activities.join('')+document.getElementById('activityList').innerHTML;closeModal('rentModal');persist();e.target.reset();toast('Payment recorded');if(document.getElementById('crumbPage').textContent==='Rent & payments')renderRent()});
-function meterReadingsForFlat(flat,month){const rows=window.pgElectricityReadings||[],same=rows.find(r=>r.flat===flat&&String(r.billing_month||'').slice(0,7)===month);if(same)return {row:same,sameCycle:true};const prior=rows.filter(r=>r.flat===flat&&String(r.billing_month||'').slice(0,7)<month).sort((a,b)=>String(b.billing_month).localeCompare(String(a.billing_month)))[0];return {row:prior||null,sameCycle:false}}
-function meterValueFor(flat,month,room,kind){const entry=meterReadingsForFlat(flat,month);if(!entry.row)return '';if(entry.sameCycle)return entry.row[kind+'_room'+room+'_reading']??'';return entry.row['current_room'+room+'_reading']??''}
-function meterNumberInput(label,name,value,flatIndex,room,kind){const previous=kind==='previous';return '<label class="field" style="margin:0"><span>'+label+'</span><input type="number" min="0" step="0.01" inputmode="decimal" name="'+name+'" value="'+esc(value)+'" '+(previous?'class="meter-previous" data-flat-index="'+flatIndex+'" data-room="'+room+'"':'')+' oninput="updateMeterUnits('+flatIndex+')" placeholder="'+(previous?'Enter last bill reading':'Enter current reading')+'"></label>'}
-function ensureElectricityMessagePreview(){const form=document.getElementById('electricityForm');if(!form||document.getElementById('electricityMessagePreview'))return;const actions=form.querySelector('.formactions');const wrap=document.createElement('div');wrap.className='field full';wrap.innerHTML='<label>WhatsApp message preview</label><textarea id="electricityMessagePreview" rows="7" readonly aria-readonly="true" style="border:1px solid #dfe8e2;border-radius:9px;padding:11px;font-size:12px;line-height:1.6;resize:vertical;background:#f8faf8;color:var(--ink)"></textarea><span class="hint">This preview updates from the selected residents and amounts. You can review it again before opening WhatsApp.</span>';actions.before(wrap)}
-function updateElectricityMessagePreview(){ensureElectricityMessagePreview();const form=document.getElementById('electricityForm'),preview=document.getElementById('electricityMessagePreview');if(!form||!preview)return;const flat=form.elements.selectedFlat?.value||'',due=form.elements.due?.value||'',lines=[];residents.forEach((r,i)=>{const check=form.elements['include_'+i],amount=form.elements['amount_'+i];if(r.room===flat&&check?.checked&&amount?.value){lines.push('@⁨'+r.name+' '+(window.pgPropertyName||'')+' '+(r.room||'')+'⁩ '+Number(amount.value).toLocaleString('en-IN',{useGrouping:false,maximumFractionDigits:2}))}});const dueLabel=due?new Date(due+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long'}):'your due date';preview.value=['Electricity bill',...lines,form.elements.commonNote?.value?.trim()||'This includes common electricity bill',form.elements.note?.value?.trim()||'',form.elements.gpay?.value?.trim()?'GPay: '+form.elements.gpay.value.trim():'', 'Due date: '+dueLabel].filter(Boolean).join('\\n')}
-function markElectricityManual(input){input.dataset.manual='1';calculateElectricitySplit()}function markElectricityAmount(input){input.dataset.manual='1';updateElectricityMessagePreview()}
-ensureElectricityMessagePreview();document.addEventListener('input',e=>{if(e.target.closest('#electricityForm'))setTimeout(updateElectricityMessagePreview,0)});document.addEventListener('change',e=>{if(e.target.closest('#electricityForm'))updateElectricityMessagePreview()});
-function selectedFlatIndex(){const value=document.querySelector('#electricityForm [name=selectedFlat]')?.value||'';return (window.pgFlats||[]).findIndex(f=>f.flat_number===value)}
-function renderBillResidents(){const form=document.getElementById('electricityForm'),select=form.elements.selectedFlat,flatList=window.pgFlats||[],month=form.elements.month.value||new Date().toISOString().slice(0,7),panel=document.getElementById('billResidents');if(!select.options.length||select.options.length===1)select.innerHTML='<option value="">Choose a flat</option>'+flatList.map(f=>'<option value="'+esc(f.flat_number)+'">'+esc(f.flat_number)+'</option>').join('');const flatIndex=selectedFlatIndex();if(flatIndex<0){panel.innerHTML='<span class="hint">Choose a flat to enter its readings and calculate resident shares.</span>';return}const flatRecord=flatList[flatIndex],flat=flatRecord.flat_number,people=residents.filter(r=>r.room===flat),entry=meterReadingsForFlat(flat,month),previousHint=entry.row?(entry.sameCycle?'Saved readings for this cycle.':'Previous readings copied from '+new Date(entry.row.billing_month+'T00:00:00').toLocaleDateString('en-IN',{month:'long',year:'numeric'})+'.'):'No previous cycle saved for this flat. Enter both previous readings.',activeFlatChanged=form.dataset.activeFlat!==flat;if(activeFlatChanged){form.dataset.activeFlat=flat;const main=form.elements.mainBillAmount,common=form.elements.commonMeterTotal;main.value=entry.sameCycle&&Number(entry.row.main_bill_amount)>0?Number(entry.row.main_bill_amount):'';common.value=entry.sameCycle?Number(entry.row.common_meter_total||0):'0';delete main.dataset.manual;delete common.dataset.manual}panel.innerHTML='<input type="checkbox" name="flat_'+flatIndex+'" checked hidden><div class="sub" style="margin:0 0 8px">'+previousHint+' Active flats in this property: '+flatList.length+'.</div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><div style="border:1px solid var(--line);border-radius:9px;padding:9px"><b style="font-size:11px">Room 1 · Left meter</b>'+meterNumberInput('Previous bill reading','prev_room1_'+flatIndex,meterValueFor(flat,month,1,'previous'),flatIndex,1,'previous')+meterNumberInput('Current reading','current_room1_'+flatIndex,meterValueFor(flat,month,1,'current'),flatIndex,1,'current')+'<div class="tiny">Units used: <b id="meter-units-room1-'+flatIndex+'">Enter readings</b></div></div><div style="border:1px solid var(--line);border-radius:9px;padding:9px"><b style="font-size:11px">Room 2 · Right meter</b>'+meterNumberInput('Previous bill reading','prev_room2_'+flatIndex,meterValueFor(flat,month,2,'previous'),flatIndex,2,'previous')+meterNumberInput('Current reading','current_room2_'+flatIndex,meterValueFor(flat,month,2,'current'),flatIndex,2,'current')+'<div class="tiny">Units used: <b id="meter-units-room2-'+flatIndex+'">Enter readings</b></div></div></div><div id="electricityAllocationSummary" class="hint" style="margin:8px 0"></div><div style="display:grid;gap:7px">'+(people.length?people.map(r=>{const ri=residents.indexOf(r),side=r.meter_side||'';return '<div style="display:grid;grid-template-columns:auto minmax(90px,1fr) minmax(110px,140px) minmax(100px,120px);align-items:center;gap:7px;background:#f8faf8;border-radius:8px;padding:8px"><input type="checkbox" class="tenant-check" data-flat="'+flatIndex+'" name="include_'+ri+'" value="'+esc(r.name)+'" checked onchange="calculateElectricitySplit()" style="accent-color:var(--green)"><span style="font-size:11px">'+esc(r.name)+'</span><select name="meter_side_'+ri+'" aria-label="Meter room for '+esc(r.name)+'" onchange="calculateElectricitySplit()" style="border:1px solid #dfe8e2;border-radius:7px;padding:7px;font-size:11px"><option value="">Choose meter</option><option value="left" '+(side==='left'?'selected':'')+'>Room 1 · Left</option><option value="right" '+(side==='right'?'selected':'')+'>Room 2 · Right</option></select><label style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)">₹ <input type="number" min="0" step="0.01" name="amount_'+ri+'" value="" placeholder="Calculated" style="width:100%;border:1px solid #dfe8e2;border-radius:7px;padding:7px;font-size:11px" oninput="markElectricityAmount(this)"></label></div>'}).join(''):'<span class="tiny">No residents are assigned to this flat.</span>')+'</div>';updateMeterUnits(flatIndex)}
-function refreshMeterPreviousReadings(){const form=document.getElementById('electricityForm');form.dataset.activeFlat='';renderBillResidents()}
-function updateMeterUnits(i){[1,2].forEach(room=>{const previous=document.querySelector('[name="prev_room'+room+'_'+i+'"]'),current=document.querySelector('[name="current_room'+room+'_'+i+'"]'),label=document.getElementById('meter-units-room'+room+'-'+i);if(!previous||!current||!label)return;const p=previous.value,c=current.value;if(p===''||c===''){label.textContent='Enter readings';return}const units=Number(c)-Number(p);label.textContent=units<0?'Check readings':units.toLocaleString('en-IN',{maximumFractionDigits:2})});calculateElectricitySplit()}
-function calculateElectricitySplit(){const form=document.getElementById('electricityForm'),flatIndex=selectedFlatIndex();if(flatIndex<0)return;const flat=(window.pgFlats||[])[flatIndex]?.flat_number,people=residents.map((r,i)=>({r,i,check:form.elements['include_'+i],side:form.elements['meter_side_'+i],amount:form.elements['amount_'+i]})).filter(x=>x.check&&x.side&&x.amount&&x.r.room===flat&&x.check.checked),unit1=Number(form.elements['current_room1_'+flatIndex]?.value)-Number(form.elements['prev_room1_'+flatIndex]?.value),unit2=Number(form.elements['current_room2_'+flatIndex]?.value)-Number(form.elements['prev_room2_'+flatIndex]?.value),totalUnits=Math.max(0,unit1)+Math.max(0,unit2),main=Number(form.elements.mainBillAmount.value)||0,commonTotal=Number(form.elements.commonMeterTotal.value)||0,flatCount=(window.pgFlats||[]).length,flatCommon=flatCount?commonTotal/flatCount:0,summary=document.getElementById('electricityAllocationSummary');if(!summary)return;const residentsBySide={left:people.filter(x=>x.side.value==='left'),right:people.filter(x=>x.side.value==='right')},validSides=people.every(x=>x.side.value==='left'||x.side.value==='right');summary.textContent='Room 1 · Left: '+(Number.isFinite(unit1)?Math.max(0,unit1).toLocaleString('en-IN',{maximumFractionDigits:2}):'—')+' units ('+(totalUnits?Math.round(Math.max(0,unit1)/totalUnits*100):0)+'%) · Room 2 · Right: '+(Number.isFinite(unit2)?Math.max(0,unit2).toLocaleString('en-IN',{maximumFractionDigits:2}):'—')+' units ('+(totalUnits?Math.round(Math.max(0,unit2)/totalUnits*100):0)+'%) · Common share for '+flat+': ₹'+flatCommon.toFixed(2)+' ('+flatCount+' active flats)';if(!validSides||!people.length||totalUnits<=0){people.forEach(x=>{if(x.amount.dataset.manual!=='1')x.amount.value=''});return}const roomMain={left:main*Math.max(0,unit1)/totalUnits,right:main*Math.max(0,unit2)/totalUnits};people.forEach(x=>{if(x.amount.dataset.manual==='1')return;const room=x.side.value==='left'?'left':'right',group=residentsBySide[room],base=roomMain[room]/group.length+flatCommon/people.length;x.amount.value=(Math.round(base*100)/100).toFixed(2)});if(totalUnits===0&&main>0)summary.textContent+=' · Enter meter readings to calculate the main bill share.'}
-document.addEventListener('input',e=>{if(e.target.matches('.meter-previous'))e.target.dataset.manual='1'});
-document.getElementById('electricityForm').addEventListener('submit',e=>{e.preventDefault();const form=e.target,fd=new FormData(form),d=Object.fromEntries(fd),selected=[];residents.forEach((resident,i)=>{if(resident.room===d.selectedFlat&&fd.has('include_'+i)){const amount=Number(fd.get('amount_'+i));if(Number.isFinite(amount)&&amount>=0)selected.push({resident,amount,side:fd.get('meter_side_'+i)})}});if(!selected.length){toast('Select residents for this flat');return}const month=d.month?new Date(d.month+'-02').toLocaleDateString('en-IN',{month:'long',year:'numeric'}):'this month';window.pendingElectricBills=window.cloudElectricBills||selected.map(x=>({id:Date.now()+Math.random(),name:x.resident.name,phone:x.resident.phone,flat:x.resident.room,amount:x.amount,due:d.due,month,status:'Due'}));window.cloudElectricBills=null;bills.unshift(...window.pendingElectricBills);persist();closeModal('electricityModal');form.reset();form.dataset.activeFlat='';document.getElementById('messageTitle').textContent='Review electricity group message';const groupLines=selected.map(x=>'@⁨'+x.resident.name+' '+(window.pgPropertyName||'')+' '+(x.resident.room||'')+'⁩ '+Number(x.amount).toLocaleString('en-IN',{useGrouping:false,maximumFractionDigits:2})),dueLabel=new Date(d.due+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long'});document.getElementById('messageText').value=['Electricity bill',...groupLines,d.commonNote?.trim()||'',d.note?.trim()||'',d.gpay?.trim()?'GPay: '+d.gpay.trim():'', 'Due date: '+dueLabel].filter(Boolean).join('\n');openModal('messageModal');if(document.getElementById('crumbPage').textContent==='Electricity bills')renderPage('electricity');toast('Bills saved; choose the flat group in WhatsApp')});
-function goMessages(){goPage('messages')}function renderMessages(){document.getElementById('pageContent').innerHTML=`<div style="padding:20px"><div class="pagehead"><div><h2>Send a resident update</h2><div class="sub">Draft a rent reminder or electricity bill message</div></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 22px"><button class="secondary" onclick="draftRent()">₹ Draft rent reminders</button><button class="secondary" onclick="openModal('electricityModal')">ϟ Create electricity bills</button></div><h2 style="font:700 13px Manrope">Recent messages</h2><div class="sub" style="padding:12px 0">No messages sent from this workspace yet. Your draft history will appear here.</div></div>`}function draftRent(){lastMessage=`Hello All, this is a friendly reminder that your rent is due. Please make the payment at your earliest convenience. If you have already paid, kindly ignore this message. Thank you — ${window.pgPropertyName||'your property'}`;document.getElementById('messageTitle').textContent='Draft rent reminder';document.getElementById('messageText').value=lastMessage;openModal('messageModal')}
-function launchWhatsApp(){let text=document.getElementById('messageText').value;if(!text.trim()){toast('Add a message first');return}window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');closeModal('messageModal');toast('WhatsApp opened with your draft')}
-document.getElementById('searchInput').addEventListener('input',()=>{if(document.getElementById('crumbPage').textContent==='Rent & payments')renderRent()});document.getElementById('propertySelect').addEventListener('change',e=>toast('Switched to '+e.target.value+' (sample property)'));document.querySelectorAll('input[type=date]').forEach(x=>x.value=new Date().toISOString().slice(0,10));document.querySelector('input[type=month]').value=new Date().toISOString().slice(0,7);if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
-</script>
-<script>window.showFlatDetails=flatNumber=>{const flat=(window.pgFlats||[]).find(f=>f.flat_number===flatNumber)||{},box=document.createElement('div');box.id='flatDetailsModal';box.className='overlay show';box.innerHTML='<div class="modal"><div class="modalhead"><div><h2>'+esc(flatNumber)+' details</h2><p>Wi-Fi details</p></div><button class="close" type="button">×</button></div><div class="field"><label>Wi-Fi name</label><div style="display:flex;gap:8px"><input id="flatWifiName" readonly value="'+esc(flat.wifi_ssid||'Not configured')+'"><button class="secondary" type="button">Copy</button></div></div><div class="field" style="margin-top:12px"><label>Wi-Fi password</label><div style="display:flex;gap:8px"><input id="flatWifiPassword" readonly value="'+esc(flat.wifi_password||'Not configured')+'"><button class="secondary" type="button">Copy</button></div></div></div>';const b=box.querySelectorAll('.secondary');b[0].onclick=()=>navigator.clipboard.writeText(box.querySelector('#flatWifiName').value).then(()=>toast('Wi-Fi name copied'));b[1].onclick=()=>navigator.clipboard.writeText(box.querySelector('#flatWifiPassword').value).then(()=>toast('Wi-Fi password copied'));box.querySelector('.close').onclick=()=>box.remove();document.body.appendChild(box)};</script><script type="module" src="/src/cloud.js"></script><script type="module" src="/src/expenses-ui.js"></script></body><script>window.showFlatResidents=flat=>{const s=document.getElementById("searchInput");if(s){s.value=flat;goPage("residents");toast("Residents in "+flat)}};const addWifi=()=>document.querySelectorAll(".room-select").forEach(room=>{if(room.nextElementSibling?.classList.contains("wifi-select"))return;const b=document.createElement("button");b.type="button";b.className="secondary wifi-select";b.textContent="Wi-Fi";b.style.padding="6px 8px";room.parentElement.style.justifyContent="flex-start";room.parentElement.style.gap="10px";b.onclick=e=>{e.stopPropagation();window.showFlatDetails(room.dataset.flat)};room.parentElement.appendChild(b)});new MutationObserver(addWifi).observe(document.getElementById("pageContent"),{childList:true,subtree:true});addWifi()</script></html>
+      .report-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 15px 18px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        margin-bottom: 14px;
+      }
+      .report-toolbar label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .report-toolbar input {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      .report-note {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .report-block {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        margin-bottom: 14px;
+        overflow: hidden;
+      }
+      .report-blockhead {
+        padding: 17px 19px 12px;
+      }
+      .report-blockhead h3 {
+        font: 700 14px Manrope;
+        margin: 0;
+      }
+      .report-blockhead p {
+        font-size: 10px;
+        color: var(--muted);
+        margin: 5px 0 0;
+      }
+      .report-metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        padding: 0 18px 16px;
+      }
+      .report-metric {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        background: #fbfcfb;
+      }
+      .report-metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .report-metric strong {
+        display: block;
+        font: 800 17px Manrope;
+        margin-top: 6px;
+      }
+      .report-metric small {
+        display: block;
+        color: var(--muted);
+        font-size: 9px;
+        margin-top: 4px;
+      }
+      .report-table .table th,
+      .report-table .table td {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      @media (max-width: 730px) {
+        .report-toolbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .report-metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      /* Keep compact flat cards; distribute them across each floor when space allows. */
+      .floor {
+        align-items: stretch;
+      }
+      .floorlabel {
+        flex: 0 0 57px;
+        align-self: center;
+      }
+      .roomrow {
+        flex: 1;
+        min-width: 0;
+        justify-content: space-between;
+      }
+      /* Keep navigation stationary while the workspace scrolls independently. */
+      .shell {
+        height: 100vh;
+        height: 100dvh;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .sidebar {
+        height: 100vh;
+        height: 100dvh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+      .main {
+        height: 100vh;
+        height: 100dvh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+      .stats {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+      @media (max-width: 1000px) {
+        .stats {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 730px) {
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+    <style>
+      @media (max-width: 700px) {
+        .tablewrap {
+          position: relative;
+          overscroll-behavior-x: contain;
+        }
+        .table th:first-child,
+        .table td:first-child {
+          position: sticky;
+          left: 0;
+          width: 118px;
+          min-width: 118px;
+          max-width: 118px;
+          background: #fff;
+          z-index: 2;
+          box-shadow: 5px 0 8px rgba(23, 42, 37, 0.08);
+          overflow: hidden;
+        }
+        .table th:first-child {
+          z-index: 3;
+        }
+        .table td:first-child b {
+          display: block;
+          max-width: 82px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .table td:first-child .tiny {
+          max-width: 90px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brandmark">⌂</div>
+          <div class="brandtext"><strong>staywise</strong><small>PG management</small></div>
+        </div>
+        <div class="navlabel">Workspace</div>
+        <nav class="nav">
+          <button class="active" data-page="dashboard">
+            <span class="ico">▦</span><span class="label">Overview</span></button
+          ><button data-page="residents"><span class="ico">♙</span><span class="label">Residents</span></button
+          ><button data-page="rooms"><span class="ico">⌂</span><span class="label">Rooms & flats</span></button
+          ><button data-page="rent"><span class="ico">₹</span><span class="label">Rent & payments</span></button
+          ><button data-page="electricity">
+            <span class="ico">ϟ</span><span class="label">Electricity bills</span></button
+          ><button data-page="messages"><span class="ico">◌</span><span class="label">Messages</span></button>
+        </nav>
+        <div class="sidebottom">
+          <div class="navlabel">Manage</div>
+          <nav class="nav">
+            <button data-page="reports"><span class="ico">▤</span><span class="label">Reports</span></button
+            ><button data-page="settings"><span class="ico">⚙</span><span class="label">Settings</span></button>
+          </nav>
+          <div class="help">
+            <b>Need a hand?</b>
+            <p>See how Staywise can simplify your PG operations.</p>
+            <button onclick="toast('Help centre is coming soon')">Visit help centre ↗</button>
+          </div>
+          <div class="profile">
+            <div class="avatar" id="ownerAvatar">?</div>
+            <div><b id="ownerProfileName">Owner</b><small>PG Owner</small></div>
+          </div>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div class="crumb">
+            Workspace <span style="color: #c3cdc7"> / </span> <strong id="crumbPage">Overview</strong>
+          </div>
+          <div class="topright">
+            <select class="property-select" id="propertySelect">
+              <option>Loading property…</option></select
+            ><button class="bell" onclick="toast('You’re all caught up')">♧</button>
+            <div class="avatar" id="ownerAvatarTop">?</div>
+          </div>
+        </header>
+        <div class="content">
+          <section id="dashboardPage">
+            <div class="welcome">
+              <div>
+                <div class="eyebrow" id="todayDate"></div>
+                <h1>
+                  <span id="greetingText">Good morning</span>, <span id="ownerGreeting">Owner</span>
+                  <span id="greetingIcon">☀️</span>
+                </h1>
+                <p>Here’s what’s happening at your property today.</p>
+              </div>
+              <button class="primary" onclick="openModal('residentModal')">＋ Add resident</button>
+            </div>
+            <div class="stats">
+              <div class="stat">
+                <div class="stathead">Residents <span class="staticon">♙</span></div>
+                <strong id="residentCount">0</strong>
+                <div class="statfoot" id="residentSummary">No residents added yet</div>
+              </div>
+              <div class="stat">
+                <div class="stathead">Flats occupied <span class="staticon">⌂</span></div>
+                <strong id="occupancyValue">0 / 0</strong>
+                <div class="statfoot" id="flatSummary">Add your flats in building setup</div>
+              </div>
+              <div class="stat">
+                <div class="stathead">Rent collected <span class="staticon">₹</span></div>
+                <strong id="rentCollectedValue">₹0</strong>
+                <div class="statfoot" id="rentCollectedSummary">This month · no payments recorded</div>
+              </div>
+              <div class="stat">
+                <div class="stathead">Pending dues <span class="staticon">◷</span></div>
+                <strong id="pendingDuesValue">₹0</strong>
+                <div class="statfoot" id="pendingDuesSummary">No pending rent</div>
+              </div>
+              <div class="stat">
+                <div class="stathead">Deposits collected <span class="staticon">₹</span></div>
+                <strong id="depositTotalValue">₹0</strong>
+                <div class="statfoot" id="depositTotalSummary">No deposits recorded yet</div>
+              </div>
+            </div>
+            <div class="grid">
+              <div class="card">
+                <div class="cardhead">
+                  <div>
+                    <h2>Room occupancy</h2>
+                    <div class="sub">Your saved flats and assigned residents</div>
+                  </div>
+                </div>
+                <div class="occupancy" id="occupancyList"><div class="sub">No flats to show yet.</div></div>
+              </div>
+              <div class="card">
+                <div class="cardhead">
+                  <div>
+                    <h2>Recent activity</h2>
+                    <div class="sub">Updates from your property</div>
+                  </div>
+                </div>
+                <div class="activity-list" id="activityList">
+                  <div class="sub" style="padding: 16px 0">No activity yet.</div>
+                </div>
+              </div>
+            </div>
+            <div class="bottomgrid">
+              <div class="card">
+                <div class="cardhead">
+                  <div>
+                    <h2>Rent due</h2>
+                    <div class="sub">Residents with unpaid rent</div>
+                  </div>
+                  <button class="link" onclick="goPage('rent')">See all →</button>
+                </div>
+                <div class="due-list" id="dueList">
+                  <div class="sub" style="padding: 12px 0">No rent dues recorded yet.</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="cardhead">
+                  <div>
+                    <h2>Quick actions</h2>
+                    <div class="sub">Common owner tasks</div>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="action" onclick="openModal('residentModal')">
+                    <span>♙</span><b>Add a resident</b><small>Register a new move-in</small></button
+                  ><button class="action" onclick="openModal('rentModal')">
+                    <span>₹</span><b>Record a payment</b><small>Log rent received</small></button
+                  ><button class="action" onclick="openModal('electricityModal')">
+                    <span>ϟ</span><b>Create electricity bill</b><small>Enter individual shares</small></button
+                  ><button class="action" onclick="goPage('messages')">
+                    <span>◌</span><b>Send a reminder</b><small>Prepare a WhatsApp draft</small>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section id="genericPage" class="hidden">
+            <div class="welcome">
+              <div>
+                <div class="eyebrow" id="propertyNameHeading"></div>
+                <h1 id="pageTitle">Residents</h1>
+                <p id="pageDesc">Manage your property in one place.</p>
+              </div>
+              <button class="primary" id="pageCta" onclick="openModal('residentModal')">＋ Add resident</button>
+            </div>
+            <div class="card">
+              <div class="pagehead" style="padding: 18px 20px 12px">
+                <h2 id="tableTitle">Residents</h2>
+                <input class="search" id="searchInput" placeholder="Search residents..." oninput="renderResidents()" />
+              </div>
+              <div class="tablewrap" id="pageContent"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div
+      id="ownerSetupGate"
+      style="display: none; position: fixed; inset: 0; background: #153b30; z-index: 60; overflow: auto; padding: 24px"
+    >
+      <form
+        id="ownerSetupForm"
+        style="background: white; border-radius: 18px; padding: 26px; width: min(760px, 100%); margin: 25px auto"
+      >
+        <div class="eyebrow">Property setup</div>
+        <h2 style="font: 800 21px Manrope; margin: 7px 0">Set up your building</h2>
+        <p class="sub" style="margin: 0 0 18px">Add your property and the flats or rooms you manage.</p>
+        <div class="formgrid">
+          <div class="field">
+            <label>Property name *</label><input name="propertyName" required placeholder="e.g. Greenwood Residency" />
+          </div>
+          <div class="field">
+            <label>Property address</label><input name="propertyAddress" placeholder="Street, area, city" />
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 22px 0 10px">
+          <b style="font: 700 13px Manrope">Flats / rooms</b
+          ><button type="button" class="secondary" id="addFlatRow">＋ Add flat</button>
+        </div>
+        <div id="setupFlats" style="display: grid; gap: 9px"></div>
+        <p class="hint">
+          Wi-Fi details are optional and visible only in owner settings; they are not included in resident messages.
+        </p>
+        <div id="setupError" class="hint" style="color: #b44; margin-top: 12px"></div>
+        <div class="formactions">
+          <button type="button" class="secondary" id="skipPropertySetup">Skip for now</button
+          ><button class="primary" id="savePropertySetup">Save property setup</button>
+        </div>
+      </form>
+    </div>
+    <div
+      id="authGate"
+      style="
+        position: fixed;
+        inset: 0;
+        background: #153b30;
+        z-index: 50;
+        display: none;
+        place-items: center;
+        padding: 20px;
+      "
+    >
+      <form
+        id="authForm"
+        style="
+          background: white;
+          border-radius: 18px;
+          padding: 24px;
+          width: min(520px, 100%);
+          max-height: 92vh;
+          overflow: auto;
+          box-shadow: 0 25px 80px #0004;
+        "
+      >
+        <div class="brandmark" style="margin-bottom: 16px">⌂</div>
+        <h2 style="font: 800 20px Manrope; margin: 0 0 6px">Owner sign in</h2>
+        <p class="sub" style="margin: 0 0 18px">Sign in to access your PG records securely.</p>
+        <div class="field">
+          <label>Email</label><input name="email" required type="email" autocomplete="username" />
+        </div>
+        <div class="field" style="margin-top: 12px">
+          <label>Password</label
+          ><input name="password" required type="password" autocomplete="current-password" minlength="8" />
+        </div>
+        <div class="field" id="ownerNameField" style="margin-top: 12px; display: none">
+          <label>Your name *</label
+          ><input name="ownerName" autocomplete="name" placeholder="Name to show in your owner dashboard" />
+        </div>
+        <button type="button" class="secondary" id="showSignupPropertyFields" style="display: none; margin-top: 16px">
+          ＋ Add building details
+        </button>
+        <div id="signupPropertyFields" style="display: none; margin-top: 16px">
+          <div class="formgrid">
+            <div class="field">
+              <label>Building / property name *</label
+              ><input name="signupPropertyName" placeholder="e.g. Greenwood Residency" />
+            </div>
+            <div class="field">
+              <label>Building address</label><input name="signupPropertyAddress" placeholder="Street, area, city" />
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px">
+            <b style="font: 700 12px Manrope">Flats / rooms</b
+            ><button type="button" class="secondary" id="addSignupFlat">＋ Add flat</button>
+          </div>
+          <div id="signupFlats" style="display: grid; gap: 8px"></div>
+        </div>
+        <div id="authError" class="hint" role="status" aria-live="polite" style="color: #b44; margin-top: 10px"></div>
+        <div class="formactions">
+          <button type="button" class="secondary" id="signupButton">Create account</button
+          ><button class="primary" id="authSubmit">Sign in</button>
+        </div>
+      </form>
+    </div>
+    <div class="overlay" id="residentModal">
+      <div class="modal">
+        <div class="modalhead">
+          <div>
+            <h2 id="residentModalTitle">Add a resident</h2>
+            <p>Add their details and assign a flat and sharing type.</p>
+          </div>
+          <button class="close" onclick="closeModal('residentModal')">×</button>
+        </div>
+        <form id="residentForm">
+          <div class="formgrid">
+            <div class="field">
+              <label>Full name *</label><input name="name" required placeholder="e.g. Aditi Sharma" />
+            </div>
+            <div class="field">
+              <label>Phone number *</label><input name="phone" required type="tel" placeholder="+91 98765 43210" />
+            </div>
+            <div class="field">
+              <label>Room / flat *</label
+              ><select name="room" required>
+                <option value="">Choose flat</option>
+                <option>Flat 1</option>
+                <option>Flat 2</option>
+                <option>Flat 3</option>
+                <option>Flat 4</option>
+                <option>Flat 5</option>
+                <option>Flat 6</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Sharing type *</label
+              ><select name="sharing_type" required>
+                <option value="">Choose sharing</option>
+                <option value="single">Single sharing</option>
+                <option value="double">Double sharing</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Monthly rent (₹) *</label><input name="rent" required type="number" placeholder="Monthly rent" />
+            </div>
+            <div class="field">
+              <label>Deposit amount (₹) (optional)</label
+              ><input name="deposit" required type="number" min="0" placeholder="Security deposit" />
+            </div>
+            <div class="field"><label>Move-in date</label><input name="movein" type="date" /></div>
+            <div class="field">
+              <label>Emergency contact</label><input name="emergency" placeholder="Name and phone" />
+            </div>
+            <div class="field full"><label>Address</label><input name="address" placeholder="Permanent address" /></div>
+          </div>
+          <div class="formactions">
+            <button type="button" class="secondary" onclick="closeModal('residentModal')">Cancel</button
+            ><button class="primary" id="residentSubmitButton">Add resident</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="overlay" id="rentModal">
+      <div class="modal">
+        <div class="modalhead">
+          <div>
+            <h2>Record a rent payment</h2>
+            <p>
+              Payments for the same resident and month stay in one record; later payments add to the total and update
+              its date.
+            </p>
+          </div>
+          <button class="close" onclick="closeModal('rentModal')">×</button>
+        </div>
+        <form id="rentForm">
+          <div class="formgrid">
+            <div class="field full">
+              <label>Resident *</label
+              ><select name="resident" class="residentOptions" required></select>
+            </div>
+            <div class="field">
+              <label>Amount (₹) *</label><input name="amount" required type="number" placeholder="8500" />
+            </div>
+            <div class="field"><label>Payment date</label><input name="date" type="date" /></div>
+            <div class="field">
+              <label>Payment method</label
+              ><select name="method">
+                <option>UPI</option>
+                <option>Bank transfer</option>
+                <option>Cash</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Reference / note</label><input name="note" placeholder="UPI reference or note" />
+            </div>
+          </div>
+          <div class="formactions">
+            <button type="button" class="secondary" onclick="closeModal('rentModal')">Cancel</button
+            ><button class="primary">Save payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="overlay" id="electricityModal">
+      <div class="modal">
+        <div class="modalhead">
+          <div>
+            <h2>Create electricity bills</h2>
+            <p>Select residents and enter each person’s amount and due date.</p>
+          </div>
+          <button class="close" onclick="closeModal('electricityModal')">×</button>
+        </div>
+        <form id="electricityForm">
+          <div class="formgrid">
+            <div class="field">
+              <label>Bill received month *</label
+              ><input name="month" type="month" required onchange="refreshMeterPreviousReadings()" /><span class="hint"
+                >Bills arrive every two months. Previous readings use this flat’s last saved cycle when available.</span
+              >
+            </div>
+            <div class="field"><label>Reading date *</label><input name="readingDate" type="date" required /></div>
+            <div class="field"><label>Due date *</label><input name="due" type="date" required /></div>
+            <div class="field">
+              <label>Flat *</label
+              ><select name="selectedFlat" required onchange="renderBillResidents()">
+                <option value="">Choose a flat</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Main electricity bill for this flat (₹) *</label
+              ><input
+                name="mainBillAmount"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+                placeholder="Flat meter bill"
+                oninput="markElectricityManual(this)"
+              />
+            </div>
+            <div class="field">
+              <label>Total common meter charges for building (₹)</label
+              ><input
+                name="commonMeterTotal"
+                type="number"
+                min="0"
+                step="0.01"
+                value="0"
+                oninput="markElectricityManual(this)"
+              /><span class="hint"
+                >Building total is divided across active flats, then equally among this flat’s selected residents.</span
+              >
+            </div>
+            <div class="field full">
+              <label>Meter readings and residents *</label>
+              <div id="billResidents" style="display: grid; gap: 8px"></div>
+              <span class="hint"
+                >Room 1 is the left meter; Room 2 is the right meter. Main bill is split by units used, then by
+                residents mapped to each room. Calculated resident amounts stay editable.</span
+              >
+            </div>
+            <div class="field">
+              <label>Common bill note</label><input name="commonNote" value="This includes common electricity bill" />
+            </div>
+            <div class="field"><label>GPay number</label><input name="gpay" type="tel" value="9041869283" /></div>
+            <div class="field full">
+              <label>Extra note (optional)</label><input name="note" placeholder="Optional message note" />
+            </div>
+          </div>
+          <div class="formactions">
+            <button type="button" class="secondary" onclick="closeModal('electricityModal')">Cancel</button
+            ><button class="primary">Review bills</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="overlay" id="electricityPaymentModal">
+      <div class="modal">
+        <div class="modalhead">
+          <div>
+            <h2>Record electricity payment</h2>
+            <p id="electricityPaymentSubtitle">Record an amount received for this bill.</p>
+          </div>
+          <button class="close" onclick="closeModal('electricityPaymentModal')">×</button>
+        </div>
+        <form id="electricityPaymentForm">
+          <input type="hidden" name="billId" />
+          <div class="formgrid">
+            <div class="field">
+              <label>Amount received (₹) *</label><input name="amount" type="number" min="0.01" step="0.01" required />
+            </div>
+            <div class="field"><label>Payment date *</label><input name="date" type="date" required /></div>
+            <div class="field">
+              <label>Payment method</label
+              ><select name="method">
+                <option>UPI</option>
+                <option>Bank transfer</option>
+                <option>Cash</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Reference / note</label><input name="note" placeholder="Optional reference" />
+            </div>
+          </div>
+          <div class="formactions">
+            <button type="button" class="secondary" onclick="closeModal('electricityPaymentModal')">Cancel</button
+            ><button class="primary">Save payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="overlay" id="messageModal">
+      <div class="modal">
+        <div class="modalhead">
+          <div>
+            <h2 id="messageTitle">WhatsApp message</h2>
+            <p>Review this draft before opening WhatsApp.</p>
+          </div>
+          <button class="close" onclick="closeModal('messageModal')">×</button>
+        </div>
+        <div class="field">
+          <label>Message draft</label
+          ><textarea
+            id="messageText"
+            rows="7"
+            style="
+              border: 1px solid #dfe8e2;
+              border-radius: 9px;
+              padding: 11px;
+              font: 12px/1.6 'DM Sans';
+              resize: vertical;
+            "
+          ></textarea
+          ><span class="hint"
+            >WhatsApp will open with the message ready. You still need to press Send. Automated sending requires an
+            approved WhatsApp Business setup.</span
+          >
+        </div>
+        <div class="formactions">
+          <button class="secondary" onclick="closeModal('messageModal')">Close</button
+          ><button class="primary" onclick="launchWhatsApp()">Open WhatsApp ↗</button>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="busy-overlay" id="appBusy" role="status" aria-live="polite" aria-atomic="true">
+      <div class="busy-card">
+        <span class="busy-spinner" aria-hidden="true"></span><span id="appBusyText">Saving changes…</span>
+      </div>
+    </div>
+    <script>
+      function readStore(k, f) {
+        try {
+          return JSON.parse(localStorage.getItem('staywise_' + k)) || f;
+        } catch {
+          return f;
+        }
+      }
+      let residents = readStore('residents', []).map((r) => {
+        delete r.aadhaar;
+        return r;
+      });
+      let activities = readStore('activities', []);
+      let bills = readStore('bills', []);
+      let payments = readStore('payments', []);
+      let lastMessage = '';
+      function persist() {
+        localStorage.setItem(
+          'staywise_residents',
+          JSON.stringify(
+            residents.map((r) => {
+              const clean = {...r};
+              delete clean.aadhaar;
+              return clean;
+            })
+          )
+        );
+        localStorage.setItem('staywise_activities', JSON.stringify(activities));
+        localStorage.setItem('staywise_bills', JSON.stringify(bills));
+        localStorage.setItem('staywise_payments', JSON.stringify(payments));
+      }
+      window.applyCloudState = (nextResidents, nextBills) => {
+        residents = nextResidents;
+        bills = nextBills;
+        localStorage.setItem('staywise_residents', JSON.stringify(nextResidents));
+        localStorage.setItem('staywise_bills', JSON.stringify(nextBills));
+        window.refreshDashboard?.();
+        window.renderCurrentPage?.();
+      };
+      const pages = {
+        dashboard: ['Overview', 'Your property at a glance'],
+        residents: ['Residents', 'Keep resident details, room assignments, and rent status up to date.'],
+        rooms: ['Rooms & flats', 'Manage floors, rooms, bed capacity, and availability.'],
+        rent: ['Rent & payments', 'Track monthly rent, payments received, and outstanding balances.'],
+        electricity: ['Electricity bills', 'Calculate and review electricity charges for each resident.'],
+        messages: ['Messages', 'Prepare WhatsApp reminders and keep a record of communication.'],
+        reports: ['Reports', 'Review occupancy, collections, expenses, and dues.'],
+        settings: ['Settings', 'Manage your property, billing rules, and team access.']
+      };
+      function toast(s) {
+        let t = document.getElementById('toast');
+        t.textContent = s;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2600);
+      }
+      function applyDateDefaults(form) {
+        const now = new Date(),
+          today =
+            now.getFullYear() +
+            '-' +
+            String(now.getMonth() + 1).padStart(2, '0') +
+            '-' +
+            String(now.getDate()).padStart(2, '0'),
+          month = today.slice(0, 7);
+        form?.querySelectorAll('input[type="date"],input[type="month"]').forEach((input) => {
+          if (!input.value) input.value = input.type === 'month' ? month : today;
+        });
+      }
+      function resetResidentForm() {
+        const f = document.getElementById('residentForm');
+        f.reset();
+        delete f.dataset.editResidentId;
+        delete f.dataset.cloudResidentId;
+        document.getElementById('residentModalTitle').textContent = 'Add a resident';
+        document.getElementById('residentSubmitButton').textContent = 'Add resident';
+      }
+      function openModal(id) {
+        if (id === 'residentModal' && !document.getElementById('residentForm').dataset.editResidentId)
+          resetResidentForm();
+        if (id === 'rentModal' || id === 'messageModal') refreshOptions();
+        applyDateDefaults(document.querySelector('#' + id + ' form'));
+        if (id === 'electricityModal') renderBillResidents();
+        document.getElementById(id).classList.add('show');
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+        if (id === 'residentModal') resetResidentForm();
+      }
+      document.querySelectorAll('.overlay').forEach((o) =>
+        o.addEventListener('click', (e) => {
+          if (e.target === o) o.classList.remove('show');
+        })
+      );
+      function goPage(p) {
+        document.querySelectorAll('.nav button').forEach((b) => b.classList.toggle('active', b.dataset.page === p));
+        document.getElementById('crumbPage').textContent = pages[p][0];
+        document.getElementById('dashboardPage').classList.toggle('hidden', p !== 'dashboard');
+        document.getElementById('genericPage').classList.toggle('hidden', p === 'dashboard');
+        if (p !== 'dashboard') {
+          document.getElementById('pageTitle').textContent = pages[p][0];
+          document.getElementById('pageDesc').textContent = pages[p][1];
+          document.getElementById('tableTitle').textContent = pages[p][0];
+          document.getElementById('searchInput').classList.toggle('hidden', !['residents', 'rent'].includes(p));
+          let cta = document.getElementById('pageCta');
+          cta.classList.remove('hidden');
+          if (p === 'reports') {
+            cta.classList.add('hidden');
+          } else if (p === 'residents') {
+            cta.textContent = '＋ Add resident';
+            cta.onclick = () => openModal('residentModal');
+          } else if (p === 'rent') {
+            cta.textContent = '＋ Record payment';
+            cta.onclick = () => openModal('rentModal');
+          } else if (p === 'electricity') {
+            cta.textContent = '＋ Create bills';
+            cta.onclick = () => openModal('electricityModal');
+          } else {
+            cta.textContent =
+              p === 'messages' ? '＋ Draft reminder' : p === 'settings' ? 'Edit building details' : '＋ Add new';
+            cta.onclick = () =>
+              p === 'messages'
+                ? goMessages()
+                : p === 'settings'
+                  ? window.editPropertySetup
+                    ? window.editPropertySetup()
+                    : toast('Sign in to edit building details')
+                  : toast(pages[p][0] + ' setup is ready for the next build step');
+          }
+          renderPage(p);
+        }
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      }
+      document.querySelectorAll('.nav button').forEach((b) => (b.onclick = () => goPage(b.dataset.page)));
+      function rentBalanceForResident(r) {
+        const now = new Date(),
+          month = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0'),
+          paid = (window.pgRentPayments || [])
+            .filter(
+              (p) =>
+                String(p.resident_id) === String(r.id) && String(p.rent_month || p.paid_on || '').slice(0, 7) === month
+            )
+            .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+        return Math.max(0, Number(r.rent || 0) - paid);
+      }
+      function draftResidentRentReminder(id) {
+        const r = residents.find((x) => String(x.id) === String(id));
+        if (!r) return toast('Resident record not found');
+        const balance = rentBalanceForResident(r);
+        if (balance <= 0) return toast('This resident has no rent balance due');
+        const now = new Date(),
+          dueDate = new Date(now.getFullYear(), now.getMonth(), 2),
+          monthLabel = now.toLocaleDateString('en-IN', {month: 'long', year: 'numeric'}),
+          dueLabel = dueDate.toLocaleDateString('en-IN', {day: 'numeric', month: 'long'});
+        document.getElementById('messageTitle').textContent = 'Rent reminder · ' + r.name;
+        document.getElementById('messageText').value =
+          'Hello ' +
+          r.name +
+          ', this is a friendly reminder that ₹' +
+          balance.toLocaleString('en-IN', {maximumFractionDigits: 2}) +
+          ' rent for ' +
+          monthLabel +
+          ' was due on ' +
+          dueLabel +
+          '. If you have already paid, kindly ignore this message. Thank you — ' +
+          (window.pgPropertyName || 'your property');
+        openModal('messageModal');
+      }
+      function renderResidents() {
+        const query = (document.getElementById('searchInput')?.value || '').toLowerCase(),
+          rows = residents.filter((r) => (r.name + r.room + r.phone).toLowerCase().includes(query));
+        if (!rows.length) {
+          document.getElementById('pageContent').innerHTML =
+            '<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No residents found' +
+            (query ? ' in ' + esc(query) : '') +
+            '</h3><p class="sub">Try another flat or clear the filter.</p><button class="secondary" onclick="document.getElementById(\'searchInput\').value=\'\';renderResidents()">Clear filter</button></div>';
+          return;
+        }
+        const body = rows
+          .map((r) => {
+            const reminder =
+              r.id && rentBalanceForResident(r) > 0
+                ? '<button class="link" onclick="draftResidentRentReminder(\'' + r.id + '\')">Rent reminder</button>'
+                : '<span class="rent-reminder-placeholder">—</span>';
+            return (
+              '<tr><td><div class="residentcell"><div class="miniava">' +
+              initials(r.name) +
+              '</div><div><b>' +
+              esc(r.name) +
+              '</b><div class="tiny">+91 ' +
+              esc(r.phone) +
+              ' · Deposit ₹' +
+              Number(r.deposit || 0).toLocaleString('en-IN') +
+              '</div></div></div></td><td>' +
+              esc(r.room) +
+              '</td><td>' +
+              esc(r.sharing_type === 'single' ? 'Single' : r.sharing_type === 'double' ? 'Double' : '—') +
+              '</td><td>₹' +
+              Number(r.rent).toLocaleString('en-IN') +
+              '</td><td><span class="pill ' +
+              (r.status === 'Overdue' ? 'late' : ['Due', 'Due soon'].includes(r.status) ? 'soon' : '') +
+              '" style="' +
+              (r.status === 'Paid' ? 'color:#357551;background:#edf7ef' : '') +
+              '">' +
+              esc(r.status) +
+              '</span></td><td>' +
+              esc(r.movein || '—') +
+              '</td><td>' +
+              reminder +
+              '</td><td>' +
+              (r.id
+                ? '<button class="link" onclick="editResident(\'' +
+                  r.id +
+                  '\')">Edit</button> <button class="secondary" style="color:#b44;border-color:#eed2d0" onclick="removeResident(\'' +
+                  r.id +
+                  '\')">Remove</button>'
+                : '') +
+              '</td></tr>'
+            );
+          })
+          .join('');
+        document.getElementById('pageContent').innerHTML =
+          '<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Sharing</th><th>Rent</th><th>Status</th><th>Move-in</th><th>Rent reminder</th><th></th></tr></thead><tbody>' +
+          body +
+          '</tbody></table>';
+      }
+      function renderRent() {
+        const body = residents
+          .map((r) => {
+            const balance = rentBalanceForResident(r),
+              reminder =
+                r.id && balance > 0
+                  ? '<button class="link" onclick="draftResidentRentReminder(\'' +
+                    r.id +
+                    '\')">WhatsApp reminder</button>'
+                  : '<span class="rent-reminder-placeholder">—</span>';
+            return (
+              '<tr><td><b>' +
+              esc(r.name) +
+              '</b><div class="tiny">+91 ' +
+              esc(r.phone) +
+              ' · Deposit ₹' +
+              Number(r.deposit || 0).toLocaleString('en-IN') +
+              '</div></td><td>' +
+              esc(r.room) +
+              '</td><td>₹' +
+              Number(r.rent).toLocaleString('en-IN') +
+              '</td><td><span class="pill ' +
+              (r.status === 'Overdue' ? 'late' : ['Due', 'Due soon'].includes(r.status) ? 'soon' : '') +
+              '" style="' +
+              (r.status === 'Paid' ? 'color:#357551;background:#edf7ef' : '') +
+              '">' +
+              esc(r.status) +
+              '</span></td><td><button class="link" onclick="openForResident(\'' +
+              esc(r.name) +
+              '\')">Record payment</button> ' +
+              reminder +
+              '</td></tr>'
+            );
+          })
+          .join('');
+        document.getElementById('pageContent').innerHTML =
+          '<table class="table"><thead><tr><th>Resident</th><th>Room</th><th>Rent due</th><th>Status</th><th>Action</th></tr></thead><tbody>' +
+          body +
+          '</tbody></table>';
+      }
+      function renderElectricity() {
+        document.getElementById('pageContent').innerHTML = bills.length
+          ? `<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Received</th><th>Amount</th><th>Due date</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>${bills.map((b) => `<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.flat)}</td><td>${esc(b.month)}</td><td>₹${Number(b.amount).toLocaleString('en-IN')}</td><td>${esc(b.due)}</td><td><span class="pill">${esc(b.status)}</span></td><td>${['Paid', 'Waived'].includes(b.status) ? '—' : `<button class="link" onclick="openElectricityPayment('${b.id}')">Record payment</button>`}</td><td><button class="link" onclick="shareBill('${b.id}')">WhatsApp</button></td></tr>`).join('')}</tbody></table>`
+          : `<div style="padding:25px;text-align:center"><div style="font-size:30px">ϟ</div><h3 style="font:700 14px Manrope">No electricity bills created yet</h3><p class="sub">Select flats and enter individual shares.</p><button class="primary" onclick="openModal('electricityModal')">＋ Create electricity bills</button></div>`;
+      }
+      function shareBill(id) {
+        let b = bills.find((x) => String(x.id) === String(id));
+        if (!b) return;
+        document.getElementById('messageTitle').textContent = 'Electricity bill · ' + b.name;
+        document.getElementById('messageText').value =
+          `Hello ${b.name}, your electricity bill for ${b.month} is ₹${Number(b.amount).toLocaleString('en-IN')}, due ${new Date(b.due + 'T00:00:00').toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'})}. — ${window.pgPropertyName || 'your property'}`;
+        openModal('messageModal');
+      }
+      function renderRooms() {
+        const fs = window.pgFlats || [],
+          rs = residents || [];
+        const body = fs
+          .map((f) => {
+            const o = window.flatOccupancyInfo(f, rs),
+              used = Number.isInteger(o.used) ? o.used : o.used.toFixed(1);
+            return (
+              '<div class="floor"><div class="floorlabel">' +
+              esc(f.floor_name) +
+              '</div><div class="roomrow"><button type="button" class="room room-select ' +
+              o.state +
+              '" data-flat="' +
+              esc(f.flat_number) +
+              '" aria-label="Open details for ' +
+              esc(f.flat_number) +
+              '"><b>' +
+              esc(f.flat_number) +
+              '</b><small>' +
+              o.count +
+              ' resident' +
+              (o.count === 1 ? '' : 's') +
+              ' · ' +
+              used +
+              ' / ' +
+              o.capacity +
+              ' rooms occupied</small></button></div></div>'
+            );
+          })
+          .join('');
+        document.getElementById('pageContent').innerHTML = fs.length
+          ? '<div class="occupancy">' + body + '</div>'
+          : '<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No flats added yet</h3><p class="sub">Add your building and flats in Settings.</p><button class="primary" onclick="window.editPropertySetup?.()">Set up building</button></div>';
+      }
+      function renderReports() {
+        const now = new Date(),
+          defaultMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0'),
+          month = document.getElementById('reportMonth')?.value || defaultMonth,
+          [year, monthNum] = month.split('-').map(Number),
+          dueDate = month + '-02',
+          today =
+            now.getFullYear() +
+            '-' +
+            String(now.getMonth() + 1).padStart(2, '0') +
+            '-' +
+            String(now.getDate()).padStart(2, '0'),
+          monthLabel = new Date(year, monthNum - 1, 1).toLocaleDateString('en-IN', {month: 'long', year: 'numeric'}),
+          dueLabel = new Date(year, monthNum - 1, 2).toLocaleDateString('en-IN', {day: 'numeric', month: 'short'});
+        const people = (window.pgReportResidents || residents || []).filter(
+            (r) => (!r.movein || r.movein <= dueDate) && (!r.moveout || r.moveout >= dueDate)
+          ),
+          payments = (window.pgRentPayments || []).filter(
+            (p) => String(p.rent_month || p.paid_on || '').slice(0, 7) === month
+          ),
+          paidBy = {};
+        payments.forEach((p) => (paidBy[p.resident_id] = (paidBy[p.resident_id] || 0) + Number(p.amount)));
+        const rentRows = people.map((r) => {
+            const paid = paidBy[r.id] || 0,
+              due = Number(r.rent) || 0,
+              balance = Math.max(0, due - paid),
+              status = balance <= 0 ? 'Paid' : paid > 0 ? 'Part paid' : dueDate < today ? 'Overdue' : 'Due';
+            return {...r, paid, due, balance, status};
+          }),
+          rentDue = rentRows.reduce((n, r) => n + r.due, 0),
+          rentCollected = rentRows.reduce((n, r) => n + r.paid, 0),
+          rentOutstanding = rentRows.reduce((n, r) => n + r.balance, 0),
+          rentPaidCount = rentRows.filter((r) => r.status === 'Paid').length,
+          rentOpenCount = rentRows.filter((r) => r.balance > 0).length;
+        const electricity = (window.pgElectricityBills || bills || []).filter(
+            (b) => String(b.billing_month || '').slice(0, 7) === month
+          ),
+          meterRows = (window.pgElectricityReadings || []).filter(
+            (m) => String(m.billing_month || '').slice(0, 7) === month
+          ),
+          billRows = electricity.map((b) => {
+            const amount = Number(b.amount) || 0,
+              paid = Math.min(amount, Number(b.paid_amount) || 0),
+              waived = b.status === 'Waived',
+              balance = waived ? 0 : Math.max(0, amount - paid),
+              status = waived ? 'Waived' : balance <= 0 ? 'Paid' : paid > 0 ? 'Part paid' : 'Due';
+            return {...b, paid, balance, status, waived};
+          }),
+          billable = billRows.filter((b) => !b.waived),
+          billTotal = billable.reduce((n, b) => n + b.amount, 0),
+          billCollected = billable.reduce((n, b) => n + b.paid, 0),
+          billOutstanding = billable.reduce((n, b) => n + b.balance, 0),
+          billPaidCount = billable.filter((b) => b.status === 'Paid').length,
+          billOpenCount = billable.filter((b) => b.balance > 0).length;
+        const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN', {maximumFractionDigits: 2}),
+          units = (n) => Number(n || 0).toLocaleString('en-IN', {maximumFractionDigits: 2}),
+          rentStatus = (r) =>
+            `<span class="pill ${r.status === 'Overdue' ? 'late' : r.status === 'Due' ? 'soon' : ''}" style="${r.status === 'Paid' ? 'color:#357551;background:#edf7ef' : ''}">${r.status}</span>`,
+          billStatus = (b) =>
+            `<span class="pill ${b.status === 'Due' ? 'soon' : ''}" style="${b.status === 'Paid' ? 'color:#357551;background:#edf7ef' : b.status === 'Waived' ? 'color:#75847e;background:#f1f3f1' : ''}">${b.status}</span>`;
+        document.getElementById('pageContent').innerHTML =
+          `<div class="report-toolbar"><label>Report month <input id="reportMonth" type="month" value="${esc(month)}" onchange="renderReports()"></label><span class="report-note">Rent is due on the 2nd of each month · ${esc(monthLabel)}</span></div><section class="report-block"><div class="report-blockhead"><h3>Rent collection</h3><p>Expected rent compared with recorded payments. Due date: ${esc(dueLabel)}.</p></div><div class="report-metrics"><div class="report-metric"><span>Expected rent</span><strong>${money(rentDue)}</strong><small>${rentRows.length} residents due</small></div><div class="report-metric"><span>Collected</span><strong>${money(rentCollected)}</strong><small>${rentPaidCount} paid in full</small></div><div class="report-metric"><span>Outstanding</span><strong>${money(rentOutstanding)}</strong><small>${rentOpenCount} unpaid or part paid</small></div><div class="report-metric"><span>Collection rate</span><strong>${rentDue ? Math.min(100, Math.round((rentCollected / rentDue) * 100)) + '%' : '—'}</strong><small>For ${esc(monthLabel)}</small></div></div><div class="report-table"><table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Due date</th><th>Rent</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody>${rentRows.length ? rentRows.map((r) => `<tr><td><b>${esc(r.name)}</b></td><td>${esc(r.room || '—')}</td><td>${esc(dueLabel)}</td><td>${money(r.due)}</td><td>${money(r.paid)}</td><td>${money(r.balance)}</td><td>${rentStatus(r)}</td></tr>`).join('') : '<tr><td colspan="7" class="sub">No residents were due for rent in this month.</td></tr>'}</tbody></table></div></section><section class="report-block"><div class="report-blockhead"><h3>Electricity collection</h3><p>Electricity bills received in ${esc(monthLabel)}. Bills arrive every two months, so months without a bill may have no records. Partial payments count toward collected; waived bills are excluded from totals.</p></div><div class="report-metrics"><div class="report-metric"><span>Total billed</span><strong>${money(billTotal)}</strong><small>${billable.length} active bills</small></div><div class="report-metric"><span>Collected</span><strong>${money(billCollected)}</strong><small>${billPaidCount} bills paid in full</small></div><div class="report-metric"><span>Outstanding</span><strong>${money(billOutstanding)}</strong><small>${billOpenCount} unpaid or part paid</small></div><div class="report-metric"><span>Collection rate</span><strong>${billTotal ? Math.min(100, Math.round((billCollected / billTotal) * 100)) + '%' : '—'}</strong><small>${billRows.filter((b) => b.waived).length} waived</small></div></div><div class="report-table"><table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Due date</th><th>Status</th></tr></thead><tbody>${billRows.length ? billRows.map((b) => `<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.flat || '—')}</td><td>${money(b.amount)}</td><td>${money(b.paid)}</td><td>${money(b.balance)}</td><td>${esc(b.due || '—')}</td><td>${billStatus(b)}</td></tr>`).join('') : '<tr><td colspan="7" class="sub">No electricity bills were created for this month.</td></tr>'}</tbody></table></div></section><section class="report-block"><div class="report-blockhead"><h3>Meter readings by flat</h3><p>Room 1 · Left meter and Room 2 · Right meter readings and units used for ${esc(monthLabel)}.</p></div><div class="report-metrics"><div class="report-metric"><span>Total units consumed</span><strong>${units(meterRows.reduce((n, m) => n + Number(m.current_room1_reading - m.previous_room1_reading) + Number(m.current_room2_reading - m.previous_room2_reading), 0))}</strong><small>${meterRows.length} flats with readings</small></div></div><div class="report-table"><table class="table"><thead><tr><th>Flat</th><th>Reading date</th><th>Room 1 · Left previous</th><th>Room 1 · Left current</th><th>Left units</th><th>Room 2 · Right previous</th><th>Room 2 · Right current</th><th>Right units</th><th>Total units</th><th>Main bill</th><th>Common meter total</th></tr></thead><tbody>${
+            meterRows.length
+              ? meterRows
+                  .map((m) => {
+                    const left = Number(m.current_room1_reading) - Number(m.previous_room1_reading),
+                      right = Number(m.current_room2_reading) - Number(m.previous_room2_reading);
+                    return `<tr><td><b>${esc(m.flat || '—')}</b></td><td>${esc(m.reading_date || '—')}</td><td>${units(m.previous_room1_reading)}</td><td>${units(m.current_room1_reading)}</td><td>${units(left)}</td><td>${units(m.previous_room2_reading)}</td><td>${units(m.current_room2_reading)}</td><td>${units(right)}</td><td>${units(left + right)}</td><td>${money(m.main_bill_amount)}</td><td>${money(m.common_meter_total)}</td></tr>`;
+                  })
+                  .join('')
+              : '<tr><td colspan="11" class="sub">No meter readings were saved for this bill cycle.</td></tr>'
+          }</tbody></table></div></section>`;
+      }
+      function renderPage(p) {
+        if (p === 'residents') renderResidents();
+        else if (p === 'rent') renderRent();
+        else if (p === 'rooms') renderRooms();
+        else if (p === 'electricity') renderElectricity();
+        else if (p === 'reports') renderReports();
+        else if (p === 'messages') renderMessages();
+        else
+          document.getElementById('pageContent').innerHTML =
+            `<div style="padding:28px;text-align:center"><div style="font-size:28px">▤</div><h3 style="font:700 14px Manrope">${pages[p][0]} workspace</h3><p class="sub">Your ${pages[p][0].toLowerCase()} tools will live here.</p></div>`;
+      }
+      window.renderCurrentPage = () => {
+        const page = Object.keys(pages).find(
+          (key) => pages[key][0] === document.getElementById('crumbPage').textContent
+        );
+        if (page && page !== 'dashboard') renderPage(page);
+      };
+      function initials(n) {
+        return n
+          .split(' ')
+          .map((x) => x[0])
+          .slice(0, 2)
+          .join('')
+          .toUpperCase();
+      }
+      function esc(s) {
+        return String(s ?? '').replace(
+          /[&<>"']/g,
+          (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]
+        );
+      }
+      function editResident(id) {
+        const r = residents.find((x) => String(x.id) === String(id));
+        if (!r) return;
+        const f = document.getElementById('residentForm');
+        f.reset();
+        f.dataset.editResidentId = r.id;
+        f.elements.name.value = r.name || '';
+        f.elements.phone.value = r.phone || '';
+        f.elements.room.value = r.room || '';
+        f.elements.sharing_type.value = r.sharing_type || '';
+        f.elements.rent.value = r.rent || 0;
+        f.elements.deposit.value = r.deposit || 0;
+        f.elements.movein.value = r.movein || '';
+        f.elements.address.value = r.address || '';
+        f.elements.emergency.value = r.emergency || '';
+        document.getElementById('residentModalTitle').textContent = 'Edit resident';
+        document.getElementById('residentSubmitButton').textContent = 'Save changes';
+        openModal('residentModal');
+      }
+      window.flatOccupancyInfo = (flat, list) => {
+        const assigned = list.filter((r) => r.room === flat.flat_number),
+          capacity = Math.max(0, Number(flat.room_count) || 0),
+          used = assigned.reduce((n, r) => n + (r.sharing_type === 'double' ? 0.5 : 1), 0),
+          state =
+            capacity > 0 && used > capacity
+              ? 'overfull'
+              : capacity > 0 && used >= capacity
+                ? 'full'
+                : assigned.length
+                  ? 'partial'
+                  : 'empty';
+        return {count: assigned.length, used, capacity, state};
+      };
+      window.showFlatDetails = (flatNumber) => {
+        const flat = (window.pgFlats || []).find((f) => f.flat_number === flatNumber) || {},
+          assigned = (residents || []).filter((r) => r.room === flatNumber),
+          wifiName = flat.wifi_ssid || '',
+          wifiPassword = flat.wifi_password || '';
+        document.getElementById('flatDetailsModal')?.remove();
+        const modal = document.createElement('div');
+        modal.id = 'flatDetailsModal';
+        modal.className = 'modal-backdrop';
+        modal.innerHTML =
+          '<div class="modal-card" style="max-width:520px"><div class="modal-head"><div><h3>' +
+          esc(flatNumber) +
+          ' details</h3><p class="sub">' +
+          esc(flat.floor_name || '') +
+          ' · ' +
+          assigned.length +
+          ' resident' +
+          (assigned.length === 1 ? '' : 's') +
+          '</p></div><button class="iconbtn" onclick="closeModal(\'flatDetailsModal\')">×</button></div><div class="formgrid"><label>Wi-Fi name<div style="display:flex;gap:8px"><input id="flatWifiName" readonly value="' +
+          esc(wifiName || 'Not configured') +
+          '"><button class="secondary" type="button" onclick="copyFlatWifi(\'name\')">Copy</button></div></label><label>Wi-Fi password<div style="display:flex;gap:8px"><input id="flatWifiPassword" readonly type="password" value="' +
+          esc(wifiPassword || 'Not configured') +
+          '"><button class="secondary" type="button" onclick="toggleFlatWifiPassword()">Show</button><button class="secondary" type="button" onclick="copyFlatWifi(\'password\')">Copy</button></div></label></div><h4 style="margin:18px 0 8px">Residents</h4><div class="sub">' +
+          (assigned.length
+            ? assigned
+                .map((r) => '<div style="padding:7px 0;border-bottom:1px solid #edf0ee">' + esc(r.name) + '</div>')
+                .join('')
+            : 'No residents assigned to this flat.') +
+          '</div></div>';
+        document.body.appendChild(modal);
+      };
+      window.toggleFlatWifiPassword = () => {
+        const input = document.getElementById('flatWifiPassword'),
+          button = input?.parentElement?.querySelector('button');
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+        if (button) button.textContent = input.type === 'password' ? 'Show' : 'Hide';
+      };
+      window.copyFlatWifi = (kind) => {
+        const input = document.getElementById(kind === 'name' ? 'flatWifiName' : 'flatWifiPassword');
+        if (!input) return;
+        const done = () => toast((kind === 'name' ? 'Wi-Fi name' : 'Wi-Fi password') + ' copied');
+        if (navigator.clipboard?.writeText) navigator.clipboard.writeText(input.value).then(done);
+        else {
+          input.select();
+          document.execCommand('copy');
+          done();
+        }
+      };
+      document.addEventListener('click', (e) => {
+        const tile = e.target.closest && e.target.closest('.room-select');
+        if (tile) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.showFlatResidents(tile.dataset.flat);
+        }
+      });
+      window.showFlatDetails = (flatNumber) => {
+        const flat = (window.pgFlats || []).find((f) => f.flat_number === flatNumber) || {},
+          box = document.createElement('div');
+        box.id = 'flatDetailsModal';
+        box.className = 'overlay show';
+        box.innerHTML =
+          '<div class="modal"><div class="modalhead"><div><h2>' +
+          esc(flatNumber) +
+          ' details</h2><p>Wi-Fi details</p></div><button class="close" type="button">×</button></div><div class="field"><label>Wi-Fi name</label><div style="display:flex;gap:8px"><input id="flatWifiName" readonly value="' +
+          esc(flat.wifi_ssid || 'Not configured') +
+          '"><button class="secondary" type="button">Copy</button></div></div><div class="field" style="margin-top:12px"><label>Wi-Fi password</label><div style="display:flex;gap:8px"><input id="flatWifiPassword" readonly value="' +
+          esc(flat.wifi_password || 'Not configured') +
+          '"><button class="secondary" type="button">Copy</button></div></div></div>';
+        const buttons = box.querySelectorAll('.secondary');
+        buttons[0].onclick = () =>
+          navigator.clipboard
+            .writeText(box.querySelector('#flatWifiName').value)
+            .then(() => toast('Wi-Fi name copied'));
+        buttons[1].onclick = () =>
+          navigator.clipboard
+            .writeText(box.querySelector('#flatWifiPassword').value)
+            .then(() => toast('Wi-Fi password copied'));
+        box.querySelector('.close').onclick = () => box.remove();
+        document.body.appendChild(box);
+      };
+      window.showFlatDetails = (flatNumber) => {
+        const flat = (window.pgFlats || []).find((f) => f.flat_number === flatNumber) || {},
+          box = document.createElement('div');
+        box.id = 'flatDetailsModal';
+        box.className = 'overlay show';
+        box.innerHTML =
+          '<div class="modal"><div class="modalhead"><div><h2>' +
+          esc(flatNumber) +
+          ' details</h2><p>Wi-Fi details</p></div><button class="close" type="button">×</button></div><div class="field"><label>Wi-Fi name</label><input readonly value="' +
+          esc(flat.wifi_ssid || 'Not configured') +
+          '"></div><div class="field" style="margin-top:12px"><label>Wi-Fi password</label><input readonly type="password" value="' +
+          esc(flat.wifi_password || 'Not configured') +
+          '"></div></div>';
+        box.querySelector('.close').onclick = () => box.remove();
+        document.body.appendChild(box);
+      };
+      function refreshOptions() {
+        let html =
+          '<option value="">Choose resident</option>' +
+          residents.map((r) => `<option>${esc(r.name)}</option>`).join('');
+        document.querySelectorAll('.residentOptions').forEach((x) => (x.innerHTML = html));
+      }
+      function openForResident(n) {
+        openModal('rentModal');
+        document.querySelector('#rentForm [name=resident]').value = n;
+        document.querySelector('#rentModal h2').textContent = 'Record rent payment · ' + n;
+      }
+      document.getElementById('residentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = e.target,
+          d = Object.fromEntries(new FormData(form)),
+          editId = form.dataset.editResidentId,
+          existing = editId ? residents.find((r) => String(r.id) === String(editId)) : null;
+        if (editId && existing) {
+          Object.assign(existing, {
+            name: d.name,
+            phone: d.phone.replace(/\D/g, '').slice(-10),
+            room: d.room,
+            sharing_type: d.sharing_type,
+            rent: Number(d.rent),
+            deposit: Number(d.deposit || 0),
+            movein: d.movein || '',
+            address: d.address || '',
+            emergency: d.emergency || '',
+            meter_side: d.meter_side || existing.meter_side || ''
+          });
+          activities.unshift(
+            `<div class="activity"><div class="acticon">♙</div><div class="actbody"><b>Resident details updated</b><small>${esc(d.name)} · Room ${esc(d.room)} · Just now</small></div></div>`
+          );
+        } else {
+          residents.unshift({
+            id: form.dataset.cloudResidentId || undefined,
+            name: d.name,
+            phone: d.phone.replace(/\D/g, '').slice(-10),
+            room: d.room,
+            sharing_type: d.sharing_type,
+            rent: +d.rent,
+            deposit: Number(d.deposit || 0),
+            status: 'Not tracked',
+            movein: d.movein || new Date().toISOString().slice(0, 10),
+            address: d.address || '',
+            emergency: d.emergency || '',
+            meter_side: d.meter_side || ''
+          });
+          activities.unshift(
+            `<div class="activity"><div class="acticon">♙</div><div class="actbody"><b>New resident added</b><small>${esc(d.name)} · Room ${esc(d.room)} · Just now</small></div></div>`
+          );
+        }
+        document.getElementById('residentCount').textContent = residents.length;
+        window.refreshDashboard?.();
+        document.getElementById('activityList').innerHTML =
+          activities.join('') + document.getElementById('activityList').innerHTML;
+        persist();
+        closeModal('residentModal');
+        toast(editId ? 'Resident details updated.' : 'Resident added successfully.');
+        if (
+          !document.getElementById('genericPage').classList.contains('hidden') &&
+          document.getElementById('crumbPage').textContent === 'Residents'
+        )
+          renderResidents();
+      });
+      document.getElementById('rentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        let d = Object.fromEntries(new FormData(e.target));
+        let r = residents.find((x) => x.name === d.resident);
+        if (r) r.status = window.rentStatusAfterPayment || 'Paid';
+        window.rentStatusAfterPayment = null;
+        payments.unshift({
+          resident: d.resident,
+          amount: Number(d.amount),
+          date: d.date || new Date().toISOString().slice(0, 10),
+          method: d.method,
+          note: d.note
+        });
+        activities.unshift(
+          `<div class="activity"><div class="acticon">₹</div><div class="actbody"><b>${esc(d.resident)}</b> paid rent<small>${esc(r?.room || '')} · ${esc(d.method)} · Just now</small></div><div class="amount">+₹${Number(d.amount).toLocaleString('en-IN')}</div></div>`
+        );
+        document.getElementById('activityList').innerHTML =
+          activities.join('') + document.getElementById('activityList').innerHTML;
+        closeModal('rentModal');
+        persist();
+        e.target.reset();
+        toast('Payment recorded');
+        if (document.getElementById('crumbPage').textContent === 'Rent & payments') renderRent();
+      });
+      function meterReadingsForFlat(flat, month) {
+        const rows = window.pgElectricityReadings || [],
+          same = rows.find((r) => r.flat === flat && String(r.billing_month || '').slice(0, 7) === month);
+        if (same) return {row: same, sameCycle: true};
+        const prior = rows
+          .filter((r) => r.flat === flat && String(r.billing_month || '').slice(0, 7) < month)
+          .sort((a, b) => String(b.billing_month).localeCompare(String(a.billing_month)))[0];
+        return {row: prior || null, sameCycle: false};
+      }
+      function meterValueFor(flat, month, room, kind) {
+        const entry = meterReadingsForFlat(flat, month);
+        if (!entry.row) return '';
+        if (entry.sameCycle) return entry.row[kind + '_room' + room + '_reading'] ?? '';
+        return entry.row['current_room' + room + '_reading'] ?? '';
+      }
+      function meterNumberInput(label, name, value, flatIndex, room, kind) {
+        const previous = kind === 'previous';
+        return (
+          '<label class="field" style="margin:0"><span>' +
+          label +
+          '</span><input type="number" min="0" step="0.01" inputmode="decimal" name="' +
+          name +
+          '" value="' +
+          esc(value) +
+          '" ' +
+          (previous ? 'class="meter-previous" data-flat-index="' + flatIndex + '" data-room="' + room + '"' : '') +
+          ' oninput="updateMeterUnits(' +
+          flatIndex +
+          ')" placeholder="' +
+          (previous ? 'Enter last bill reading' : 'Enter current reading') +
+          '"></label>'
+        );
+      }
+      function ensureElectricityMessagePreview() {
+        const form = document.getElementById('electricityForm');
+        if (!form || document.getElementById('electricityMessagePreview')) return;
+        const actions = form.querySelector('.formactions');
+        const wrap = document.createElement('div');
+        wrap.className = 'field full';
+        wrap.innerHTML =
+          '<label>WhatsApp message preview</label><textarea id="electricityMessagePreview" rows="7" readonly aria-readonly="true" style="border:1px solid #dfe8e2;border-radius:9px;padding:11px;font-size:12px;line-height:1.6;resize:vertical;background:#f8faf8;color:var(--ink)"></textarea><span class="hint">This preview updates from the selected residents and amounts. You can review it again before opening WhatsApp.</span>';
+        actions.before(wrap);
+      }
+      function updateElectricityMessagePreview() {
+        ensureElectricityMessagePreview();
+        const form = document.getElementById('electricityForm'),
+          preview = document.getElementById('electricityMessagePreview');
+        if (!form || !preview) return;
+        const flat = form.elements.selectedFlat?.value || '',
+          due = form.elements.due?.value || '',
+          lines = [];
+        residents.forEach((r, i) => {
+          const check = form.elements['include_' + i],
+            amount = form.elements['amount_' + i];
+          if (r.room === flat && check?.checked && amount?.value) {
+            lines.push(
+              '@⁨' +
+                r.name +
+                ' ' +
+                (window.pgPropertyName || '') +
+                ' ' +
+                (r.room || '') +
+                '⁩ ' +
+                Number(amount.value).toLocaleString('en-IN', {useGrouping: false, maximumFractionDigits: 2})
+            );
+          }
+        });
+        const dueLabel = due
+          ? new Date(due + 'T00:00:00').toLocaleDateString('en-IN', {day: 'numeric', month: 'long'})
+          : 'your due date';
+        preview.value = [
+          'Electricity bill',
+          ...lines,
+          form.elements.commonNote?.value?.trim() || 'This includes common electricity bill',
+          form.elements.note?.value?.trim() || '',
+          form.elements.gpay?.value?.trim() ? 'GPay: ' + form.elements.gpay.value.trim() : '',
+          'Due date: ' + dueLabel
+        ]
+          .filter(Boolean)
+          .join('\\n');
+      }
+      function markElectricityManual(input) {
+        input.dataset.manual = '1';
+        calculateElectricitySplit();
+      }
+      function markElectricityAmount(input) {
+        input.dataset.manual = '1';
+        updateElectricityMessagePreview();
+      }
+      ensureElectricityMessagePreview();
+      document.addEventListener('input', (e) => {
+        if (e.target.closest('#electricityForm')) setTimeout(updateElectricityMessagePreview, 0);
+      });
+      document.addEventListener('change', (e) => {
+        if (e.target.closest('#electricityForm')) updateElectricityMessagePreview();
+      });
+      function selectedFlatIndex() {
+        const value = document.querySelector('#electricityForm [name=selectedFlat]')?.value || '';
+        return (window.pgFlats || []).findIndex((f) => f.flat_number === value);
+      }
+      function renderBillResidents() {
+        const form = document.getElementById('electricityForm'),
+          select = form.elements.selectedFlat,
+          flatList = window.pgFlats || [],
+          month = form.elements.month.value || new Date().toISOString().slice(0, 7),
+          panel = document.getElementById('billResidents');
+        if (!select.options.length || select.options.length === 1)
+          select.innerHTML =
+            '<option value="">Choose a flat</option>' +
+            flatList
+              .map((f) => '<option value="' + esc(f.flat_number) + '">' + esc(f.flat_number) + '</option>')
+              .join('');
+        const flatIndex = selectedFlatIndex();
+        if (flatIndex < 0) {
+          panel.innerHTML =
+            '<span class="hint">Choose a flat to enter its readings and calculate resident shares.</span>';
+          return;
+        }
+        const flatRecord = flatList[flatIndex],
+          flat = flatRecord.flat_number,
+          people = residents.filter((r) => r.room === flat),
+          entry = meterReadingsForFlat(flat, month),
+          previousHint = entry.row
+            ? entry.sameCycle
+              ? 'Saved readings for this cycle.'
+              : 'Previous readings copied from ' +
+                new Date(entry.row.billing_month + 'T00:00:00').toLocaleDateString('en-IN', {
+                  month: 'long',
+                  year: 'numeric'
+                }) +
+                '.'
+            : 'No previous cycle saved for this flat. Enter both previous readings.',
+          activeFlatChanged = form.dataset.activeFlat !== flat;
+        if (activeFlatChanged) {
+          form.dataset.activeFlat = flat;
+          const main = form.elements.mainBillAmount,
+            common = form.elements.commonMeterTotal;
+          main.value =
+            entry.sameCycle && Number(entry.row.main_bill_amount) > 0 ? Number(entry.row.main_bill_amount) : '';
+          common.value = entry.sameCycle ? Number(entry.row.common_meter_total || 0) : '0';
+          delete main.dataset.manual;
+          delete common.dataset.manual;
+        }
+        panel.innerHTML =
+          '<input type="checkbox" name="flat_' +
+          flatIndex +
+          '" checked hidden><div class="sub" style="margin:0 0 8px">' +
+          previousHint +
+          ' Active flats in this property: ' +
+          flatList.length +
+          '.</div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><div style="border:1px solid var(--line);border-radius:9px;padding:9px"><b style="font-size:11px">Room 1 · Left meter</b>' +
+          meterNumberInput(
+            'Previous bill reading',
+            'prev_room1_' + flatIndex,
+            meterValueFor(flat, month, 1, 'previous'),
+            flatIndex,
+            1,
+            'previous'
+          ) +
+          meterNumberInput(
+            'Current reading',
+            'current_room1_' + flatIndex,
+            meterValueFor(flat, month, 1, 'current'),
+            flatIndex,
+            1,
+            'current'
+          ) +
+          '<div class="tiny">Units used: <b id="meter-units-room1-' +
+          flatIndex +
+          '">Enter readings</b></div></div><div style="border:1px solid var(--line);border-radius:9px;padding:9px"><b style="font-size:11px">Room 2 · Right meter</b>' +
+          meterNumberInput(
+            'Previous bill reading',
+            'prev_room2_' + flatIndex,
+            meterValueFor(flat, month, 2, 'previous'),
+            flatIndex,
+            2,
+            'previous'
+          ) +
+          meterNumberInput(
+            'Current reading',
+            'current_room2_' + flatIndex,
+            meterValueFor(flat, month, 2, 'current'),
+            flatIndex,
+            2,
+            'current'
+          ) +
+          '<div class="tiny">Units used: <b id="meter-units-room2-' +
+          flatIndex +
+          '">Enter readings</b></div></div></div><div id="electricityAllocationSummary" class="hint" style="margin:8px 0"></div><div style="display:grid;gap:7px">' +
+          (people.length
+            ? people
+                .map((r) => {
+                  const ri = residents.indexOf(r),
+                    side = r.meter_side || '';
+                  return (
+                    '<div style="display:grid;grid-template-columns:auto minmax(90px,1fr) minmax(110px,140px) minmax(100px,120px);align-items:center;gap:7px;background:#f8faf8;border-radius:8px;padding:8px"><input type="checkbox" class="tenant-check" data-flat="' +
+                    flatIndex +
+                    '" name="include_' +
+                    ri +
+                    '" value="' +
+                    esc(r.name) +
+                    '" checked onchange="calculateElectricitySplit()" style="accent-color:var(--green)"><span style="font-size:11px">' +
+                    esc(r.name) +
+                    '</span><select name="meter_side_' +
+                    ri +
+                    '" aria-label="Meter room for ' +
+                    esc(r.name) +
+                    '" onchange="calculateElectricitySplit()" style="border:1px solid #dfe8e2;border-radius:7px;padding:7px;font-size:11px"><option value="">Choose meter</option><option value="left" ' +
+                    (side === 'left' ? 'selected' : '') +
+                    '>Room 1 · Left</option><option value="right" ' +
+                    (side === 'right' ? 'selected' : '') +
+                    '>Room 2 · Right</option></select><label style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)">₹ <input type="number" min="0" step="0.01" name="amount_' +
+                    ri +
+                    '" value="" placeholder="Calculated" style="width:100%;border:1px solid #dfe8e2;border-radius:7px;padding:7px;font-size:11px" oninput="markElectricityAmount(this)"></label></div>'
+                  );
+                })
+                .join('')
+            : '<span class="tiny">No residents are assigned to this flat.</span>') +
+          '</div>';
+        updateMeterUnits(flatIndex);
+      }
+      function refreshMeterPreviousReadings() {
+        const form = document.getElementById('electricityForm');
+        form.dataset.activeFlat = '';
+        renderBillResidents();
+      }
+      function updateMeterUnits(i) {
+        [1, 2].forEach((room) => {
+          const previous = document.querySelector('[name="prev_room' + room + '_' + i + '"]'),
+            current = document.querySelector('[name="current_room' + room + '_' + i + '"]'),
+            label = document.getElementById('meter-units-room' + room + '-' + i);
+          if (!previous || !current || !label) return;
+          const p = previous.value,
+            c = current.value;
+          if (p === '' || c === '') {
+            label.textContent = 'Enter readings';
+            return;
+          }
+          const units = Number(c) - Number(p);
+          label.textContent = units < 0 ? 'Check readings' : units.toLocaleString('en-IN', {maximumFractionDigits: 2});
+        });
+        calculateElectricitySplit();
+      }
+      function calculateElectricitySplit() {
+        const form = document.getElementById('electricityForm'),
+          flatIndex = selectedFlatIndex();
+        if (flatIndex < 0) return;
+        const flat = (window.pgFlats || [])[flatIndex]?.flat_number,
+          people = residents
+            .map((r, i) => ({
+              r,
+              i,
+              check: form.elements['include_' + i],
+              side: form.elements['meter_side_' + i],
+              amount: form.elements['amount_' + i]
+            }))
+            .filter((x) => x.check && x.side && x.amount && x.r.room === flat && x.check.checked),
+          unit1 =
+            Number(form.elements['current_room1_' + flatIndex]?.value) -
+            Number(form.elements['prev_room1_' + flatIndex]?.value),
+          unit2 =
+            Number(form.elements['current_room2_' + flatIndex]?.value) -
+            Number(form.elements['prev_room2_' + flatIndex]?.value),
+          totalUnits = Math.max(0, unit1) + Math.max(0, unit2),
+          main = Number(form.elements.mainBillAmount.value) || 0,
+          commonTotal = Number(form.elements.commonMeterTotal.value) || 0,
+          flatCount = (window.pgFlats || []).length,
+          flatCommon = flatCount ? commonTotal / flatCount : 0,
+          summary = document.getElementById('electricityAllocationSummary');
+        if (!summary) return;
+        const residentsBySide = {
+            left: people.filter((x) => x.side.value === 'left'),
+            right: people.filter((x) => x.side.value === 'right')
+          },
+          validSides = people.every((x) => x.side.value === 'left' || x.side.value === 'right');
+        summary.textContent =
+          'Room 1 · Left: ' +
+          (Number.isFinite(unit1) ? Math.max(0, unit1).toLocaleString('en-IN', {maximumFractionDigits: 2}) : '—') +
+          ' units (' +
+          (totalUnits ? Math.round((Math.max(0, unit1) / totalUnits) * 100) : 0) +
+          '%) · Room 2 · Right: ' +
+          (Number.isFinite(unit2) ? Math.max(0, unit2).toLocaleString('en-IN', {maximumFractionDigits: 2}) : '—') +
+          ' units (' +
+          (totalUnits ? Math.round((Math.max(0, unit2) / totalUnits) * 100) : 0) +
+          '%) · Common share for ' +
+          flat +
+          ': ₹' +
+          flatCommon.toFixed(2) +
+          ' (' +
+          flatCount +
+          ' active flats)';
+        if (!validSides || !people.length || totalUnits <= 0) {
+          people.forEach((x) => {
+            if (x.amount.dataset.manual !== '1') x.amount.value = '';
+          });
+          return;
+        }
+        const roomMain = {
+          left: (main * Math.max(0, unit1)) / totalUnits,
+          right: (main * Math.max(0, unit2)) / totalUnits
+        };
+        people.forEach((x) => {
+          if (x.amount.dataset.manual === '1') return;
+          const room = x.side.value === 'left' ? 'left' : 'right',
+            group = residentsBySide[room],
+            base = roomMain[room] / group.length + flatCommon / people.length;
+          x.amount.value = (Math.round(base * 100) / 100).toFixed(2);
+        });
+        if (totalUnits === 0 && main > 0)
+          summary.textContent += ' · Enter meter readings to calculate the main bill share.';
+      }
+      document.addEventListener('input', (e) => {
+        if (e.target.matches('.meter-previous')) e.target.dataset.manual = '1';
+      });
+      document.getElementById('electricityForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = e.target,
+          fd = new FormData(form),
+          d = Object.fromEntries(fd),
+          selected = [];
+        residents.forEach((resident, i) => {
+          if (resident.room === d.selectedFlat && fd.has('include_' + i)) {
+            const amount = Number(fd.get('amount_' + i));
+            if (Number.isFinite(amount) && amount >= 0)
+              selected.push({resident, amount, side: fd.get('meter_side_' + i)});
+          }
+        });
+        if (!selected.length) {
+          toast('Select residents for this flat');
+          return;
+        }
+        const month = d.month
+          ? new Date(d.month + '-02').toLocaleDateString('en-IN', {month: 'long', year: 'numeric'})
+          : 'this month';
+        window.pendingElectricBills =
+          window.cloudElectricBills ||
+          selected.map((x) => ({
+            id: Date.now() + Math.random(),
+            name: x.resident.name,
+            phone: x.resident.phone,
+            flat: x.resident.room,
+            amount: x.amount,
+            due: d.due,
+            month,
+            status: 'Due'
+          }));
+        window.cloudElectricBills = null;
+        bills.unshift(...window.pendingElectricBills);
+        persist();
+        closeModal('electricityModal');
+        form.reset();
+        form.dataset.activeFlat = '';
+        document.getElementById('messageTitle').textContent = 'Review electricity group message';
+        const groupLines = selected.map(
+            (x) =>
+              '@⁨' +
+              x.resident.name +
+              ' ' +
+              (window.pgPropertyName || '') +
+              ' ' +
+              (x.resident.room || '') +
+              '⁩ ' +
+              Number(x.amount).toLocaleString('en-IN', {useGrouping: false, maximumFractionDigits: 2})
+          ),
+          dueLabel = new Date(d.due + 'T00:00:00').toLocaleDateString('en-IN', {day: 'numeric', month: 'long'});
+        document.getElementById('messageText').value = [
+          'Electricity bill',
+          ...groupLines,
+          d.commonNote?.trim() || '',
+          d.note?.trim() || '',
+          d.gpay?.trim() ? 'GPay: ' + d.gpay.trim() : '',
+          'Due date: ' + dueLabel
+        ]
+          .filter(Boolean)
+          .join('\n');
+        openModal('messageModal');
+        if (document.getElementById('crumbPage').textContent === 'Electricity bills') renderPage('electricity');
+        toast('Bills saved; choose the flat group in WhatsApp');
+      });
+      function goMessages() {
+        goPage('messages');
+      }
+      function renderMessages() {
+        document.getElementById('pageContent').innerHTML =
+          `<div style="padding:20px"><div class="pagehead"><div><h2>Send a resident update</h2><div class="sub">Draft a rent reminder or electricity bill message</div></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 22px"><button class="secondary" onclick="draftRent()">₹ Draft rent reminders</button><button class="secondary" onclick="openModal('electricityModal')">ϟ Create electricity bills</button></div><h2 style="font:700 13px Manrope">Recent messages</h2><div class="sub" style="padding:12px 0">No messages sent from this workspace yet. Your draft history will appear here.</div></div>`;
+      }
+      function draftRent() {
+        lastMessage = `Hello All, this is a friendly reminder that your rent is due. Please make the payment at your earliest convenience. If you have already paid, kindly ignore this message. Thank you — ${window.pgPropertyName || 'your property'}`;
+        document.getElementById('messageTitle').textContent = 'Draft rent reminder';
+        document.getElementById('messageText').value = lastMessage;
+        openModal('messageModal');
+      }
+      function launchWhatsApp() {
+        let text = document.getElementById('messageText').value;
+        if (!text.trim()) {
+          toast('Add a message first');
+          return;
+        }
+        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+        closeModal('messageModal');
+        toast('WhatsApp opened with your draft');
+      }
+      document.getElementById('searchInput').addEventListener('input', () => {
+        if (document.getElementById('crumbPage').textContent === 'Rent & payments') renderRent();
+      });
+      document
+        .getElementById('propertySelect')
+        .addEventListener('change', (e) => toast('Switched to ' + e.target.value + ' (sample property)'));
+      document.querySelectorAll('input[type=date]').forEach((x) => (x.value = new Date().toISOString().slice(0, 10)));
+      document.querySelector('input[type=month]').value = new Date().toISOString().slice(0, 7);
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+    </script>
+    <script>
+      window.showFlatDetails = (flatNumber) => {
+        const flat = (window.pgFlats || []).find((f) => f.flat_number === flatNumber) || {},
+          box = document.createElement('div');
+        box.id = 'flatDetailsModal';
+        box.className = 'overlay show';
+        box.innerHTML =
+          '<div class="modal"><div class="modalhead"><div><h2>' +
+          esc(flatNumber) +
+          ' details</h2><p>Wi-Fi details</p></div><button class="close" type="button">×</button></div><div class="field"><label>Wi-Fi name</label><div style="display:flex;gap:8px"><input id="flatWifiName" readonly value="' +
+          esc(flat.wifi_ssid || 'Not configured') +
+          '"><button class="secondary" type="button">Copy</button></div></div><div class="field" style="margin-top:12px"><label>Wi-Fi password</label><div style="display:flex;gap:8px"><input id="flatWifiPassword" readonly value="' +
+          esc(flat.wifi_password || 'Not configured') +
+          '"><button class="secondary" type="button">Copy</button></div></div></div>';
+        const b = box.querySelectorAll('.secondary');
+        b[0].onclick = () =>
+          navigator.clipboard
+            .writeText(box.querySelector('#flatWifiName').value)
+            .then(() => toast('Wi-Fi name copied'));
+        b[1].onclick = () =>
+          navigator.clipboard
+            .writeText(box.querySelector('#flatWifiPassword').value)
+            .then(() => toast('Wi-Fi password copied'));
+        box.querySelector('.close').onclick = () => box.remove();
+        document.body.appendChild(box);
+      };
+    </script>
+    <script type="module" src="/src/cloud.js"></script>
+    <script type="module" src="/src/expenses-ui.js"></script>
+  </body>
+  <script>
+    window.showFlatResidents = (flat) => {
+      const s = document.getElementById('searchInput');
+      if (s) {
+        s.value = flat;
+        goPage('residents');
+        toast('Residents in ' + flat);
+      }
+    };
+    const addWifi = () =>
+      document.querySelectorAll('.room-select').forEach((room) => {
+        if (room.nextElementSibling?.classList.contains('wifi-select')) return;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'secondary wifi-select';
+        b.textContent = 'Wi-Fi';
+        b.style.padding = '6px 8px';
+        room.parentElement.style.justifyContent = 'flex-start';
+        room.parentElement.style.gap = '10px';
+        b.onclick = (e) => {
+          e.stopPropagation();
+          window.showFlatDetails(room.dataset.flat);
+        };
+        room.parentElement.appendChild(b);
+      });
+    new MutationObserver(addWifi).observe(document.getElementById('pageContent'), {childList: true, subtree: true});
+    addWifi();
+  </script>
+</html>
