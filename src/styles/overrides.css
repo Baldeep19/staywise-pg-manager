@@ -59,6 +59,15 @@
   .table td[data-label=''] {
     justify-content: flex-end;
     flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+  /* Action buttons stay on one line when they fit, and are big enough to tap */
+  .table td[data-label=''] > * {
+    white-space: nowrap;
+  }
+  .table td[data-label=''] .link {
+    font-size: 13px;
+    padding: 6px 0;
   }
   .table td:not([data-label]) {
     justify-content: center;

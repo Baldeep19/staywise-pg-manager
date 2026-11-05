@@ -7,7 +7,7 @@
 
 /**
  * Give every body cell a `data-label` taken from its column header.
- * Rows that span columns (empty-state messages) and header-less columns (action buttons) get no label text.
+ * Rows that span columns (empty-state messages) and header-less or "Action" columns (buttons) get no label text.
  * @param {ParentNode} [root]
  */
 export function labelTables(root = document) {
@@ -16,7 +16,9 @@ export function labelTables(root = document) {
     table.querySelectorAll('tbody tr').forEach((row) => {
       [...row.children].forEach((cell, i) => {
         if (cell.colSpan > 1) return cell.removeAttribute('data-label'); // "No residents found" style rows
-        const label = headers[i] ?? '';
+        // Action columns get no label so their buttons use the full width of the card (one tidy line)
+        const header = headers[i] ?? '';
+        const label = /^actions?$/i.test(header) ? '' : header;
         if (cell.getAttribute('data-label') !== label) cell.setAttribute('data-label', label);
       });
     });

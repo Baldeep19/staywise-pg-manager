@@ -16,6 +16,12 @@ describe('labelTables', () => {
     expect(cells.map((c) => c.dataset.label)).toEqual(['Resident', 'Rent', 'Status', '']);
   });
 
+  it('gives "Action" columns no label so the buttons use the full card width', () => {
+    document.body.innerHTML = TABLE.replace('<th></th>', '<th>Action</th>');
+    labelTables();
+    expect(document.querySelector('tbody tr:first-child td:last-child').dataset.label).toBe('');
+  });
+
   it('leaves spanning empty-state rows unlabelled', () => {
     document.body.innerHTML = TABLE;
     labelTables();
