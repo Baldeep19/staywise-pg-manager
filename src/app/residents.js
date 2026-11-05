@@ -54,7 +54,7 @@ export function renderResidents() {
       const reminder =
         r.id && rentBalanceForResident(r) > 0
           ? '<button class="link" onclick="draftResidentRentReminder(\'' + r.id + '\')">Rent reminder</button>'
-          : '<span class="rent-reminder-placeholder">—</span>';
+          : ''; // nothing to remind about
       return (
         '<tr><td><div class="residentcell"><div class="miniava">' +
         initials(r.name) +
@@ -79,10 +79,10 @@ export function renderResidents() {
         '</span></td><td>' +
         esc(r.movein || '—') +
         '</td><td>' +
-        reminder +
-        '</td><td>' +
+        // One "Actions" cell (reminder, edit, remove) so the buttons sit on a single line on phones
         (r.id
-          ? '<button class="link" onclick="editResident(\'' +
+          ? reminder +
+            ' <button class="link" onclick="editResident(\'' +
             r.id +
             '\')">Edit</button> <button class="secondary" style="color:#b44;border-color:#eed2d0" onclick="removeResident(\'' +
             r.id +
@@ -93,7 +93,7 @@ export function renderResidents() {
     })
     .join('');
   document.getElementById('pageContent').innerHTML =
-    '<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Sharing</th><th>Rent</th><th>Status</th><th>Move-in</th><th>Rent reminder</th><th></th></tr></thead><tbody>' +
+    '<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Sharing</th><th>Rent</th><th>Status</th><th>Move-in</th><th>Actions</th></tr></thead><tbody>' +
     body +
     '</tbody></table>';
 }
