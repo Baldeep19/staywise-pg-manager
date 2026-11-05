@@ -16,6 +16,7 @@ const $ = (sel) => document.querySelector(sel);
 
 beforeAll(async () => {
   document.body.innerHTML = '<div id="pageContent"></div><div id="toast"></div>';
+  window.scrollTo = () => {}; // jsdom does not implement scrolling
   // The real example: partner 1 (owner) collects the rent and pays landlord/maid/wifi; partner 2 pays utilities.
   window.pgCurrentPropertyId = 'b1';
   window.pgProperties = [{id: 'b1', owner_id: 'p1', rent_collector_user_id: null}];
@@ -103,6 +104,102 @@ describe('"How is this calculated?" section', () => {
     renderExpensesPage();
     expect(details().open).toBe(true);
     details().open = false;
+  });
+});
+
+describe('month-by-month report', () => {
+  const thisYear = month.slice(0, 4);
+  const section = () => $('#monthlyReport');
+  const rowFor = (text) => [...section().querySelectorAll('tbody tr')].find((r) => r.textContent.includes(text));
+
+  async function redraw() {
+    const {renderExpensesPage} = await import('../expenses-ui.js');
+    renderExpensesPage();
+  }
+
+  beforeAll(async () => {
+    // Two earlier months in 2025: March is profitable, April is a loss.
+    window.pgRentPayments.push(
+      {resident_id: 'r1', amount: 100000, rent_month: '2025-03-01'},
+      {resident_id: 'r1', amount: 120000, rent_month: '2025-04-01'}
+    );
+    window.pgExpenses.push(
+      {
+        id: 'x1',
+        expense_date: '2025-03-10',
+        category: 'Utilities',
+        description: 'Old bill',
+        amount: 30000,
+        paid_by_user_id: 'p1'
+      },
+      {
+        id: 'x2',
+        expense_date: '2025-04-05',
+        category: 'Repairs',
+        description: 'Big repair',
+        amount: 150000,
+        paid_by_user_id: 'p1'
+      }
+    );
+    await redraw(); // show the added months
+  });
+
+  it('defaults to the current year and totals it', () => {
+    expect($('#reportYear').value).toBe(thisYear);
+    const total = rowFor('Total ' + thisYear);
+    expect(total.textContent).toContain('₹2,04,000'); // this year only has the current month's rent
+    expect(total.textContent).toContain('₹1,39,467');
+    expect(total.textContent).toContain('₹64,533');
+  });
+
+  it('offers every year that has data', () => {
+    expect([...$('#reportYear').options].map((o) => o.value)).toEqual([thisYear, '2025']);
+  });
+
+  it('shows each month of the chosen year, with a loss shown as negative', async () => {
+    $('#reportYear').value = '2025';
+    $('#reportYear').dispatchEvent(new Event('change'));
+    expect($('#reportYear').value).toBe('2025'); // the choice survives the redraw
+    const april = rowFor('Apr 2025');
+    expect(april.textContent).toContain('₹1,20,000');
+    expect(april.textContent).toContain('₹1,50,000');
+    expect(april.textContent).toContain('-₹30,000');
+    expect(rowFor('Mar 2025').textContent).toContain('₹70,000');
+    const total = rowFor('Total 2025');
+    expect(total.textContent).toContain('₹2,20,000');
+    expect(total.textContent).toContain('₹1,80,000');
+    expect(total.textContent).toContain('₹40,000');
+  });
+
+  it('lists expenses by category for that year', () => {
+    const text = section().textContent;
+    expect(text).toContain('Expenses by category, 2025');
+    expect(rowFor('Repairs').textContent).toContain('83.3%');
+    expect(rowFor('Utilities').textContent).toContain('16.7%');
+  });
+
+  it("jumps to a month's full details with View", () => {
+    rowFor('Apr 2025').querySelector('[data-view-month]').click();
+    expect($('#expenseMonth').value).toBe('2025-04');
+    expect($('.report-metrics').textContent).toContain('-₹30,000'); // that month's net profit
+    expect($('#reportYear').value).toBe('2025');
+  });
+
+  it('shows a friendly message for a year with nothing in it', async () => {
+    const opt = document.createElement('option');
+    opt.textContent = '2031';
+    $('#reportYear').append(opt);
+    $('#reportYear').value = '2031';
+    $('#reportYear').dispatchEvent(new Event('change'));
+    expect(section().textContent).toContain('No rent or expenses recorded in 2031');
+  });
+
+  it('goes back to the current month for the tests that follow', async () => {
+    $('#reportYear').value = thisYear;
+    $('#expenseMonth').value = month;
+    await redraw();
+    expect($('#expenseMonth').value).toBe(month);
+    expect(rowFor('Total ' + thisYear)).toBeTruthy();
   });
 });
 

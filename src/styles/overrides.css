@@ -1,5 +1,6 @@
 /*
- * Phones: show each table row as a card instead of a sideways-scrolling table.
+ * Phones (tables marked .compact keep the normal table layout, for numbers that are compared across rows):
+ * show each table row as a card instead of a sideways-scrolling table.
  * The old approach pinned the first column at 118px, which cut off names and deposit details.
  * Cells are labelled by src/app/responsive-tables.js (data-label = column header).
  */
@@ -7,25 +8,25 @@
   .tablewrap {
     overflow: visible;
   }
-  .table,
-  .table tbody,
-  .table tr,
-  .table td {
+  .table:not(.compact),
+  .table:not(.compact) tbody,
+  .table:not(.compact) tr,
+  .table:not(.compact) td {
     display: block;
     width: 100%;
     box-sizing: border-box; /* padding must not push the card past the screen edge */
   }
-  .table thead {
+  .table:not(.compact) thead {
     display: none;
   }
-  .table tr {
+  .table:not(.compact) tr {
     background: #fff;
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 6px 14px;
     margin: 0 0 12px;
   }
-  .table td {
+  .table:not(.compact) td {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -38,11 +39,11 @@
     white-space: normal;
     word-break: break-word;
   }
-  .table td:last-child {
+  .table:not(.compact) td:last-child {
     border-bottom: 0;
   }
   /* Column name before the value */
-  .table td[data-label]::before {
+  .table:not(.compact) td[data-label]::before {
     content: attr(data-label);
     flex: 0 0 38%;
     text-align: left;
@@ -53,42 +54,67 @@
     text-transform: uppercase;
   }
   /* Header-less columns (action buttons) and empty-state rows: no label */
-  .table td[data-label='']::before {
+  .table:not(.compact) td[data-label='']::before {
     display: none;
   }
-  .table td[data-label=''] {
+  .table:not(.compact) td[data-label=''] {
     justify-content: flex-end;
     flex-wrap: wrap;
     gap: 6px 18px;
   }
   /* Action buttons stay on one line when they fit, and are big enough to tap */
-  .table td[data-label=''] > * {
+  .table:not(.compact) td[data-label=''] > * {
     white-space: nowrap;
   }
-  .table td[data-label=''] .link {
+  .table:not(.compact) td[data-label=''] .link {
     font-size: 13px;
     padding: 6px 0;
   }
-  .table td:not([data-label]) {
+  .table:not(.compact) td:not([data-label]) {
     justify-content: center;
     text-align: center;
   }
   /* First cell is the card title (name + phone + deposit, shown in full) */
-  .table td:first-child {
+  .table:not(.compact) td:first-child {
     display: block;
     text-align: left;
     padding: 10px 0;
     border-bottom: 1px solid var(--line);
     font-size: 14px;
   }
-  .table td:first-child::before {
+  .table:not(.compact) td:first-child::before {
     display: none;
   }
-  .table td:first-child .tiny {
+  .table:not(.compact) td:first-child .tiny {
     white-space: normal;
     max-width: none;
   }
   .report-table {
     overflow: visible;
+  }
+  /* Compact tables: small padding so four numeric columns fit a 360px screen */
+  .table.compact th,
+  .table.compact td,
+  .report-table .table.compact th,
+  .report-table .table.compact td {
+    padding: 9px 5px;
+    font-size: 12px;
+  }
+  .table.compact th {
+    font-size: 9px;
+    letter-spacing: 0.4px;
+  }
+  .table.compact td .link {
+    font-size: 12px;
+    padding: 0;
+    text-align: left;
+  }
+  .table.compact th:first-child,
+  .table.compact td:first-child {
+    padding-left: 8px;
+  }
+  .table.compact th:last-child,
+  .table.compact td:last-child {
+    padding-right: 8px;
   }
 }

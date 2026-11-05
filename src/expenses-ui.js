@@ -1,5 +1,6 @@
 import {openPartnerManager} from './app/partners.js';
 import {formatMoney as money} from './app/money.js';
+import {buildMonthlyReport, monthLabel, shortMonthLabel, yearsWithData} from './app/monthly-report.js';
 import {computeSettlement, currentBuilding, rentCollectorId} from './app/settlement.js';
 import {esc, toast} from './app/ui.js';
 
@@ -59,6 +60,42 @@ function renderBreakdown(result, collectorId, open) {
     ${people}</details>`;
 }
 
+/** Month-by-month table and expense categories for one year, with a View button per month. */
+function renderMonthlyReport(year) {
+  const payments = window.pgRentPayments || [];
+  const expenses = window.pgExpenses || [];
+  const years = yearsWithData({payments, expenses, fallbackYear: year});
+  const report = buildMonthlyReport({payments, expenses, year});
+  const profitColor = (n) => (n >= 0 ? '#17684f' : '#b42318');
+  const rows = report.months
+    .map(
+      (
+        m
+      ) => `<tr><td><button class="link" data-view-month="${esc(m.month)}" title="View ${esc(monthLabel(m.month))}"><b>${esc(shortMonthLabel(m.month))}</b></button></td>
+        <td>${money(m.income)}</td><td>${money(m.expenses)}</td>
+        <td><b style="color:${profitColor(m.profit)}">${money(m.profit)}</b></td></tr>`
+    )
+    .join('');
+  const total = report.months.length
+    ? `<tr><td><b>Total ${esc(year)}</b></td><td><b>${money(report.totals.income)}</b></td><td><b>${money(report.totals.expenses)}</b></td>
+        <td><b style="color:${profitColor(report.totals.profit)}">${money(report.totals.profit)}</b></td></tr>`
+    : '';
+  const categories = report.categories
+    .map((c) => `<tr><td>${esc(c.category)}</td><td>${money(c.amount)}</td><td>${c.percent}%</td></tr>`)
+    .join('');
+  return `<section class="report-block" id="monthlyReport">
+    <div class="report-blockhead" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div><h3>Month-by-month report</h3><p>Rent collected, expenses and net profit for every month. Tap a month to see its details.</p></div>
+      <label>Year <select id="reportYear">${years.map((y) => `<option${y === year ? ' selected' : ''}>${esc(y)}</option>`).join('')}</select></label>
+    </div>
+    <div class="report-table"><table class="table compact"><thead><tr><th>Month</th><th>Rent</th><th>Expenses</th><th>Net profit</th></tr></thead>
+      <tbody>${rows ? rows + total : `<tr><td colspan="4" class="sub">No rent or expenses recorded in ${esc(year)}.</td></tr>`}</tbody></table></div>
+    <div class="report-blockhead" style="margin-top:6px"><h3>Expenses by category, ${esc(year)}</h3></div>
+    <div class="report-table"><table class="table compact"><thead><tr><th>Category</th><th>Amount</th><th>Share</th></tr></thead>
+      <tbody>${categories || '<tr><td colspan="3" class="sub">No expenses recorded.</td></tr>'}</tbody></table></div>
+  </section>`;
+}
+
 export function renderExpensesPage() {
   const month = document.getElementById('expenseMonth')?.value || new Date().toISOString().slice(0, 7);
   const expenses = (window.pgExpenses || []).filter((x) => String(x.expense_date || '').slice(0, 7) === month);
@@ -66,6 +103,7 @@ export function renderExpensesPage() {
     .filter((x) => String(x.rent_month || x.paid_on || '').slice(0, 7) === month)
     .reduce((n, x) => n + Number(x.amount || 0), 0);
   const explainOpen = document.querySelector('.settle-explain')?.open === true; // keep it open after edits
+  const reportYear = document.getElementById('reportYear')?.value || month.slice(0, 4);
   const building = currentBuilding();
   const collectorId = rentCollectorId(building);
   const result = computeSettlement({
@@ -124,12 +162,21 @@ export function renderExpensesPage() {
         <tbody>${shareRows || '<tr><td colspan="6" class="sub">No partners found for this building.</td></tr>'}</tbody></table></div>
       <div style="padding:4px 18px 16px"><b>Who pays whom</b>${transfers}${shareWarning}${renderBreakdown(result, collectorId, explainOpen)}</div>
     </section>
+    ${renderMonthlyReport(reportYear)}
     <section class="report-block"><div class="report-blockhead"><h3>Expenses</h3></div>
       <div class="report-table"><table class="table"><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Paid to</th><th>Paid by</th><th>Amount</th><th>Actions</th></tr></thead>
         <tbody>${expenseRows || '<tr><td colspan="7" class="sub">No expenses recorded for this month.</td></tr>'}</tbody></table></div>
     </section></div>`;
   document.getElementById('expenseMonth').onchange = renderExpensesPage;
   document.getElementById('addExpenseButton').onclick = () => openExpenseForm();
+  document.getElementById('reportYear').onchange = renderExpensesPage;
+  document.querySelectorAll('[data-view-month]').forEach((b) => {
+    b.onclick = () => {
+      document.getElementById('expenseMonth').value = b.dataset.viewMonth; // jump to that month's full details
+      renderExpensesPage();
+      window.scrollTo?.({top: 0, behavior: 'smooth'});
+    };
+  });
   document.querySelectorAll('[data-edit-expense]').forEach((b) => {
     b.onclick = () => openExpenseForm(expenses.find((x) => x.id === b.dataset.editExpense));
   });
