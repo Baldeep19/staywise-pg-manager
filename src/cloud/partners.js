@@ -19,24 +19,48 @@ export async function loadPartnerData() {
     window.pgPropertyPeople = data || [];
   };
   await window.refreshPropertyPeople();
+  /** Columns for an expense from the form values. Notes are only touched when the form actually sent them. */
+  const expenseColumns = (d) => ({
+    expense_date: d.date || new Date().toISOString().slice(0, 10),
+    category: d.category || 'Other',
+    description: d.description,
+    amount: Number(d.amount),
+    paid_to: d.paidTo || null,
+    paid_by_user_id: d.paidByUserId || null,
+    ...('notes' in d ? {notes: d.notes || null} : {})
+  });
   window.savePropertyExpense = async (d) => {
     const {data, error} = await supabase
       .from('property_expenses')
-      .insert({
-        property_id: session.property.id,
-        expense_date: d.date || new Date().toISOString().slice(0, 10),
-        category: d.category || 'Other',
-        description: d.description,
-        amount: Number(d.amount),
-        paid_to: d.paidTo || null,
-        paid_by_user_id: d.paidByUserId || null,
-        notes: d.notes || null
-      })
+      .insert({property_id: session.property.id, notes: null, ...expenseColumns(d)})
       .select()
       .single();
     if (error) throw error;
     window.pgExpenses = [data, ...(window.pgExpenses || [])];
     return data;
+  };
+  // Edit an existing expense (any owner or partner of the building may do this).
+  window.updatePropertyExpense = async (id, d) => {
+    const {data, error} = await supabase
+      .from('property_expenses')
+      .update(expenseColumns(d))
+      .eq('id', id)
+      .eq('property_id', session.property.id)
+      .select()
+      .single();
+    if (error) throw error;
+    window.pgExpenses = (window.pgExpenses || []).map((x) => (x.id === id ? data : x));
+    return data;
+  };
+  // Delete an expense. Profit and settlement are recalculated from what is left.
+  window.deletePropertyExpense = async (id) => {
+    const {error} = await supabase
+      .from('property_expenses')
+      .delete()
+      .eq('id', id)
+      .eq('property_id', session.property.id);
+    if (error) throw error;
+    window.pgExpenses = (window.pgExpenses || []).filter((x) => x.id !== id);
   };
   // Choose which partner holds the collected rent (null = the building owner). Used for profit settlement.
   window.setRentCollector = async (userId) => {

@@ -3,7 +3,9 @@ import {beforeAll, describe, expect, it, vi} from 'vitest';
 
 const today = new Date().toISOString().slice(0, 10);
 const month = today.slice(0, 7);
+let nextId = 0;
 const expense = (amount, by, description) => ({
+  id: 'e' + ++nextId,
   expense_date: today,
   category: 'Other',
   description,
@@ -65,6 +67,74 @@ describe('Expenses & profit page', () => {
   it('shows the person who paid each expense by name', () => {
     const wifi = [...document.querySelectorAll('#pageContent tr')].find((r) => r.textContent.includes('Wifi bill'));
     expect(wifi.textContent).toContain('Partner 1');
+  });
+});
+
+describe('editing and deleting expenses', () => {
+  const rowFor = (text) => [...document.querySelectorAll('#pageContent tr')].find((r) => r.textContent.includes(text));
+  const lastDialog = () => [...document.querySelectorAll('.overlay.show')].at(-1);
+
+  beforeAll(() => {
+    // Stand-ins for the cloud calls: they change the loaded data the same way the real ones do.
+    window.updatePropertyExpense = vi.fn(async (id, d) => {
+      window.pgExpenses = window.pgExpenses.map((x) =>
+        x.id === id ? {...x, description: d.description, amount: Number(d.amount), paid_by_user_id: d.paidByUserId} : x
+      );
+    });
+    window.deletePropertyExpense = vi.fn(async (id) => {
+      window.pgExpenses = window.pgExpenses.filter((x) => x.id !== id);
+    });
+  });
+
+  it('opens the form pre-filled with the existing values', () => {
+    rowFor('Wifi bill').querySelector('[data-edit-expense]').click();
+    const form = lastDialog().querySelector('form').elements;
+    expect(lastDialog().querySelector('h2').textContent).toBe('Edit expense');
+    expect(form.description.value).toBe('Wifi bill');
+    expect(form.amount.value).toBe('2991');
+    expect(form.date.value).toBe(today);
+    expect(form.paidByUserId.value).toBe('p1'); // the payer is kept, not reset to the first person
+    expect(lastDialog().textContent).toContain('Save changes');
+  });
+
+  it('saves the change and recalculates profit', async () => {
+    const form = lastDialog().querySelector('form');
+    form.elements.amount.value = '3500';
+    form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
+    await vi.waitFor(() => expect(window.updatePropertyExpense).toHaveBeenCalled());
+    const [id, values] = window.updatePropertyExpense.mock.calls[0];
+    expect(id).toBe('e3');
+    expect(values).toMatchObject({description: 'Wifi bill', amount: '3500', paidByUserId: 'p1'});
+    await vi.waitFor(() => expect(rowFor('Wifi bill').textContent).toContain('₹3,500'));
+    expect($('#pageContent').textContent).toContain('₹64,024'); // 64,533 − 509 more spent
+    expect(document.querySelector('.overlay.show')).toBeNull(); // dialog closed
+  });
+
+  it('does nothing when you cancel the delete confirmation', () => {
+    vi.stubGlobal('confirm', () => false);
+    rowFor('Plumber items').querySelector('[data-delete-expense]').click();
+    expect(window.deletePropertyExpense).not.toHaveBeenCalled();
+    expect(rowFor('Plumber items')).toBeTruthy();
+    vi.unstubAllGlobals();
+  });
+
+  it('deletes after confirming and recalculates profit', async () => {
+    const asked = vi.fn(() => true);
+    vi.stubGlobal('confirm', asked);
+    rowFor('Plumber items').querySelector('[data-delete-expense]').click();
+    expect(asked.mock.calls[0][0]).toContain('Plumber items'); // says which expense
+    await vi.waitFor(() => expect(window.deletePropertyExpense).toHaveBeenCalledWith('e6'));
+    await vi.waitFor(() => expect(rowFor('Plumber items')).toBeUndefined());
+    expect($('#pageContent').textContent).toContain('₹64,384'); // 64,024 + the 360 that is no longer spent
+    vi.unstubAllGlobals();
+  });
+
+  it('adding a new expense still works and defaults the payer to the person adding it', () => {
+    window.pgCurrentUserId = 'p2';
+    $('#addExpenseButton').click();
+    expect(lastDialog().querySelector('h2').textContent).toBe('Add expense');
+    expect(lastDialog().querySelector('form').elements.paidByUserId.value).toBe('p2');
+    lastDialog().querySelector('.close').click();
   });
 });
 

@@ -59,7 +59,8 @@ export function renderExpensesPage() {
       (
         x
       ) => `<tr><td>${esc(x.expense_date || '—')}</td><td>${esc(x.category || 'Other')}</td><td>${esc(x.description)}</td>
-        <td>${esc(x.paid_to || '—')}</td><td>${esc(nameOf(x.paid_by_user_id || collectorId))}</td><td>${money(x.amount)}</td></tr>`
+        <td>${esc(x.paid_to || '—')}</td><td>${esc(nameOf(x.paid_by_user_id || collectorId))}</td><td>${money(x.amount)}</td>
+        <td><button class="link" data-edit-expense="${esc(x.id)}">Edit</button> <button class="secondary" style="color:#b44;border-color:#eed2d0" data-delete-expense="${esc(x.id)}">Delete</button></td></tr>`
     )
     .join('');
 
@@ -80,29 +81,79 @@ export function renderExpensesPage() {
       <div style="padding:4px 18px 16px"><b>Who pays whom</b>${transfers}${shareWarning}</div>
     </section>
     <section class="report-block"><div class="report-blockhead"><h3>Expenses</h3></div>
-      <div class="report-table"><table class="table"><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Paid to</th><th>Paid by</th><th>Amount</th></tr></thead>
-        <tbody>${expenseRows || '<tr><td colspan="6" class="sub">No expenses recorded for this month.</td></tr>'}</tbody></table></div>
+      <div class="report-table"><table class="table"><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Paid to</th><th>Paid by</th><th>Amount</th><th>Actions</th></tr></thead>
+        <tbody>${expenseRows || '<tr><td colspan="7" class="sub">No expenses recorded for this month.</td></tr>'}</tbody></table></div>
     </section></div>`;
   document.getElementById('expenseMonth').onchange = renderExpensesPage;
   document.getElementById('addExpenseButton').onclick = () => openExpenseForm();
+  document.querySelectorAll('[data-edit-expense]').forEach((b) => {
+    b.onclick = () => openExpenseForm(expenses.find((x) => x.id === b.dataset.editExpense));
+  });
+  document.querySelectorAll('[data-delete-expense]').forEach((b) => {
+    b.onclick = () => deleteExpense(expenses.find((x) => x.id === b.dataset.deleteExpense));
+  });
   document.getElementById('managePartnerButton').onclick = () => openPartnerManager(renderExpensesPage);
 }
-function openExpenseForm() {
+const CATEGORIES = ['Utilities', 'Rent/lease', 'Repairs', 'Supplies', 'Salary', 'Other'];
+
+/** Ask, then delete an expense and redraw (profit and settlement update from what is left). */
+async function deleteExpense(expense) {
+  if (!expense) return;
+  if (!confirm(`Delete "${expense.description}" (${money(expense.amount)})? This cannot be undone.`)) return;
+  try {
+    await window.deletePropertyExpense(expense.id);
+    toast('Expense deleted');
+    renderExpensesPage();
+  } catch (err) {
+    toast('Could not delete expense: ' + err.message);
+  }
+}
+
+/**
+ * Add-expense dialog; pass an existing expense to edit it (the form opens pre-filled).
+ * @param {object|null} [expense]
+ */
+function openExpenseForm(expense = null) {
+  const editing = Boolean(expense);
   const box = document.createElement('div');
   box.className = 'overlay show';
-  const payers = (window.pgPropertyPeople || []).map((x) => ({
-    id: x.user_id,
-    label: x.display_name || x.email || x.user_id
-  }));
-  box.innerHTML = `<form class="modal"><div class="modalhead"><div><h2>Add expense</h2><p>Record a property expense and who paid it.</p></div><button type="button" class="close">×</button></div><div class="formgrid"><div class="field"><label>Date</label><input name="date" type="date" required value="${new Date().toISOString().slice(0, 10)}"></div><div class="field"><label>Category</label><select name="category"><option>Utilities</option><option>Rent/lease</option><option>Repairs</option><option>Supplies</option><option>Salary</option><option>Other</option></select></div><div class="field full"><label>Description</label><input name="description" required placeholder="e.g. Plumbing repair"></div><div class="field"><label>Amount</label><input name="amount" type="number" min="0" step="0.01" required></div><div class="field"><label>Paid to</label><input name="paidTo" placeholder="Vendor or partner"></div><div class="field full"><label>Paid by</label><select name="paidByUserId">${payers.map((x) => `<option value="${x.id}">${x.label}</option>`).join('')}</select></div></div><div class="formactions"><button type="button" class="secondary close" style="min-width:78px;white-space:nowrap">Cancel</button><button class="primary">Save expense</button></div></form>`;
+  const people = window.pgPropertyPeople || [];
+  // New expenses default to the person adding them; existing ones keep their payer (blank = the rent collector).
+  const selectedPayer = editing
+    ? expense.paid_by_user_id || rentCollectorId(currentBuilding())
+    : window.pgCurrentUserId;
+  const payerOptions = people
+    .map(
+      (x) =>
+        `<option value="${esc(x.user_id)}"${x.user_id === selectedPayer ? ' selected' : ''}>${esc(x.display_name || x.email || x.user_id)}</option>`
+    )
+    .join('');
+  const categories =
+    CATEGORIES.includes(expense?.category) || !expense?.category ? CATEGORIES : [...CATEGORIES, expense.category];
+  const categoryOptions = categories
+    .map((c) => `<option${c === (expense?.category || 'Utilities') ? ' selected' : ''}>${esc(c)}</option>`)
+    .join('');
+  box.innerHTML = `<form class="modal">
+    <div class="modalhead"><div><h2>${editing ? 'Edit expense' : 'Add expense'}</h2><p>${editing ? 'Change the details; profit and settlement update automatically.' : 'Record a property expense and who paid it.'}</p></div><button type="button" class="close">×</button></div>
+    <div class="formgrid">
+      <div class="field"><label>Date</label><input name="date" type="date" required value="${esc(expense?.expense_date || new Date().toISOString().slice(0, 10))}"></div>
+      <div class="field"><label>Category</label><select name="category">${categoryOptions}</select></div>
+      <div class="field full"><label>Description</label><input name="description" required placeholder="e.g. Plumbing repair" value="${esc(expense?.description || '')}"></div>
+      <div class="field"><label>Amount</label><input name="amount" type="number" min="0" step="0.01" required value="${expense ? Number(expense.amount) : ''}"></div>
+      <div class="field"><label>Paid to</label><input name="paidTo" placeholder="Vendor or partner" value="${esc(expense?.paid_to || '')}"></div>
+      <div class="field full"><label>Paid by</label><select name="paidByUserId">${payerOptions}</select></div>
+    </div>
+    <div class="formactions"><button type="button" class="secondary close" style="min-width:78px;white-space:nowrap">Cancel</button><button class="primary">${editing ? 'Save changes' : 'Save expense'}</button></div>
+  </form>`;
   box.querySelectorAll('.close').forEach((x) => (x.onclick = () => box.remove()));
   box.querySelector('form').onsubmit = async (e) => {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(e.target));
     try {
-      await window.savePropertyExpense(d);
+      if (editing) await window.updatePropertyExpense(expense.id, d);
+      else await window.savePropertyExpense(d);
       box.remove();
-      toast('Expense saved');
+      toast(editing ? 'Expense updated' : 'Expense saved');
       renderExpensesPage();
     } catch (err) {
       toast('Could not save expense: ' + err.message);

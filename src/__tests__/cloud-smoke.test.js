@@ -9,6 +9,17 @@ const TABLES = {
     {id: 'p1', owner_id: 'u1', name: 'Sunrise PG', setup_complete: true},
     {id: 'p2', owner_id: 'u1', name: 'Lakeview PG', address: 'Lake Rd', setup_complete: true}
   ],
+  property_expenses: [
+    {
+      id: 'e1',
+      property_id: 'p1',
+      expense_date: '2026-11-01',
+      category: 'Repairs',
+      description: 'Plumber',
+      amount: 360,
+      paid_by_user_id: 'u2'
+    }
+  ],
   property_members: [
     {property_id: 'p1', user_id: 'u2', ownership_percent: 30, display_name: 'Partner Two', email: 'two@example.com'}
   ],
@@ -174,6 +185,45 @@ describe('manage partners', () => {
     expect(calls[0].ops.map((o) => o[0])).toContain('delete');
     expect(calls[0].ops).toContainEqual(['eq', 'user_id', 'u2']);
     vi.unstubAllGlobals();
+  });
+});
+
+describe('edit and delete expenses', () => {
+  it('updates an expense in place, without wiping its notes', async () => {
+    calls.length = 0;
+    await window.updatePropertyExpense('e1', {
+      date: '2026-11-02',
+      category: 'Repairs',
+      description: 'Plumber visit',
+      amount: '400',
+      paidTo: 'Ram',
+      paidByUserId: 'u2'
+    });
+    expect(calls[0].table).toBe('property_expenses');
+    // no `notes` key: the form does not edit notes, so they must not be overwritten with null
+    expect(calls[0].ops).toContainEqual([
+      'update',
+      {
+        expense_date: '2026-11-02',
+        category: 'Repairs',
+        description: 'Plumber visit',
+        amount: 400,
+        paid_to: 'Ram',
+        paid_by_user_id: 'u2'
+      }
+    ]);
+    expect(calls[0].ops).toContainEqual(['eq', 'id', 'e1']);
+    expect(calls[0].ops).toContainEqual(['eq', 'property_id', 'p1']);
+    expect(window.pgExpenses.find((x) => x.id === 'e1').description).toBe('Plumber visit');
+  });
+
+  it('deletes an expense and removes it from the loaded list', async () => {
+    calls.length = 0;
+    await window.deletePropertyExpense('e1');
+    expect(calls[0].table).toBe('property_expenses');
+    expect(calls[0].ops.map((o) => o[0])).toContain('delete');
+    expect(calls[0].ops).toContainEqual(['eq', 'id', 'e1']);
+    expect(window.pgExpenses.some((x) => x.id === 'e1')).toBe(false);
   });
 });
 
