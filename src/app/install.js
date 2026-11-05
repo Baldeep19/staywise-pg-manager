@@ -80,17 +80,18 @@ export async function promptInstall() {
   prompt.prompt();
   const {outcome} = await prompt.userChoice;
   window.renderCurrentPage?.();
+  refreshAuthInstall();
   return outcome === 'accepted';
 }
 
-/** HTML for the "Install app" card on the Settings page. */
-export function renderInstallSection() {
+/** The status line (installed / one-click button) and the per-platform guides, shared by Settings and the login screen. */
+function renderInstallBody() {
   const mine = detectPlatform();
   const guides = [...INSTALL_GUIDES].sort((a, b) => (a.id === mine ? -1 : b.id === mine ? 1 : 0));
   const status = isInstalled()
     ? '<p class="install-status ok">✓ Staywise is installed on this device.</p>'
     : canPromptInstall()
-      ? '<p class="install-status"><button class="primary" onclick="installApp()">Install Staywise</button></p>'
+      ? '<p class="install-status"><button type="button" class="primary" onclick="installApp()">Install Staywise</button></p>'
       : '';
   const cards = guides
     .map(
@@ -101,23 +102,47 @@ export function renderInstallSection() {
       </details>`
     )
     .join('');
+  return status + cards;
+}
+
+/** HTML for the "Install app" card on the Settings page. */
+export function renderInstallSection() {
   return `<section class="report-block" id="installSection">
     <div class="report-blockhead"><h3>Install the app</h3><p>Add Staywise to your phone or computer to open it like a regular app — faster to reach, full screen, no browser bar.</p></div>
-    <div style="padding:6px 16px 16px">${status}${cards}</div>
+    <div style="padding:6px 16px 16px">${renderInstallBody()}</div>
   </section>`;
+}
+
+/** Compact, collapsible install help for the login screen. Empty when the app is already installed. */
+export function renderAuthInstall() {
+  if (isInstalled()) return '';
+  return `<details class="auth-install"><summary>📲 Install the app on your phone or computer</summary>${renderInstallBody()}</details>`;
+}
+
+/** Re-draw the login-screen install help (keeps it open if the user had opened it). */
+export function refreshAuthInstall() {
+  const host = document.getElementById('authInstall');
+  if (!host) return;
+  const wasOpen = host.querySelector('.auth-install')?.open === true;
+  host.innerHTML = renderAuthInstall();
+  const panel = host.querySelector('.auth-install'); // absent once the app is installed
+  if (wasOpen && panel) panel.open = true;
 }
 
 /** Listen for the browser's install events. Called once from main.js. */
 export function initInstall() {
   window.installApp = promptInstall;
+  refreshAuthInstall();
   window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault(); // keep it for our own button instead of the browser's mini-infobar
     deferredPrompt = event;
     window.renderCurrentPage?.();
+    refreshAuthInstall();
   });
   window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     toast('Staywise installed');
     window.renderCurrentPage?.();
+    refreshAuthInstall();
   });
 }

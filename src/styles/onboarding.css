@@ -112,3 +112,18 @@
   padding-left: 20px;
   line-height: 1.7;
 }
+
+/* Install help on the login screen */
+.auth-install {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e3e9e5;
+}
+.auth-install > summary {
+  cursor: pointer;
+  font:
+    700 13px Manrope,
+    sans-serif;
+  color: #17684f;
+  margin-bottom: 8px;
+}

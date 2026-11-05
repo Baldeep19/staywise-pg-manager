@@ -177,3 +177,35 @@ describe('platform detection', () => {
     expect(detectPlatform(nav)).toBe(expected);
   });
 });
+
+describe('login screen install help', () => {
+  const host = () => document.getElementById('authInstall');
+
+  it('shows install instructions for every platform on the login screen', () => {
+    expect(host().querySelector('summary').textContent).toContain('Install the app');
+    const text = host().textContent;
+    for (const title of ['iPhone / iPad (Safari)', 'Android (Chrome)', 'Windows / Mac / Linux', 'Mac (Safari)'])
+      expect(text).toContain(title);
+    expect(text).toContain('Add to Home Screen');
+  });
+
+  it('adds a one-click Install button there once the browser offers it, keeping the panel open', () => {
+    host().querySelector('.auth-install').open = true;
+    const event = new Event('beforeinstallprompt', {cancelable: true});
+    event.prompt = vi.fn();
+    event.userChoice = Promise.resolve({outcome: 'dismissed'});
+    window.dispatchEvent(event);
+    const button = [...host().querySelectorAll('button')].find((b) => b.textContent === 'Install Staywise');
+    expect(button).toBeTruthy();
+    expect(button.type).toBe('button'); // must not submit the sign-in form
+    expect(host().querySelector('.auth-install').open).toBe(true);
+  });
+
+  it('is hidden when the app is already installed', async () => {
+    window.matchMedia = vi.fn(() => ({matches: true}));
+    const {refreshAuthInstall} = await import('../app/install.js');
+    refreshAuthInstall();
+    expect(host().innerHTML).toBe('');
+    delete window.matchMedia;
+  });
+});
