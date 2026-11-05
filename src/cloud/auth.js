@@ -31,8 +31,9 @@ export function initAuthForm() {
     if (!signupFlats.children.length) addSignupFlatRow();
   };
   document.getElementById('addSignupFlat').onclick = () => addSignupFlatRow();
-  signupButton.addEventListener('click', () => {
-    registerMode = !registerMode;
+  /** Switch the card between "Owner sign in" and "Create owner account". */
+  function setRegisterMode(on) {
+    registerMode = on;
     ownerNameField.style.display = registerMode ? 'flex' : 'none';
     propertyFields.style.display = 'none';
     showPropertyButton.style.display = registerMode ? 'inline-flex' : 'none';
@@ -45,7 +46,8 @@ export function initAuthForm() {
     document.querySelector('#authGate p').textContent = registerMode
       ? 'Add your name and account details. Building setup is optional and can be added later.'
       : 'Sign in to access your PG records securely.';
-  });
+  }
+  signupButton.addEventListener('click', () => setRegisterMode(!registerMode));
   authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const d = new FormData(authForm);
@@ -88,10 +90,17 @@ export function initAuthForm() {
           errorBox.style.color = 'var(--green)';
           errorBox.textContent = 'Account created. Signing you in…';
           location.reload();
+        } else if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+          // With email confirmation on, Supabase hides "already registered" by returning a user with no identities.
+          sayError('An account with this email already exists. Sign in instead, or reset your password.');
         } else {
+          // Confirmation required: take the user back to the sign-in screen with the email filled in.
+          const email = String(d.get('email'));
+          setRegisterMode(false);
+          authForm.reset();
+          authForm.elements.email.value = email;
           errorBox.style.color = 'var(--green)';
-          errorBox.textContent =
-            'Account created. Check your inbox for a confirmation link, then return here to sign in.';
+          errorBox.textContent = `Account created. We sent a confirmation link to ${email}. Please confirm your email, then sign in here.`;
         }
       } catch (err) {
         sayError(err);
