@@ -33,9 +33,9 @@ function showSetup(existingProperty, existingFlats=[], pending={}) {
 }
 async function initSession(user) {
   currentUser=user
-  const {data: found,error}=await supabase.from('properties').select('*').eq('owner_id',user.id).limit(1).maybeSingle()
+  const {data: foundRows,error}=await supabase.from('properties').select('*').limit(20)
   if(error)throw error
-  property=found
+  property=(foundRows||[]).find(x=>x.owner_id===user.id)||(foundRows||[])[0]||null
   let foundFlats=[]
   if(property){const q=await supabase.from('flats').select('*').eq('property_id',property.id).eq('active',true).order('floor_name').order('flat_number');if(q.error)throw q.error;foundFlats=q.data||[]}
   flats=foundFlats
