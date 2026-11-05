@@ -98,6 +98,7 @@ describe('user who gave building details at sign-up', () => {
     expect($('ownerSetupGate').style.display).toBe('block');
     expect($('ownerSetupForm').elements.propertyName.value).toBe('Greenwood');
     expect($('skipPropertySetup').textContent).toBe('Skip for now');
+    expect($('ownerSetupGate').classList.contains('setup-popup')).toBe(false); // first run stays full screen
     $('skipPropertySetup').click(); // they can still skip and add it later
     expect($('ownerSetupGate').style.display).toBe('none');
     expect($('noBuildingBanner').hidden).toBe(false);
@@ -125,6 +126,24 @@ describe('user who owns a building', () => {
     expect(flat.querySelector('[name=wifi_ssid]').value).toBe('sunrise');
     expect($('skipPropertySetup').textContent).toBe('Cancel');
     expect($('noBuildingBanner').hidden).toBe(true);
+  });
+
+  it('opens edit as a dismissable popup (backdrop click or Esc), not a full page', () => {
+    openSettings().click();
+    expect($('ownerSetupGate').classList.contains('setup-popup')).toBe(true);
+    $('ownerSetupForm').dispatchEvent(new MouseEvent('click', {bubbles: true})); // click inside the form: stays open
+    expect($('ownerSetupGate').style.display).toBe('block');
+    $('ownerSetupGate').click(); // click on the dimmed backdrop
+    expect($('ownerSetupGate').style.display).toBe('none');
+    openSettings().click();
+    document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+    expect($('ownerSetupGate').style.display).toBe('none');
+  });
+
+  it('opens "Create new building" as a popup too', () => {
+    window.createNewBuilding();
+    expect($('ownerSetupGate').classList.contains('setup-popup')).toBe(true);
+    expect($('ownerSetupGate').style.display).toBe('block');
   });
 
   it('does not use the "skip setup" shortcut when cancelling an edit', () => {

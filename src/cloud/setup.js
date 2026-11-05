@@ -20,6 +20,8 @@ export function addSetupFlat(flat = {}) {
   document.getElementById('setupFlats').append(row);
 }
 
+let escHandler = () => {};
+
 /**
  * Open the building setup form.
  * @param {object|null} existingProperty Building being edited, or null when creating one.
@@ -49,9 +51,20 @@ export function showSetup(existingProperty, existingFlats = [], pending = {}, op
   const skip = document.getElementById('skipPropertySetup');
   const cancelOnly = Boolean(options.createNew || options.cancelable);
   skip.textContent = cancelOnly ? 'Cancel' : 'Skip for now';
+  // Already inside the app (Settings -> create/edit): show a dismissable popup over it instead of a full page.
+  // First-run setup stays full screen because there is no app behind it yet.
+  setup.classList.toggle('setup-popup', cancelOnly);
+  document.removeEventListener('keydown', escHandler); // drop the previous open's listener (also after a save)
+  const closePopup = () => {
+    setup.style.display = 'none';
+    document.removeEventListener('keydown', escHandler);
+  };
+  escHandler = (e) => e.key === 'Escape' && closePopup();
+  setup.onclick = cancelOnly ? (e) => e.target === setup && closePopup() : null; // click on the dimmed backdrop
+  if (cancelOnly) document.addEventListener('keydown', escHandler);
   skip.onclick = () => {
     if (cancelOnly) {
-      setup.style.display = 'none';
+      closePopup();
       return;
     }
     localStorage.setItem('staywise_skip_setup', '1');

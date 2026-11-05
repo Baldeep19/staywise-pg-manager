@@ -251,3 +251,16 @@
     height: calc(100dvh - 62px - env(safe-area-inset-bottom));
   }
 }
+
+/* Building setup: full-screen on first run, a dismissable popup when opened from Settings. */
+#ownerSetupGate {
+  background: #153b30;
+}
+#ownerSetupGate.setup-popup {
+  background: rgba(10, 25, 20, 0.55);
+  backdrop-filter: blur(2px);
+}
+#ownerSetupGate.setup-popup #ownerSetupForm {
+  margin: 4vh auto;
+  box-shadow: 0 25px 80px #0006;
+}
