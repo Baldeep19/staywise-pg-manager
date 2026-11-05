@@ -25,7 +25,8 @@ export function addSetupFlat(flat = {}) {
  * @param {object|null} existingProperty Building being edited, or null when creating one.
  * @param {object[]} [existingFlats] Its current flats.
  * @param {object} [pending] Details captured at sign-up for a first-time setup.
- * @param {{createNew?: boolean}} [options] createNew adds another building without touching the active one.
+ * @param {{createNew?: boolean, cancelable?: boolean}} [options] createNew adds another building without touching
+ *   the active one; cancelable shows "Cancel" (just close) instead of "Skip for now".
  */
 export function showSetup(existingProperty, existingFlats = [], pending = {}, options = {}) {
   // Kept apart from session.property so cancelling "new building" never disturbs the building in use.
@@ -46,15 +47,17 @@ export function showSetup(existingProperty, existingFlats = [], pending = {}, op
   document.getElementById('addFlatRow').onclick = () => addSetupFlat();
   setup.querySelector('h2').textContent = options.createNew ? 'Add a new building' : 'Set up your building';
   const skip = document.getElementById('skipPropertySetup');
-  skip.textContent = options.createNew ? 'Cancel' : 'Skip for now';
+  const cancelOnly = Boolean(options.createNew || options.cancelable);
+  skip.textContent = cancelOnly ? 'Cancel' : 'Skip for now';
   skip.onclick = () => {
-    if (options.createNew) {
+    if (cancelOnly) {
       setup.style.display = 'none';
       return;
     }
     localStorage.setItem('staywise_skip_setup', '1');
-    // The app is now visible without a building: allow adding one from Settings, and greet first-time users.
-    window.editPropertySetup = () => showSetup(session.setup.property, session.setup.flats, pending);
+    // The app is now visible without a building: point to Settings, and greet first-time users.
+    const banner = document.getElementById('noBuildingBanner');
+    if (banner) banner.hidden = false;
     startTourIfFirstTime(session.currentUser);
     document.getElementById('ownerSetupGate').style.display = 'none';
     gate.style.display = 'none';

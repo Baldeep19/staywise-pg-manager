@@ -50,7 +50,7 @@ describe('display name', () => {
   });
 });
 
-describe('new account that has not set up a building yet', () => {
+describe('new account that gave no building details', () => {
   beforeAll(async () => {
     vi.stubEnv('VITE_SUPABASE_URL', 'http://localhost');
     vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'anon');
@@ -61,10 +61,8 @@ describe('new account that has not set up a building yet', () => {
     await import('../cloud/index.js');
   });
 
-  it('shows their name, not the placeholder "Owner", once they skip building setup', () => {
-    expect($('ownerSetupGate').style.display).toBe('block'); // setup screen comes first
-    $('skipPropertySetup').click();
-    expect($('ownerSetupGate').style.display).toBe('none');
+  it('goes straight to the app showing their name, not the placeholder "Owner"', () => {
+    expect($('ownerSetupGate').style.display).toBe('none'); // no building details were given, so no setup screen
     expect($('ownerGreeting').textContent).toBe('Baldeep Singh');
     expect($('ownerProfileName').textContent).toBe('Baldeep Singh');
     expect($('ownerAvatar').textContent).toBe('BS');

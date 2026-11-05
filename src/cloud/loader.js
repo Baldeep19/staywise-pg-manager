@@ -5,6 +5,7 @@ import {supabase} from './client.js';
 import {installDashboard} from './dashboard.js';
 import {gate} from './elements.js';
 import {showOwnerIdentity} from './identity.js';
+import {toast} from '../app/ui.js';
 import {startTourIfFirstTime} from './onboarding.js';
 import {subscribeToPropertyChanges} from './live.js';
 import {loadPartnerData} from './partners.js';
@@ -45,16 +46,31 @@ export async function initSession(user) {
     foundFlats = q.data || [];
   }
   session.flats = foundFlats;
+  // What this user may do with building details:
+  //  'owner'   - the active building is theirs: can edit it (form is pre-filled)
+  //  'none'    - no building yet: can add one
+  //  'partner' - the active building belongs to someone else: view only
+  const pending = user.user_metadata?.pending_property || {};
+  const ownsBuilding = Boolean(session.property && session.property.owner_id === user.id);
+  window.buildingAccess = !session.property ? 'none' : ownsBuilding ? 'owner' : 'partner';
+  window.editPropertySetup = () => {
+    if (window.buildingAccess === 'partner') return toast('Only the building owner can edit building details');
+    showSetup(ownsBuilding ? session.property : null, ownsBuilding ? session.flats : [], pending, {cancelable: true});
+  };
+  const banner = document.getElementById('noBuildingBanner');
+  if (banner) banner.hidden = true;
   if (!session.property || !session.property.setup_complete || !session.flats.length) {
-    if (localStorage.getItem('staywise_skip_setup') === '1') {
-      document.getElementById('ownerSetupGate').style.display = 'none';
-      gate.style.display = 'none';
-      window.editPropertySetup = () =>
-        showSetup(session.property, foundFlats, user.user_metadata?.pending_property || {});
-      startTourIfFirstTime(user); // the app is visible even though building setup was skipped
+    // Only interrupt with the setup form when they gave building details at sign-up and have not skipped it.
+    // Everyone else goes straight to the app and can add a building later from Settings.
+    const gaveDetails = String(pending.name || '').trim().length > 0;
+    if (gaveDetails && window.buildingAccess !== 'partner' && localStorage.getItem('staywise_skip_setup') !== '1') {
+      showSetup(ownsBuilding ? session.property : null, session.flats, pending);
       return;
     }
-    showSetup(session.property, foundFlats, user.user_metadata?.pending_property || {});
+    document.getElementById('ownerSetupGate').style.display = 'none';
+    gate.style.display = 'none';
+    if (banner && window.buildingAccess !== 'partner') banner.hidden = false;
+    startTourIfFirstTime(user); // the app is visible even though there is no building yet
     return;
   }
   const {data: dbResidents, error: rError} = await supabase
@@ -158,7 +174,6 @@ export async function initSession(user) {
   window.applyCloudState?.(local, savedBills);
   installDashboard();
   subscribeToPropertyChanges();
-  window.editPropertySetup = () => showSetup(session.property, session.flats);
   gate.style.display = 'none';
   window.pgCurrentPropertyId = session.property.id;
   const propertySelect = document.getElementById('propertySelect');

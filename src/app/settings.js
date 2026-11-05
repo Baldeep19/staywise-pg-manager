@@ -18,6 +18,9 @@ export function renderSettings() {
       return `<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.address || '—')}</td><td>${role}</td><td>${action}</td></tr>`;
     })
     .join('');
+  const emptyMessage = window.pgCurrentUserId
+    ? 'You have not added a building yet — use “Add building details” above.'
+    : 'Sign in to manage your buildings.';
   document.getElementById('pageContent').innerHTML = `
     <div style="padding:20px">
       <section class="report-block">
@@ -27,7 +30,7 @@ export function renderSettings() {
         </div>
         <div class="report-table"><table class="table">
           <thead><tr><th>Building</th><th>Address</th><th>Your role</th><th></th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="4" class="sub">Sign in to manage your buildings.</td></tr>'}</tbody>
+          <tbody>${rows || `<tr><td colspan="4" class="sub">${emptyMessage}</td></tr>`}</tbody>
         </table></div>
       </section>
       ${renderInstallSection()}

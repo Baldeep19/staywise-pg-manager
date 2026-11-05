@@ -64,8 +64,10 @@ export function goPage(p) {
     document.getElementById('pageDesc').textContent = pages[p][1];
     document.getElementById('tableTitle').textContent = pages[p][0];
     document.getElementById('searchInput').classList.toggle('hidden', !['residents', 'rent'].includes(p));
-    let cta = document.getElementById('pageCta');
+    const cta = document.getElementById('pageCta');
     cta.classList.remove('hidden');
+    cta.disabled = false; // the button is shared by every page; undo a previous page's disabled state
+    cta.removeAttribute('title');
     if (p === 'reports') {
       cta.classList.add('hidden');
     } else if (p === 'residents') {
@@ -77,6 +79,13 @@ export function goPage(p) {
     } else if (p === 'electricity') {
       cta.textContent = '＋ Create bills';
       cta.onclick = () => openModal('electricityModal');
+    } else if (p === 'settings') {
+      // Edit is available only to the building's owner; users with no building get "Add" instead.
+      const access = window.buildingAccess;
+      cta.textContent = access === 'none' ? '＋ Add building details' : 'Edit building details';
+      cta.disabled = access === 'partner' || !window.editPropertySetup;
+      if (access === 'partner') cta.title = 'Only the building owner can edit building details';
+      cta.onclick = () => window.editPropertySetup?.();
     } else {
       cta.textContent =
         p === 'messages' ? '＋ Draft reminder' : p === 'settings' ? 'Edit building details' : '＋ Add new';
