@@ -17,7 +17,17 @@ export function rentBalanceForResident(r) {
 }
 
 export function renderRent() {
-  const body = state.residents
+  // The search box is shared with the Residents page; filter the same way (name, room, phone).
+  const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase(),
+    rows = state.residents.filter((r) => (r.name + ' ' + r.room + ' ' + r.phone).toLowerCase().includes(query));
+  if (!rows.length) {
+    document.getElementById('pageContent').innerHTML =
+      '<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No residents found' +
+      (query ? ' for ' + esc(query) : '') +
+      '</h3><p class="sub">Try another name, room or phone number.</p><button class="secondary" onclick="document.getElementById(\'searchInput\').value=\'\';renderRent()">Clear search</button></div>';
+    return;
+  }
+  const body = rows
     .map((r) => {
       const balance = rentBalanceForResident(r),
         reminder =
