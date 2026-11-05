@@ -6,12 +6,14 @@ import {renderRent, rentBalanceForResident} from './rent.js';
 import {persist} from './store.js';
 import {closeModal, emptyState, esc, initials, openModal, statusPill, toast} from './ui.js';
 import {renderIcons} from './icons.js';
+import {fillNoticeFields, initNoticeFields, noticeBadge} from './notice.js';
 
 export function resetResidentForm() {
   const f = document.getElementById('residentForm');
   f.reset();
   delete f.dataset.editResidentId;
   delete f.dataset.cloudResidentId;
+  fillNoticeFields(f, null);
   document.getElementById('residentModalTitle').textContent = 'Add a resident';
   document.getElementById('residentSubmitButton').textContent = 'Add resident';
 }
@@ -80,7 +82,9 @@ export function renderResidents() {
         esc(r.phone) +
         ' · Deposit ₹' +
         Number(r.deposit || 0).toLocaleString('en-IN') +
-        '</div></div></div></td><td>' +
+        '</div>' +
+        noticeBadge(r) + // "12 days left", coloured by how soon they leave
+        '</div></div></td><td>' +
         esc(r.room) +
         '</td><td>' +
         esc(r.sharing_type === 'single' ? 'Single' : r.sharing_type === 'double' ? 'Double' : '—') +
@@ -125,13 +129,21 @@ export function editResident(id) {
   f.elements.movein.value = r.movein || '';
   f.elements.address.value = r.address || '';
   f.elements.emergency.value = r.emergency || '';
+  fillNoticeFields(f, r);
   document.getElementById('residentModalTitle').textContent = 'Edit resident';
   document.getElementById('residentSubmitButton').textContent = 'Save changes';
   openModal('residentModal');
 }
 
+/** Notice dates as kept on the local resident record ('' = not on notice). */
+const noticeFields = (d) => ({
+  notice_on: d.notice_on || '',
+  vacate_on: d.notice_on ? d.vacate_on || '' : ''
+});
+
 /** Attach DOM event listeners for this feature. Called once from main.js. */
 export function initResidents() {
+  initNoticeFields(document.getElementById('residentForm'));
   document.getElementById('residentForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const form = e.target,
@@ -149,7 +161,8 @@ export function initResidents() {
         movein: d.movein || '',
         address: d.address || '',
         emergency: d.emergency || '',
-        meter_side: d.meter_side || existing.meter_side || ''
+        meter_side: d.meter_side || existing.meter_side || '',
+        ...noticeFields(d)
       });
       state.activities.unshift(
         `<div class="activity"><div class="acticon">♙</div><div class="actbody"><b>Resident details updated</b><small>${esc(d.name)} · Room ${esc(d.room)} · Just now</small></div></div>`
@@ -167,7 +180,8 @@ export function initResidents() {
         movein: d.movein || new Date().toISOString().slice(0, 10),
         address: d.address || '',
         emergency: d.emergency || '',
-        meter_side: d.meter_side || ''
+        meter_side: d.meter_side || '',
+        ...noticeFields(d)
       });
       state.activities.unshift(
         `<div class="activity"><div class="acticon">♙</div><div class="actbody"><b>New resident added</b><small>${esc(d.name)} · Room ${esc(d.room)} · Just now</small></div></div>`

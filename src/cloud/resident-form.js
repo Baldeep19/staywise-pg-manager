@@ -3,6 +3,7 @@
  */
 import {putBack, undoable} from '../app/ui.js';
 import {formError, showFieldError} from '../app/field-errors.js';
+import {noticePayload, todayIso} from '../app/notice.js';
 import {supabase} from './client.js';
 import {session} from './session.js';
 
@@ -33,7 +34,8 @@ export function initResidentCloudForm() {
         monthly_rent: Number(d.get('rent')),
         deposit_amount: Number(d.get('deposit') || 0),
         sharing_type: d.get('sharing_type'),
-        move_in: d.get('movein') || null
+        move_in: d.get('movein') || null,
+        ...noticePayload(d)
       };
       const result = editId
         ? await supabase
@@ -61,7 +63,8 @@ export function initResidentCloudForm() {
     const index = before.findIndex((r) => String(r.id) === String(id));
     const resident = before[index];
     const reportRow = (window.pgReportResidents || []).find((r) => String(r.id) === String(id));
-    const moveOut = new Date().toISOString().slice(0, 10);
+    const today = todayIso(),
+      moveOut = resident?.vacate_on && resident.vacate_on <= today ? resident.vacate_on : today;
     const setReportRow = (row) =>
       (window.pgReportResidents = (window.pgReportResidents || []).map((r) => (String(r.id) === String(id) ? row : r)));
     return undoable({

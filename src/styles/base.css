@@ -36,6 +36,16 @@
   --warn-ink: #59402d;
   --warn-bg: #fff6e9;
   --warn-line: #f7ead3;
+  /* Notice period: yellow -> orange -> red as the move-out day gets closer (ink on bg ≥ 4.5:1) */
+  --notice-yellow-ink: #7a5600;
+  --notice-yellow-bg: #fff3bf;
+  --notice-yellow-bar: #e3b100;
+  --notice-orange-ink: #9a3d00;
+  --notice-orange-bg: #ffe3cc;
+  --notice-orange-bar: #f07c1e;
+  --notice-red-ink: #b42318;
+  --notice-red-bg: #fee4e2;
+  --notice-red-bar: #d92d20;
 }
 /* Dark theme: same green identity on a deep green-grey; text contrast checked against --surface (AA or better). */
 [data-theme='dark'] {
@@ -70,6 +80,15 @@
   --warn-ink: #f0d3b0;
   --warn-bg: #352a1d;
   --warn-line: #5a4630;
+  --notice-yellow-ink: #f2cf72;
+  --notice-yellow-bg: #3a3116;
+  --notice-yellow-bar: #c99c12;
+  --notice-orange-ink: #ffb47e;
+  --notice-orange-bg: #3d2616;
+  --notice-orange-bar: #e07a2c;
+  --notice-red-ink: #ff9d92;
+  --notice-red-bg: #3d1f1c;
+  --notice-red-bar: #e5484d;
 }
 * {
   box-sizing: border-box;

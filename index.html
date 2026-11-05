@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="/src/styles/landing.css" />
     <link rel="stylesheet" href="/src/styles/modals.css" />
     <link rel="stylesheet" href="/src/styles/scrollbars.css" />
+    <link rel="stylesheet" href="/src/styles/notice.css" />
   </head>
   <body>
     <div class="shell">
@@ -158,6 +159,19 @@
                 <strong id="depositTotalValue">₹0</strong>
                 <div class="statfoot" id="depositTotalSummary">No deposits recorded yet</div>
               </div>
+            </div>
+            <div class="card notice-card hidden" id="noticeCard">
+              <div class="cardhead">
+                <div>
+                  <h2>On notice</h2>
+                  <div class="sub" id="noticeSummary">Residents who are moving out</div>
+                </div>
+                <div class="notice-legend" aria-hidden="true">
+                  <span class="notice-yellow">15+ days</span><span class="notice-orange">8–14</span
+                  ><span class="notice-red">7 or less</span>
+                </div>
+              </div>
+              <div class="notice-list" id="noticeList"></div>
             </div>
             <div class="grid">
               <div class="card">
@@ -483,6 +497,19 @@
             <div class="field full">
               <label>Address</label><input name="address" autocomplete="off" placeholder="Permanent address" />
             </div>
+            <details class="full notice-box" id="noticeBox">
+              <summary>
+                <i data-lucide="calendar-clock"></i>Notice period <small>Only when the resident is leaving</small>
+              </summary>
+              <div class="formgrid">
+                <div class="field"><label>Notice given on</label><input name="notice_on" type="date" /></div>
+                <div class="field"><label>Moving out on</label><input name="vacate_on" type="date" /></div>
+              </div>
+              <div class="notice-box-foot">
+                <span class="hint" id="noticeHint" aria-live="polite"></span>
+                <button type="button" class="link" id="noticeClear">Withdraw notice</button>
+              </div>
+            </details>
           </div>
           <div class="formactions">
             <button type="button" class="secondary" onclick="closeModal('residentModal')">Cancel</button

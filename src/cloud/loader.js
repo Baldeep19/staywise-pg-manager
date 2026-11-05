@@ -128,7 +128,9 @@ export async function initSession(user) {
       movein: r.move_in || '',
       address: r.permanent_address || '',
       emergency: r.emergency_contact || '',
-      meter_side: r.meter_side || ''
+      meter_side: r.meter_side || '',
+      notice_on: r.notice_given_on || '',
+      vacate_on: r.notice_vacate_on || ''
     };
   });
   localStorage.setItem('staywise_cloud', '1');

@@ -1,0 +1,173 @@
+/* Notice period: Overview card, Residents list chip and the resident form section. Colours: base.css --notice-* */
+
+.notice-yellow {
+  --n-ink: var(--notice-yellow-ink);
+  --n-bg: var(--notice-yellow-bg);
+  --n-bar: var(--notice-yellow-bar);
+}
+.notice-orange {
+  --n-ink: var(--notice-orange-ink);
+  --n-bg: var(--notice-orange-bg);
+  --n-bar: var(--notice-orange-bar);
+}
+.notice-red {
+  --n-ink: var(--notice-red-ink);
+  --n-bg: var(--notice-red-bg);
+  --n-bar: var(--notice-red-bar);
+}
+
+.notice-chip {
+  display: inline-block;
+  border-radius: 99px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--n-ink);
+  background: var(--n-bg);
+}
+.residentcell .notice-chip {
+  margin-top: 5px;
+}
+
+/* Overview card */
+.notice-card {
+  margin-bottom: 17px;
+}
+.notice-list {
+  padding: 0 20px 14px;
+  display: grid;
+  gap: 8px;
+}
+.notice-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px 14px;
+  border: 1px solid var(--line-2);
+  border-left: 4px solid var(--n-bar);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.notice-open {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+}
+.notice-open b {
+  display: block;
+  font-size: 13px;
+}
+.notice-open small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.notice-open small.notice-short {
+  color: var(--notice-red-ink);
+  font-weight: 600;
+}
+.notice-legend {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.notice-legend span {
+  font-size: 12px;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.notice-legend span::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--n-bar);
+}
+
+/* Resident form section */
+.notice-box {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 0 13px;
+}
+.notice-box summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 0;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--heading);
+}
+.notice-box summary svg {
+  width: 16px;
+  height: 16px;
+  color: var(--green-ink);
+}
+.notice-box summary small {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 12px;
+}
+/* display:flex hides the browser's disclosure arrow, so draw one that turns when the section opens */
+.notice-box summary::-webkit-details-marker {
+  display: none;
+}
+.notice-box summary {
+  list-style: none;
+}
+.notice-box summary::after {
+  content: '';
+  margin-left: auto;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+.notice-box[open] summary::after {
+  transform: rotate(-135deg);
+}
+.notice-box[open] summary {
+  border-bottom: 1px solid var(--line-2);
+  margin-bottom: 11px;
+}
+.notice-box-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0 12px;
+}
+
+@media (max-width: 730px) {
+  .notice-item {
+    flex-wrap: wrap;
+  }
+  .notice-open {
+    flex-basis: calc(100% - 120px);
+  }
+  .notice-legend {
+    display: none;
+  }
+  .notice-box summary {
+    flex-wrap: wrap;
+  }
+  .notice-box summary small {
+    order: 3;
+    flex-basis: 100%;
+    padding-left: 23px;
+  }
+}

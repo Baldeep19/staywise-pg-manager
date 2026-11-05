@@ -1,6 +1,7 @@
 /**
  * Dashboard summary cards, occupancy list and dues widget.
  */
+import {renderNoticeCard} from '../app/notice.js';
 import {session} from './session.js';
 
 /** Install window.refreshDashboard (summary + dues) and render it once. */
@@ -137,6 +138,7 @@ export function installDashboard() {
   window.refreshDashboard = () => {
     previousRefreshDashboard();
     renderDashboardDues();
+    renderNoticeCard(JSON.parse(localStorage.getItem('staywise_residents') || '[]'));
   };
   window.refreshDashboard();
 }

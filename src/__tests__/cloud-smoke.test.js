@@ -3,6 +3,16 @@ import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {beforeAll, describe, expect, it, vi} from 'vitest';
 
+/** Local date `days` from today ('YYYY-MM-DD'). */
+const dayFromToday = (days) => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+};
+// Asha gave notice 33 days ago and was due to move out 2 days ago.
+const NOTICE_ON = dayFromToday(-33),
+  VACATE_ON = dayFromToday(-2);
+
 // Rows returned per table by the fake Supabase client. Everything else is an empty result.
 const TABLES = {
   properties: [
@@ -32,6 +42,9 @@ const TABLES = {
       active: true,
       monthly_rent: 5000,
       deposit_amount: 10000,
+      sharing_type: 'single',
+      notice_given_on: NOTICE_ON,
+      notice_vacate_on: VACATE_ON,
       flats: {flat_number: 'A-101'}
     }
   ]
@@ -244,6 +257,40 @@ describe('rent collector', () => {
   });
 });
 
+describe('notice period', () => {
+  it('loads the notice dates and shows the resident on the Overview in red', () => {
+    const card = document.getElementById('noticeCard');
+    expect(card.classList.contains('hidden')).toBe(false);
+    const item = card.querySelector('.notice-item');
+    expect(item.classList.contains('notice-red')).toBe(true);
+    expect(item.textContent).toContain('Asha');
+    expect(item.querySelector('.notice-chip').textContent).toBe('Was due out 2 days ago');
+    expect(item.querySelector('button.rowbtn').getAttribute('onclick')).toBe("removeResident('r1')");
+  });
+
+  it('saves changed notice dates with the resident', async () => {
+    const form = document.getElementById('residentForm');
+    window.editResident('r1');
+    expect(form.elements.notice_on.value).toBe(NOTICE_ON);
+    expect(form.elements.vacate_on.value).toBe(VACATE_ON);
+    expect(document.getElementById('noticeBox').open).toBe(true);
+    form.elements.vacate_on.value = dayFromToday(10);
+    form.elements.vacate_on.dispatchEvent(new Event('input', {bubbles: true}));
+    calls.length = 0;
+    form.requestSubmit();
+    await vi.waitFor(() => expect(calls.some((c) => c.table === 'residents')).toBe(true));
+    const update = calls.find((c) => c.table === 'residents').ops.find(([m]) => m === 'update')[1];
+    expect(update).toMatchObject({notice_given_on: NOTICE_ON, notice_vacate_on: dayFromToday(10)});
+    // Put the original dates back for the move-out tests below.
+    window.applyCloudState(
+      JSON.parse(localStorage.getItem('staywise_residents')).map((r) =>
+        r.id === 'r1' ? {...r, notice_on: NOTICE_ON, vacate_on: VACATE_ON} : r
+      ),
+      []
+    );
+  });
+});
+
 describe('moving a resident out (Undo instead of a confirm box)', () => {
   const count = () => document.getElementById('residentCount').textContent;
   const residentWrites = () => calls.filter((c) => c.table === 'residents');
@@ -271,7 +318,8 @@ describe('moving a resident out (Undo instead of a confirm box)', () => {
     expect(residentWrites()).toEqual([]); // nothing sent yet
     await flushUndo();
     const [write] = residentWrites();
-    expect(write.ops.find(([m]) => m === 'update')[1]).toMatchObject({active: false});
+    // Moved out after the planned day: the planned day is recorded (rent and reports use move_out), not today.
+    expect(write.ops.find(([m]) => m === 'update')[1]).toMatchObject({active: false, move_out: VACATE_ON});
     expect(write.ops).toContainEqual(['eq', 'id', 'r1']);
     expect(count()).toBe('0');
   });
