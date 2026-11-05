@@ -27,7 +27,7 @@
   position: fixed;
   z-index: 92;
   width: min(340px, calc(100vw - 24px));
-  background: #fff;
+  background: var(--surface);
   border-radius: 14px;
   padding: 18px 18px 14px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
@@ -40,14 +40,14 @@
 }
 .tour-card p {
   margin: 0 0 14px;
-  color: #4b5d56;
+  color: var(--label);
   font-size: 13.5px;
   line-height: 1.5;
 }
 .tour-progress {
   font-size: 12px;
   font-weight: 700;
-  color: #5b7a6e;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -62,7 +62,7 @@
 .tour-skip {
   background: none;
   border: 0;
-  color: #5b7a6e;
+  color: var(--muted);
   font:
     600 13px Manrope,
     sans-serif;
@@ -75,11 +75,11 @@
   margin: 4px 0 12px;
 }
 .install-status.ok {
-  color: #17684f;
+  color: var(--green-ink);
   font-weight: 700;
 }
 .install-guide {
-  border: 1px solid #e3e9e5;
+  border: 1px solid var(--line-2);
   border-radius: 10px;
   padding: 10px 14px;
   margin-bottom: 8px;
@@ -95,8 +95,8 @@
 }
 .badge-you {
   margin-left: 8px;
-  background: #e6f3ec;
-  color: #17684f;
+  background: var(--mint);
+  color: var(--green-ink);
   border-radius: 999px;
   padding: 2px 9px;
   font-size: 12px;
@@ -117,14 +117,14 @@
 .auth-install {
   margin-top: 16px;
   padding-top: 12px;
-  border-top: 1px solid #e3e9e5;
+  border-top: 1px solid var(--line-2);
 }
 .auth-install > summary {
   cursor: pointer;
   font:
     700 13px Manrope,
     sans-serif;
-  color: #17684f;
+  color: var(--green-ink);
   margin-bottom: 8px;
 }
 
@@ -170,8 +170,8 @@
   justify-content: space-between;
   gap: 14px;
   flex-wrap: wrap;
-  background: #fff8e6;
-  border: 1px solid #f1deaa;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
   border-radius: 12px;
   padding: 14px 16px;
   margin-bottom: 16px;
@@ -186,7 +186,7 @@
 }
 .notice p {
   margin: 3px 0 0;
-  color: #6b5a1f;
+  color: var(--warn-ink);
   font-size: 13px;
 }
 .primary:disabled {
@@ -197,22 +197,22 @@
 /* "How is this calculated?" on the Expenses page */
 .settle-explain {
   margin: 14px 0 0;
-  border: 1px solid #e3e9e5;
+  border: 1px solid var(--line-2);
   border-radius: 10px;
   padding: 10px 14px;
 }
 .settle-explain > summary {
   cursor: pointer;
   font-weight: 700;
-  color: #17684f;
+  color: var(--green-ink);
 }
 .settle-note {
-  color: #5b7a6e;
+  color: var(--muted);
   font-size: 12.5px;
   margin: 8px 0 12px;
 }
 .settle-person {
-  border: 1px solid #edf1ee;
+  border: 1px solid var(--line-2);
   border-radius: 10px;
   padding: 10px 12px;
   margin-bottom: 10px;
@@ -223,7 +223,7 @@
   gap: 12px;
   font-size: 14px;
   padding-bottom: 6px;
-  border-bottom: 1px solid #edf1ee;
+  border-bottom: 1px solid var(--line-2);
 }
 .settle-line {
   display: flex;
@@ -231,12 +231,12 @@
   align-items: baseline;
   gap: 14px;
   padding: 7px 0;
-  border-bottom: 1px dashed #edf1ee;
+  border-bottom: 1px dashed var(--line-2);
   font-size: 13px;
 }
 .settle-line small {
   display: block;
-  color: #6b7d75;
+  color: var(--muted);
   margin-top: 2px;
 }
 .settle-line .amt {
@@ -244,10 +244,10 @@
   white-space: nowrap;
 }
 .settle-line .owe {
-  color: #b42318;
+  color: var(--late-ink);
 }
 .settle-line .owed {
-  color: #17684f;
+  color: var(--green-ink);
 }
 .settle-line.net {
   border-bottom: 0;

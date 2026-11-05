@@ -8,7 +8,7 @@ const {VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: key} = import.meta.env;
 if (!url || !key) {
   errorBox.textContent =
     'Supabase connection is not configured for this deployment. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the hosting project settings, then redeploy.';
-  errorBox.style.color = '#b44';
+  errorBox.style.color = 'var(--danger-ink)';
 }
 export const busyOverlay = document.getElementById('appBusy'),
   busyText = document.getElementById('appBusyText'),

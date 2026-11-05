@@ -9,11 +9,76 @@
   --mint: #eaf4ee;
   --orange: #f2a75b;
   --red: #d7615c;
-  --white: #fff;
   --shadow: 0 12px 35px rgba(31, 57, 47, 0.07);
+  /* Theme tokens: components use these instead of hex values, so [data-theme='dark'] below can swap them. */
+  color-scheme: light;
+  --surface: #fff; /* cards, popups, fields */
+  --white: var(--surface); /* older name, kept for existing rules */
+  --surface-2: #f7f9f7; /* table heads, subtle panels, hover */
+  --surface-3: #eef2ef; /* muted fills, skeletons */
+  --line-2: #e6ede8; /* field borders, row dividers */
+  --line-strong: #c7d9d1;
+  --label: #52655d;
+  --heading: #153b30;
+  --green-ink: #17684f; /* brand colour for text, links, icons, focus rings (fills keep --green) */
+  --sidebar: #153b30;
+  --toast-bg: #173b30;
+  --on-lime: #153b30; /* text on the lime accent: dark in both themes */
+  --late-ink: #b42318;
+  --late-bg: #fee4e2;
+  --soon-ink: #8a5a00;
+  --soon-bg: #fff3bf;
+  --paid-ink: #2f6b49;
+  --paid-bg: #edf7ef;
+  --danger-ink: #b23b36;
+  --danger-bg: #fff0ef;
+  --danger-line: #f0c9c5;
+  --warn-ink: #59402d;
+  --warn-bg: #fff6e9;
+  --warn-line: #f7ead3;
+}
+/* Dark theme: same green identity on a deep green-grey; text contrast checked against --surface (AA or better). */
+[data-theme='dark'] {
+  color-scheme: dark; /* native date pickers, scrollbars and form controls follow */
+  --ink: #e4ece8; /* ≈14:1 on --surface */
+  --muted: #9fb2aa; /* ≈7:1 */
+  --label: #b6c6bf;
+  --heading: #eef5f1;
+  --line: #26362f;
+  --line-2: #2c3d36;
+  --line-strong: #3f574c;
+  --bg: #0d1613;
+  --surface: #15211d;
+  --surface-2: #1a2924;
+  --surface-3: #22332c;
+  --green: #1d7a5c; /* button fill: white text ≈5.3:1 */
+  --green-ink: #6fd0a6; /* ≈9:1 on --surface */
+  --mint: #1c3a2f;
+  --sidebar: #0a120f;
+  --toast-bg: #2a3f37;
+  --red: #e2726c;
+  --shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+  --late-ink: #ff9d92;
+  --late-bg: #3d1f1c;
+  --soon-ink: #f2cf72;
+  --soon-bg: #3a3116;
+  --paid-ink: #86d9a9;
+  --paid-bg: #1b3628;
+  --danger-ink: #ff9d92;
+  --danger-bg: #3a1f1d;
+  --danger-line: #6b3531;
+  --warn-ink: #f0d3b0;
+  --warn-bg: #352a1d;
+  --warn-line: #5a4630;
 }
 * {
   box-sizing: border-box;
+}
+/* Fields without their own background follow the theme (otherwise the browser's dark-mode grey shows through).
+   :where() keeps this at zero specificity, so every existing field style still wins. */
+:where(input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea) {
+  background-color: var(--surface);
+  color: var(--ink);
 }
 body {
   margin: 0;
@@ -35,7 +100,7 @@ button {
 }
 .sidebar {
   width: 248px;
-  background: #153b30;
+  background: var(--sidebar);
   color: #fff;
   padding: 25px 16px;
   display: flex;
@@ -55,7 +120,7 @@ button {
   border-radius: 13px;
   display: grid;
   place-items: center;
-  color: #153b30;
+  color: var(--on-lime);
   font-size: 21px;
   font-weight: 800;
 }
@@ -127,7 +192,7 @@ button {
 .help button {
   border: 0;
   background: var(--lime);
-  color: #173e32;
+  color: var(--on-lime);
   border-radius: 8px;
   padding: 8px 10px;
   font-weight: 700;
@@ -145,7 +210,7 @@ button {
   height: 34px;
   border-radius: 50%;
   background: #f5c99c;
-  color: #59402d;
+  color: var(--warn-ink);
   display: grid;
   place-items: center;
   font-weight: 700;
@@ -166,7 +231,7 @@ button {
 }
 .topbar {
   height: 75px;
-  background: #fff;
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
@@ -191,12 +256,12 @@ button {
   border-radius: 9px;
   padding: 9px 12px;
   color: var(--ink);
-  background: #fff;
+  background: var(--surface);
   font-size: 12px;
 }
 .bell {
   border: 0;
-  background: #f7f9f7;
+  background: var(--surface-2);
   border-radius: 10px;
   padding: 9px 11px;
   font-size: 16px;
@@ -208,7 +273,7 @@ button {
   width: 6px;
   height: 6px;
   background: #ed846e;
-  border: 2px solid white;
+  border: 2px solid var(--surface);
   border-radius: 50%;
   right: 6px;
   top: 6px;
@@ -225,7 +290,7 @@ button {
   margin-bottom: 25px;
 }
 .eyebrow {
-  color: var(--green);
+  color: var(--green-ink);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.3px;
@@ -266,7 +331,7 @@ button {
 .secondary {
   border: 1px solid var(--line);
   border-radius: 9px;
-  background: white;
+  background: var(--surface);
   color: var(--ink);
   padding: 10px 13px;
   font-size: 12px;
@@ -279,7 +344,7 @@ button {
   margin-bottom: 19px;
 }
 .stat {
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 15px;
   padding: 18px 19px;
@@ -312,7 +377,7 @@ button {
   color: var(--muted);
 }
 .good {
-  color: var(--green);
+  color: var(--green-ink);
   font-weight: 700;
 }
 .warn {
@@ -325,7 +390,7 @@ button {
   gap: 17px;
 }
 .card {
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 15px;
   box-shadow: 0 2px 8px #143b3005;
@@ -346,7 +411,7 @@ button {
   margin-top: 5px;
 }
 .link {
-  color: var(--green);
+  color: var(--green-ink);
   border: 0;
   background: none;
   font-size: 12px;
@@ -377,7 +442,7 @@ button {
   min-width: 78px;
   padding: 8px 10px;
   text-align: center;
-  background: #fbfcfb;
+  background: var(--surface-2);
 }
 .room b {
   font-size: 12px;
@@ -390,15 +455,15 @@ button {
   margin-top: 3px;
 }
 .room.full {
-  background: #eef6ef;
-  border-color: #dfede2;
+  background: var(--mint);
+  border-color: var(--line-2);
 }
 .room.partial {
-  background: #fff6e9;
-  border-color: #f7ead3;
+  background: var(--warn-bg);
+  border-color: var(--warn-line);
 }
 .room.empty {
-  background: #f7f8f7;
+  background: var(--surface-2);
 }
 .legend {
   display: flex;
@@ -420,7 +485,7 @@ button {
   display: flex;
   gap: 11px;
   padding: 13px 0;
-  border-top: 1px solid #f0f3f1;
+  border-top: 1px solid var(--line-2);
   align-items: flex-start;
 }
 .activity:first-child {
@@ -429,7 +494,7 @@ button {
 .acticon {
   width: 30px;
   height: 30px;
-  background: #f4f7f4;
+  background: var(--surface-2);
   border-radius: 9px;
   display: grid;
   place-items: center;
@@ -468,7 +533,7 @@ button {
   align-items: center;
   gap: 10px;
   padding: 11px 0;
-  border-top: 1px solid #f0f3f1;
+  border-top: 1px solid var(--line-2);
 }
 .duetext {
   flex: 1;
@@ -490,20 +555,20 @@ button {
   font-weight: 700;
 }
 .pill.late {
-  color: #b42318;
-  background: #fee4e2;
+  color: var(--late-ink);
+  background: var(--late-bg);
 }
 .pill.soon {
-  color: #8a5a00;
-  background: #fff3bf;
+  color: var(--soon-ink);
+  background: var(--soon-bg);
 }
 .pill.paid {
-  color: #2f6b49;
-  background: #edf7ef;
+  color: var(--paid-ink);
+  background: var(--paid-bg);
 }
 .pill.waived {
   color: var(--muted);
-  background: #f1f3f1;
+  background: var(--surface-3);
 }
 /* Filter chips (Rent page) */
 .chips {
@@ -520,17 +585,17 @@ button {
   padding: 6px 12px;
   border: 1px solid var(--line);
   border-radius: 99px;
-  background: var(--white);
+  background: var(--surface);
   color: var(--ink);
   font-size: 12px;
   font-weight: 700;
 }
 .chip:hover {
-  border-color: #b9d3c4;
+  border-color: var(--line-strong);
 }
 .chip.active {
   background: var(--green);
-  border-color: var(--green);
+  border-color: var(--green-ink);
   color: #fff;
 }
 .chip-count {
@@ -538,7 +603,7 @@ button {
   padding: 1px 6px;
   border-radius: 99px;
   background: var(--mint);
-  color: var(--green);
+  color: var(--green-ink);
   font-size: 11px;
   text-align: center;
 }
@@ -554,7 +619,7 @@ button {
 .empty-state svg {
   width: 28px;
   height: 28px;
-  color: var(--green);
+  color: var(--green-ink);
   opacity: 0.8;
 }
 .empty-state h3 {
@@ -583,14 +648,14 @@ button {
 }
 .action {
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--surface);
   border-radius: 11px;
   padding: 13px;
   text-align: left;
 }
 .action:hover {
-  border-color: #bcd5c7;
-  background: #fbfdfb;
+  border-color: var(--line-strong);
+  background: var(--surface-2);
 }
 .action span {
   font-size: 16px;
@@ -618,7 +683,7 @@ button {
   display: flex;
 }
 .modal {
-  background: white;
+  background: var(--surface);
   width: min(540px, 100%);
   max-height: 90vh;
   overflow: auto;
@@ -643,7 +708,7 @@ button {
 }
 .close {
   border: 0;
-  background: #f4f7f4;
+  background: var(--surface-2);
   border-radius: 8px;
   width: 31px;
   height: 31px;
@@ -669,7 +734,7 @@ button {
   box-shadow: 0 0 0 3px rgba(215, 97, 92, 0.16);
 }
 .field-error {
-  color: #b23b36; /* ≈5.6:1 on white */
+  color: var(--danger-ink); /* ≈5.6:1 on white */
   font-size: 12px;
   font-weight: 600;
   line-height: 1.35;
@@ -678,9 +743,9 @@ button {
   margin: 0 0 4px;
   padding: 9px 12px;
   border-radius: 9px;
-  background: #fff0ef;
-  border: 1px solid #f0c9c5;
-  color: #9c302b;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-line);
+  color: var(--danger-ink);
   font-size: 12px;
   font-weight: 600;
 }
@@ -697,27 +762,27 @@ button {
 .field label {
   font-size: 12px;
   font-weight: 700;
-  color: #52655d;
+  color: var(--label);
 }
 .field input,
 .field select {
-  border: 1px solid #dfe8e2;
+  border: 1px solid var(--line-2);
   border-radius: 9px;
   padding: 10px 11px;
   outline: none;
   font-size: 12px;
   color: var(--ink);
-  background: #fff;
+  background: var(--surface);
 }
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: var(--green);
+  border-color: var(--green-ink);
   box-shadow: 0 0 0 3px rgba(23, 104, 79, 0.22); /* the old #e8f3ec glow was almost invisible on white */
 }
 /* Keyboard focus ring for everything clickable. :focus-visible keeps it off for mouse and touch taps. */
 :where(button, a, [tabindex], summary, .nav button, .rowbtn):focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--green-ink);
   outline-offset: 2px; /* the outline follows each element's own border-radius */
 }
 .field :where(input, select, textarea):focus-visible {
@@ -760,7 +825,7 @@ button {
 .table td {
   font-size: 12px;
   padding: 13px 20px;
-  border-bottom: 1px solid #f0f3f1;
+  border-bottom: 1px solid var(--line-2);
   white-space: nowrap;
 }
 .residentcell {
@@ -772,10 +837,10 @@ button {
   width: 27px;
   height: 27px;
   border-radius: 50%;
-  background: #e4f1e9;
+  background: var(--mint);
   display: grid;
   place-items: center;
-  color: var(--green);
+  color: var(--green-ink);
   font-size: 12px;
   font-weight: 700;
 }
@@ -788,7 +853,7 @@ button {
   bottom: 22px;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: #173b30;
+  background: var(--toast-bg);
   color: white;
   border-radius: 11px;
   padding: 12px 17px;
@@ -975,7 +1040,7 @@ button {
   align-items: center;
   gap: 12px;
   padding: 15px 18px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 13px;
   box-shadow: 0 18px 55px #10251f2b;
@@ -986,8 +1051,8 @@ button {
 .busy-spinner {
   height: 20px;
   width: 20px;
-  border: 2px solid #dce9e0;
-  border-top-color: var(--green);
+  border: 2px solid var(--line-2);
+  border-top-color: var(--green-ink);
   border-radius: 50%;
   animation: busy-spin 0.7s linear infinite;
 }
@@ -1003,13 +1068,13 @@ button {
 }
 .room-select:hover,
 .room-select:focus-visible {
-  outline: 2px solid #83b99a;
+  outline: 2px solid var(--green-ink);
   outline-offset: 2px;
 }
 .room.overfull {
-  background: #fff0ef;
-  border-color: #f0c9c5;
-  color: #a8463e;
+  background: var(--danger-bg);
+  border-color: var(--danger-line);
+  color: var(--danger-ink);
 }
 
 .report-toolbar {
@@ -1018,7 +1083,7 @@ button {
   justify-content: space-between;
   gap: 12px;
   padding: 15px 18px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
   margin-bottom: 14px;
@@ -1041,7 +1106,7 @@ button {
   color: var(--muted);
 }
 .report-block {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 14px;
   margin-bottom: 14px;
@@ -1069,7 +1134,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 12px;
-  background: #fbfcfb;
+  background: var(--surface-2);
 }
 .report-metric span {
   display: block;
@@ -1145,4 +1210,55 @@ button {
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* Theme: top bar toggle shows a moon in light mode and a sun in dark mode (app/theme.js) */
+.theme-toggle {
+  color: var(--ink);
+}
+.theme-toggle:after {
+  display: none; /* no notification dot */
+}
+.theme-toggle .when-dark,
+[data-theme='dark'] .theme-toggle .when-light {
+  display: none;
+}
+[data-theme='dark'] .theme-toggle .when-dark {
+  display: inline;
+}
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  vertical-align: -4px;
+}
+/* Segmented control (Settings → Appearance) */
+.seg {
+  display: inline-flex;
+  gap: 4px;
+  margin: 14px 16px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--surface-3);
+}
+.seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.seg-btn svg {
+  width: 15px;
+  height: 15px;
+}
+.seg-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }

@@ -20,7 +20,7 @@
     display: none;
   }
   .table:not(.compact) tr {
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 6px 14px;
@@ -33,7 +33,7 @@
     gap: 14px;
     padding: 8px 0;
     border: 0;
-    border-bottom: 1px dashed #edf1ee;
+    border-bottom: 1px dashed var(--line-2);
     font-size: 13px;
     text-align: right;
     white-space: normal;
@@ -140,7 +140,7 @@
   place-items: center;
 }
 .staticon {
-  color: var(--green);
+  color: var(--green-ink);
 }
 
 /* Top header stays in view; only the page content scrolls under it (.main is the scroller). */
@@ -169,7 +169,7 @@
 .is-loading {
   color: transparent !important;
   border-radius: 6px;
-  background: linear-gradient(90deg, #e9efeb 25%, #f4f7f5 50%, #e9efeb 75%) 0 0 / 200% 100%;
+  background: linear-gradient(90deg, var(--surface-3) 25%, var(--surface-2) 50%, var(--surface-3) 75%) 0 0 / 200% 100%;
   animation: shimmer 1.2s linear infinite;
 }
 @keyframes shimmer {
@@ -182,7 +182,7 @@
 .actions button > span svg {
   width: 18px;
   height: 18px;
-  color: var(--green);
+  color: var(--green-ink);
 }
 /* Short tab labels on the phone bar ("Expenses" instead of "Expenses & profit") */
 @media (max-width: 730px) {

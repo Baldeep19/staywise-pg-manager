@@ -4,6 +4,8 @@
 import pkg from '../../package.json';
 import {renderInstallSection} from './install.js';
 import {esc} from './ui.js';
+import {renderIcons} from './icons.js';
+import {applyTheme, renderThemeSection} from './theme.js';
 
 /** Render the Settings page into #pageContent. Buildings come from window.pgProperties (set by the cloud loader). */
 export function renderSettings() {
@@ -33,6 +35,7 @@ export function renderSettings() {
           <tbody>${rows || `<tr><td colspan="4" class="sub">${emptyMessage}</td></tr>`}</tbody>
         </table></div>
       </section>
+      ${renderThemeSection()}
       ${renderInstallSection()}
       <section class="report-block" id="aboutSection">
         <div class="report-blockhead"><h3>About Staywise</h3><p>Version ${esc(pkg.version)}</p></div>
@@ -56,4 +59,6 @@ export function renderSettings() {
         <div style="padding:14px 16px"><button class="secondary" onclick="logout()">Log out</button></div>
       </section>
     </div>`;
+  renderIcons();
+  applyTheme(); // mark the current choice
 }

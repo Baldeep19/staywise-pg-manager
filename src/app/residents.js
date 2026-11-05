@@ -96,7 +96,7 @@ export function renderResidents() {
           ? reminder +
             ' <button class="secondary rowbtn" onclick="editResident(\'' +
             r.id +
-            '\')">Edit</button> <button class="secondary rowbtn" style="color:#b44;border-color:#eed2d0" onclick="removeResident(\'' +
+            '\')">Edit</button> <button class="secondary rowbtn" style="color:var(--danger-ink);border-color:var(--danger-line)" onclick="removeResident(\'' +
             r.id +
             '\')">Remove</button>'
           : '') +

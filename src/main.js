@@ -40,9 +40,11 @@ import {initTabbar} from './app/tabbar.js';
 import {renderIcons} from './app/icons.js';
 import {initModalLayout} from './app/modal-layout.js';
 import {initFieldErrors} from './app/field-errors.js';
+import {initTheme, setTheme} from './app/theme.js';
 
 // Handlers referenced from HTML attributes (legacy inline handlers).
 Object.assign(window, {
+  setTheme,
   toast,
   applyDateDefaults,
   resetResidentForm,
@@ -94,3 +96,4 @@ initTabbar();
 renderIcons();
 initModalLayout();
 initFieldErrors();
+initTheme();

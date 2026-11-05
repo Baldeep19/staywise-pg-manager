@@ -4,7 +4,7 @@
   inset: 0;
   z-index: 50;
   display: none;
-  background: #153b30;
+  background: var(--sidebar);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -75,7 +75,7 @@
   place-items: center;
   border-radius: 10px;
   background: var(--lime);
-  color: #153b30;
+  color: var(--on-lime);
   font-weight: 800;
 }
 .landing-features b,
@@ -116,7 +116,7 @@
   place-items: center;
   border-radius: 50%;
   background: var(--lime);
-  color: #153b30;
+  color: var(--on-lime);
   font:
     800 14px Manrope,
     sans-serif;
@@ -147,7 +147,7 @@
   top: 24px;
 }
 #authForm {
-  background: #fff;
+  background: var(--surface);
   border-radius: 18px;
   padding: 24px;
   width: 100%;
@@ -241,7 +241,7 @@
   .nav button.active,
   .nav-more.active {
     background: var(--lime);
-    color: #153b30;
+    color: var(--on-lime);
     box-shadow: none;
   }
   .main {
@@ -252,7 +252,7 @@
 /* Building setup: full-screen on first run, a dismissable popup when opened from Settings.
    The backdrop never scrolls (card height + margins fit the screen); only the middle of the card scrolls. */
 #ownerSetupGate {
-  background: #153b30;
+  background: var(--sidebar);
   overflow: hidden;
   padding: 0 !important;
 }
@@ -268,4 +268,21 @@
 }
 #ownerSetupGate.setup-popup #ownerSetupForm {
   box-shadow: 0 25px 80px #0006;
+}
+
+/* Theme switch on the sign-in screen: top-right corner, stays put while the landing page scrolls */
+.auth-theme-toggle {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  right: 14px;
+  z-index: 51;
+  box-shadow: var(--shadow);
+}
+@media (max-width: 730px) {
+  .auth-theme-toggle {
+    position: absolute; /* phones: inside the sign-in card's top-right, level with the logo */
+    top: calc(36px + env(safe-area-inset-top, 0px));
+    right: 36px;
+    box-shadow: none;
+  }
 }

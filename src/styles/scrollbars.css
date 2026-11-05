@@ -1,7 +1,7 @@
 /* Slim, soft scrollbars everywhere instead of the heavy default ones. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #c3d0c9 transparent;
+  scrollbar-color: var(--line-strong) transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
@@ -11,7 +11,7 @@
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background: #c3d0c9;
+  background: var(--line-strong);
   border-radius: 8px;
   border: 2px solid transparent;
   background-clip: content-box;

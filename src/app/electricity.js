@@ -70,7 +70,7 @@ export function ensureElectricityMessagePreview() {
   const wrap = document.createElement('div');
   wrap.className = 'field full';
   wrap.innerHTML =
-    '<label>WhatsApp message preview</label><textarea id="electricityMessagePreview" rows="7" readonly aria-readonly="true" style="border:1px solid #dfe8e2;border-radius:9px;padding:11px;font-size:12px;line-height:1.6;resize:vertical;background:#f8faf8;color:var(--ink)"></textarea><span class="hint">This preview updates from the selected residents and amounts. You can review it again before opening WhatsApp.</span>';
+    '<label>WhatsApp message preview</label><textarea id="electricityMessagePreview" rows="7" readonly aria-readonly="true" style="border:1px solid #dfe8e2;border-radius:9px;padding:11px;font-size:12px;line-height:1.6;resize:vertical;background:var(--surface-2);color:var(--ink)"></textarea><span class="hint">This preview updates from the selected residents and amounts. You can review it again before opening WhatsApp.</span>';
   actions.before(wrap);
 }
 
@@ -219,7 +219,7 @@ export function renderBillResidents() {
             const ri = state.residents.indexOf(r),
               side = r.meter_side || '';
             return (
-              '<div style="display:grid;grid-template-columns:auto minmax(90px,1fr) minmax(110px,140px) minmax(100px,120px);align-items:center;gap:7px;background:#f8faf8;border-radius:8px;padding:8px"><input type="checkbox" class="tenant-check" data-flat="' +
+              '<div style="display:grid;grid-template-columns:auto minmax(90px,1fr) minmax(110px,140px) minmax(100px,120px);align-items:center;gap:7px;background:var(--surface-2);border-radius:8px;padding:8px"><input type="checkbox" class="tenant-check" data-flat="' +
               flatIndex +
               '" name="include_' +
               ri +

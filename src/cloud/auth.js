@@ -51,7 +51,7 @@ export function initAuthForm() {
   authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const d = new FormData(authForm);
-    errorBox.style.color = '#b44';
+    errorBox.style.color = 'var(--danger-ink)';
     if (registerMode) {
       if (!String(d.get('ownerName') || '').trim()) return sayError('Enter your name to create the owner account.');
       const hasProperty = String(d.get('signupPropertyName') || '').trim().length > 0;
@@ -122,12 +122,12 @@ export function initAuthForm() {
 export function initAuthUnavailable() {
   gate.style.display = 'grid';
   document.getElementById('signupButton').addEventListener('click', () => {
-    errorBox.style.color = '#b44';
+    errorBox.style.color = 'var(--danger-ink)';
     errorBox.textContent = 'Account creation is unavailable because Supabase is not configured in this app deployment.';
   });
   authForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    errorBox.style.color = '#b44';
+    errorBox.style.color = 'var(--danger-ink)';
     errorBox.textContent = 'Sign-in is unavailable because Supabase is not configured in this app deployment.';
   });
 }

@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#153b30" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Set the theme before the CSS loads, so a dark-mode user never sees a white flash (see src/app/theme.js).
+      try {
+        var t = localStorage.getItem('staywise-theme');
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
@@ -78,6 +87,15 @@
           <div class="topright">
             <select class="property-select is-loading" id="propertySelect" aria-busy="true">
               <option>Loading…</option></select
+            ><button
+              type="button"
+              class="bell theme-toggle"
+              id="themeToggle"
+              data-theme-toggle
+              aria-label="Switch to dark theme"
+            >
+              <span class="when-light"><i data-lucide="moon"></i></span
+              ><span class="when-dark"><i data-lucide="sun"></i></span></button
             ><button class="bell" onclick="toast('You’re all caught up')" aria-label="Notifications">
               <i data-lucide="bell"></i>
             </button>
@@ -251,7 +269,7 @@
         <p class="hint">
           Wi-Fi details are optional and visible only in owner settings; they are not included in resident messages.
         </p>
-        <div id="setupError" class="hint" style="color: #b44; margin-top: 12px"></div>
+        <div id="setupError" class="hint" style="color: var(--danger-ink); margin-top: 12px"></div>
         <div class="formactions">
           <button type="button" class="secondary" id="skipPropertySetup">Skip for now</button
           ><button class="primary" id="savePropertySetup">Save building</button>
@@ -259,6 +277,16 @@
       </form>
     </div>
     <div id="authGate">
+      <button
+        type="button"
+        class="bell theme-toggle auth-theme-toggle"
+        id="authThemeToggle"
+        data-theme-toggle
+        aria-label="Switch to dark theme"
+      >
+        <span class="when-light"><i data-lucide="moon"></i></span
+        ><span class="when-dark"><i data-lucide="sun"></i></span>
+      </button>
       <div class="landing">
         <section class="landing-info">
           <div class="landing-brand">
@@ -376,7 +404,7 @@
               class="hint"
               role="status"
               aria-live="polite"
-              style="color: #b44; margin-top: 10px"
+              style="color: var(--danger-ink); margin-top: 10px"
             ></div>
             <div class="formactions">
               <button type="button" class="secondary" id="signupButton">Create account</button

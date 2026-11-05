@@ -50,7 +50,7 @@ export function openPartnerManager(onChange = () => {}) {
             .join('') || '<tr><td colspan="4" class="sub">No partners yet.</td></tr>'
         }</tbody>
       </table></div>
-      <p class="hint" style="color:${total > 100 ? '#b42318' : 'inherit'}">Partner shares total ${total}%${total > 100 ? ' — more than 100%, please adjust.' : '.'}</p>
+      <p class="hint" style="color:${total > 100 ? 'var(--late-ink)' : 'inherit'}">Partner shares total ${total}%${total > 100 ? ' — more than 100%, please adjust.' : '.'}</p>
       <form class="add-partner" style="margin-top:14px">
         <div class="formgrid">
           <div class="field"><label>Add partner by email</label><input name="email" type="email" required placeholder="partner@example.com"></div>

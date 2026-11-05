@@ -13,8 +13,8 @@ const nameOf = (id) => {
 
 /** "Pays ₹X" / "Receives ₹X" / "Settled" for one partner's balance. */
 function settlementCell(balance) {
-  if (balance > 0.005) return `<b style="color:#b42318">Pays ${money(balance)}</b>`;
-  if (balance < -0.005) return `<b style="color:#17684f">Receives ${money(-balance)}</b>`;
+  if (balance > 0.005) return `<b style="color:var(--late-ink)">Pays ${money(balance)}</b>`;
+  if (balance < -0.005) return `<b style="color:var(--green-ink)">Receives ${money(-balance)}</b>`;
   return '<span class="sub">Settled</span>';
 }
 
@@ -56,7 +56,7 @@ function renderBreakdown(result, collectorId, open) {
     .join('');
   return `<details class="settle-explain"${open ? ' open' : ''}><summary>How is this calculated?</summary>
     <p class="settle-note">Rent and expenses are shared by ownership %. Each line shows what one partner owes the others:
-      <b style="color:#b42318">+</b> means they owe money, <b style="color:#17684f">−</b> means they are owed money.
+      <b style="color:var(--late-ink)">+</b> means they owe money, <b style="color:var(--green-ink)">−</b> means they are owed money.
       Every partner’s lines add up to their net, and the nets add up to zero (what one pays, another receives).</p>
     ${people}</details>`;
 }
@@ -67,7 +67,7 @@ function renderMonthlyReport(year) {
   const expenses = window.pgExpenses || [];
   const years = yearsWithData({payments, expenses, fallbackYear: year});
   const report = buildMonthlyReport({payments, expenses, year});
-  const profitColor = (n) => (n >= 0 ? '#17684f' : '#b42318');
+  const profitColor = (n) => (n >= 0 ? 'var(--green-ink)' : 'var(--late-ink)');
   const rows = report.months
     .map(
       (
@@ -135,7 +135,7 @@ export function renderExpensesPage() {
     : '<p class="sub" style="margin:6px 0 0">Everyone is settled for this month.</p>';
   const shareWarning =
     result.sharesTotal !== 100
-      ? `<p class="hint" style="color:#b42318">Ownership shares add up to ${result.sharesTotal}%, not 100%. Adjust them in Manage partner.</p>`
+      ? `<p class="hint" style="color:var(--late-ink)">Ownership shares add up to ${result.sharesTotal}%, not 100%. Adjust them in Manage partner.</p>`
       : '';
   const expenseRows = expenses
     .map(
@@ -143,7 +143,7 @@ export function renderExpensesPage() {
         x
       ) => `<tr><td>${esc(x.expense_date || '—')}</td><td>${esc(x.category || 'Other')}</td><td>${esc(x.description)}</td>
         <td>${esc(x.paid_to || '—')}</td><td>${esc(nameOf(x.paid_by_user_id || collectorId))}</td><td>${money(x.amount)}</td>
-        <td><button class="link" data-edit-expense="${esc(x.id)}">Edit</button> <button class="secondary" style="color:#b44;border-color:#eed2d0" data-delete-expense="${esc(x.id)}">Delete</button></td></tr>`
+        <td><button class="link" data-edit-expense="${esc(x.id)}">Edit</button> <button class="secondary" style="color:var(--danger-ink);border-color:var(--danger-line)" data-delete-expense="${esc(x.id)}">Delete</button></td></tr>`
     )
     .join('');
 
@@ -154,7 +154,7 @@ export function renderExpensesPage() {
     <div class="report-metrics">
       <div class="report-metric"><span>Rent collected</span><strong>${money(result.income)}</strong></div>
       <div class="report-metric"><span>Expenses</span><strong>${money(result.totalExpenses)}</strong></div>
-      <div class="report-metric"><span>Net profit</span><strong style="color:${result.profit >= 0 ? '#17684f' : '#b42318'}">${money(result.profit)}</strong></div>
+      <div class="report-metric"><span>Net profit</span><strong style="color:${result.profit >= 0 ? 'var(--green-ink)' : 'var(--late-ink)'}">${money(result.profit)}</strong></div>
     </div>
     <section class="report-block">
       <div class="report-blockhead"><h3>Profit sharing & settlement</h3>
