@@ -1,4 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
+import {state} from './app/store.js';
+import {closeModal, openModal, toast} from './app/ui.js';
 const {VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: key} = import.meta.env;
 const gate = document.getElementById('authGate');
 const form = document.getElementById('authForm');
@@ -738,7 +740,7 @@ if (supabase) {
       if (!selectedFlat) return alert('Choose a flat.');
       const selected = [];
       let invalidResident = '';
-      residents.forEach((r, i) => {
+      state.residents.forEach((r, i) => {
         if (r.room === selectedFlat.flat_number && fd.has('include_' + i)) {
           const rawAmount = String(fd.get('amount_' + i) || ''),
             amount = Number(rawAmount),
@@ -877,16 +879,14 @@ if (supabase) {
       if (!(amount > 0)) return alert('Enter a payment amount greater than zero.');
       if (amount > remaining)
         return alert('Payment cannot exceed the remaining balance of ₹' + remaining.toLocaleString('en-IN') + '.');
-      const {error} = await supabase
-        .from('electricity_bill_payments')
-        .insert({
-          property_id: property.id,
-          bill_id: billId,
-          amount,
-          paid_on: d.get('date'),
-          method: d.get('method'),
-          reference: d.get('note') || null
-        });
+      const {error} = await supabase.from('electricity_bill_payments').insert({
+        property_id: property.id,
+        bill_id: billId,
+        amount,
+        paid_on: d.get('date'),
+        method: d.get('method'),
+        reference: d.get('note') || null
+      });
       if (error) return alert('Payment was not recorded: ' + error.message);
       const {data: rows, error: sumError} = await supabase
         .from('electricity_bill_payments')
@@ -920,7 +920,7 @@ if (supabase) {
       e.preventDefault();
       e.stopImmediatePropagation();
       const d = new FormData(form),
-        resident = residents.find((r) => r.name === d.get('resident'));
+        resident = state.residents.find((r) => r.name === d.get('resident'));
       if (!resident?.id) return alert('Resident record not found in Supabase.');
       const paidOn =
           d.get('date') || new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10),
