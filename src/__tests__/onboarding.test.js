@@ -209,3 +209,66 @@ describe('login screen install help', () => {
     delete window.matchMedia;
   });
 });
+
+describe('the tour is shown only once per user', () => {
+  /** Run startTourIfFirstTime for a user and let its short start-up delay pass. */
+  async function startFor(user) {
+    const {startTourIfFirstTime} = await import('../cloud/onboarding.js');
+    vi.useFakeTimers();
+    startTourIfFirstTime(user);
+    vi.advanceTimersByTime(1000);
+    vi.useRealTimers();
+  }
+
+  it('does not come back after it was finished — even if the cached session still has old metadata', async () => {
+    // u1 walked through the tour in the first test of this file, so this browser remembers it.
+    await startFor({id: 'u1', user_metadata: {}});
+    expect($('.tour-card')).toBeNull();
+  });
+
+  it('counts skipping as seen, and saves it to the account', async () => {
+    const user = {id: 'u2', user_metadata: {}};
+    updateUser.mockClear();
+    await startFor(user);
+    expect($('.tour-card')).not.toBeNull();
+    $('.tour-card .tour-skip').click();
+    expect(localStorage.getItem('tour_completed:u2')).toBe('1');
+    expect(updateUser).toHaveBeenCalledWith({data: {tour_completed: true}});
+    await startFor(user); // next login
+    expect($('.tour-card')).toBeNull();
+  });
+
+  it('survives logging out, which clears the staywise_* cache', async () => {
+    localStorage.setItem('staywise_residents', '[]');
+    localStorage.setItem('tour_completed:u3', '1');
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith('staywise_'))
+      .forEach((k) => localStorage.removeItem(k)); // what logout does
+    await startFor({id: 'u3', user_metadata: {}});
+    expect($('.tour-card')).toBeNull();
+  });
+
+  it('trusts the account flag set on another device', async () => {
+    await startFor({id: 'u4', user_metadata: {tour_completed: true}});
+    expect($('.tour-card')).toBeNull();
+  });
+
+  it('still will not repeat in this browser if saving to the account fails', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    updateUser.mockResolvedValueOnce({error: {message: 'boom'}});
+    const user = {id: 'u5', user_metadata: {}};
+    await startFor(user);
+    $('.tour-card .tour-skip').click();
+    await vi.waitFor(() => expect(error).toHaveBeenCalled()); // the failure is reported, not swallowed
+    await startFor(user);
+    expect($('.tour-card')).toBeNull();
+    error.mockRestore();
+  });
+
+  it('never starts a second tour while one is open', async () => {
+    await startFor({id: 'u6', user_metadata: {}});
+    await startFor({id: 'u6', user_metadata: {}});
+    expect(document.querySelectorAll('.tour-card')).toHaveLength(1);
+    $('.tour-card .tour-skip').click();
+  });
+});
