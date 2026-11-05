@@ -43,7 +43,7 @@ export function openPartnerManager(onChange = () => {}) {
             .map((r) =>
               r.member
                 ? `<tr data-user="${esc(r.user_id)}"><td><b>${esc(r.display_name || r.email)}</b></td><td>${esc(r.email || '')}</td>
-                    <td><input class="share" type="number" min="0" max="100" step="0.01" value="${Number(r.member.ownership_percent || 0)}" style="width:90px"></td>
+                    <td><input class="share" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="${Number(r.member.ownership_percent || 0)}" style="width:90px"></td>
                     <td style="white-space:nowrap"><button type="button" class="secondary save">Update</button> <button type="button" class="secondary remove">Remove</button></td></tr>`
                 : `<tr><td><b>${esc(r.display_name || r.email)}</b></td><td>${esc(r.email || '')}</td><td class="sub">${ownerShare}% <small>(owner — the remainder)</small></td><td></td></tr>`
             )
@@ -54,7 +54,7 @@ export function openPartnerManager(onChange = () => {}) {
       <form class="add-partner" style="margin-top:14px">
         <div class="formgrid">
           <div class="field"><label>Add partner by email</label><input name="email" type="email" required placeholder="partner@example.com"></div>
-          <div class="field"><label>Ownership %</label><input name="ownershipPercent" type="number" min="0" max="100" step="0.01" value="0"></div>
+          <div class="field"><label>Ownership %</label><input name="ownershipPercent" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="0"></div>
         </div>
         <p class="hint">The partner must create an account first.</p>
         <div class="formactions"><button class="primary">Add partner</button></div>

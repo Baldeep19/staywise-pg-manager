@@ -4,7 +4,8 @@
 import {state} from './store.js';
 import {renderRent, rentBalanceForResident} from './rent.js';
 import {persist} from './store.js';
-import {closeModal, esc, initials, openModal, toast} from './ui.js';
+import {closeModal, emptyState, esc, initials, openModal, statusPill, toast} from './ui.js';
+import {renderIcons} from './icons.js';
 
 export function resetResidentForm() {
   const f = document.getElementById('residentForm');
@@ -43,10 +44,23 @@ export function renderResidents() {
   const query = (document.getElementById('searchInput')?.value || '').toLowerCase(),
     rows = state.residents.filter((r) => (r.name + r.room + r.phone).toLowerCase().includes(query));
   if (!rows.length) {
-    document.getElementById('pageContent').innerHTML =
-      '<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No residents found' +
-      (query ? ' in ' + esc(query) : '') +
-      '</h3><p class="sub">Try another flat or clear the filter.</p><button class="secondary" onclick="document.getElementById(\'searchInput\').value=\'\';renderResidents()">Clear filter</button></div>';
+    document.getElementById('pageContent').innerHTML = state.residents.length
+      ? emptyState({
+          icon: 'search',
+          title: 'No residents found' + (query ? ' for ' + esc(query) : ''),
+          text: 'Try another name, flat or phone number.',
+          action: {
+            label: 'Clear search',
+            onclick: "document.getElementById('searchInput').value='';renderResidents()"
+          }
+        })
+      : emptyState({
+          icon: 'user-plus',
+          title: 'No residents yet',
+          text: 'Add your first resident to start tracking rent.',
+          action: {label: '＋ Add resident', onclick: "openModal('residentModal')", primary: true}
+        });
+    renderIcons();
     return;
   }
   const body = rows
@@ -72,13 +86,9 @@ export function renderResidents() {
         esc(r.sharing_type === 'single' ? 'Single' : r.sharing_type === 'double' ? 'Double' : '—') +
         '</td><td>₹' +
         Number(r.rent).toLocaleString('en-IN') +
-        '</td><td><span class="pill ' +
-        (r.status === 'Overdue' ? 'late' : ['Due', 'Due soon'].includes(r.status) ? 'soon' : '') +
-        '" style="' +
-        (r.status === 'Paid' ? 'color:#357551;background:#edf7ef' : '') +
-        '">' +
-        esc(r.status) +
-        '</span></td><td>' +
+        '</td><td>' +
+        statusPill(r.status) +
+        '</td><td>' +
         esc(r.movein || '—') +
         '</td><td>' +
         // One "Actions" cell (reminder, edit, remove) so the buttons sit on a single line on phones

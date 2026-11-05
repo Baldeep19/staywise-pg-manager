@@ -98,7 +98,7 @@
                 <div class="eyebrow" id="todayDate"></div>
                 <h1>
                   <span id="greetingText">Good morning</span>, <span id="ownerGreeting" class="is-loading">Owner</span>
-                  <span id="greetingIcon">☀️</span>
+                  <span id="greetingIcon" class="greeting-icon" aria-hidden="true"><i data-lucide="sun"></i></span>
                 </h1>
                 <p>Here’s what’s happening at your building today.</p>
               </div>
@@ -239,7 +239,8 @@
             <label>Building name *</label><input name="propertyName" required placeholder="e.g. Greenwood Residency" />
           </div>
           <div class="field">
-            <label>Building address</label><input name="propertyAddress" placeholder="Street, area, city" />
+            <label>Building address</label
+            ><input name="propertyAddress" autocomplete="street-address" placeholder="Street, area, city" />
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin: 22px 0 10px">
@@ -398,10 +399,19 @@
         <form id="residentForm">
           <div class="formgrid">
             <div class="field">
-              <label>Full name *</label><input name="name" required placeholder="e.g. Aditi Sharma" />
+              <label>Full name *</label
+              ><input name="name" required autocomplete="off" placeholder="e.g. Aditi Sharma" />
             </div>
             <div class="field">
-              <label>Phone number *</label><input name="phone" required type="tel" placeholder="+91 98765 43210" />
+              <label>Phone number *</label
+              ><input
+                name="phone"
+                required
+                type="tel"
+                inputmode="tel"
+                autocomplete="off"
+                placeholder="+91 98765 43210"
+              />
             </div>
             <div class="field">
               <label>Flat *</label
@@ -424,17 +434,27 @@
               </select>
             </div>
             <div class="field">
-              <label>Monthly rent (₹) *</label><input name="rent" required type="number" placeholder="Monthly rent" />
+              <label>Monthly rent (₹) *</label
+              ><input name="rent" required type="number" min="0" inputmode="numeric" placeholder="Monthly rent" />
             </div>
             <div class="field">
               <label>Deposit amount (₹) (optional)</label
-              ><input name="deposit" required type="number" min="0" placeholder="Security deposit" />
+              ><input
+                name="deposit"
+                required
+                type="number"
+                min="0"
+                inputmode="numeric"
+                placeholder="Security deposit"
+              />
             </div>
             <div class="field"><label>Move-in date</label><input name="movein" type="date" /></div>
             <div class="field">
-              <label>Emergency contact</label><input name="emergency" placeholder="Name and phone" />
+              <label>Emergency contact</label><input name="emergency" autocomplete="off" placeholder="Name and phone" />
             </div>
-            <div class="field full"><label>Address</label><input name="address" placeholder="Permanent address" /></div>
+            <div class="field full">
+              <label>Address</label><input name="address" autocomplete="off" placeholder="Permanent address" />
+            </div>
           </div>
           <div class="formactions">
             <button type="button" class="secondary" onclick="closeModal('residentModal')">Cancel</button
@@ -462,7 +482,16 @@
               ><select name="resident" class="residentOptions" required></select>
             </div>
             <div class="field">
-              <label>Amount (₹) *</label><input name="amount" required type="number" placeholder="8500" />
+              <label>Amount (₹) *</label
+              ><input
+                name="amount"
+                required
+                type="number"
+                min="0.01"
+                step="0.01"
+                inputmode="decimal"
+                placeholder="8500"
+              />
             </div>
             <div class="field"><label>Payment date</label><input name="date" type="date" /></div>
             <div class="field">
@@ -475,7 +504,8 @@
               </select>
             </div>
             <div class="field">
-              <label>Reference / note</label><input name="note" placeholder="UPI reference or note" />
+              <label>Reference / note</label
+              ><input name="note" autocomplete="off" placeholder="UPI reference or note" />
             </div>
           </div>
           <div class="formactions">
@@ -546,7 +576,10 @@
             <div class="field">
               <label>Common bill note</label><input name="commonNote" value="This includes common electricity bill" />
             </div>
-            <div class="field"><label>GPay number</label><input name="gpay" type="tel" value="9041869283" /></div>
+            <div class="field">
+              <label>GPay number</label
+              ><input name="gpay" type="tel" inputmode="tel" autocomplete="tel" value="9041869283" />
+            </div>
             <div class="field full">
               <label>Extra note (optional)</label><input name="note" placeholder="Optional message note" />
             </div>
@@ -571,7 +604,8 @@
           <input type="hidden" name="billId" />
           <div class="formgrid">
             <div class="field">
-              <label>Amount received (₹) *</label><input name="amount" type="number" min="0.01" step="0.01" required />
+              <label>Amount received (₹) *</label
+              ><input name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" required />
             </div>
             <div class="field"><label>Payment date *</label><input name="date" type="date" required /></div>
             <div class="field">
@@ -624,7 +658,7 @@
         </div>
       </div>
     </div>
-    <div class="toast" id="toast"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <div class="busy-overlay" id="appBusy" role="status" aria-live="polite" aria-atomic="true">
       <div class="busy-card">
         <span class="busy-spinner" aria-hidden="true"></span><span id="appBusyText">Saving changes…</span>

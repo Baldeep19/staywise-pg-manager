@@ -2,7 +2,8 @@ import {openPartnerManager} from './app/partners.js';
 import {formatMoney as money} from './app/money.js';
 import {buildMonthlyReport, monthLabel, shortMonthLabel, yearsWithData} from './app/monthly-report.js';
 import {computeSettlement, currentBuilding, rentCollectorId} from './app/settlement.js';
-import {esc, toast} from './app/ui.js';
+import {esc, putBack, toast, undoable} from './app/ui.js';
+import {formError} from './app/field-errors.js';
 
 // Resolve a user id to a partner/owner name (owners and partners are treated the same).
 const nameOf = (id) => {
@@ -187,17 +188,26 @@ export function renderExpensesPage() {
 }
 const CATEGORIES = ['Utilities', 'Rent/lease', 'Repairs', 'Supplies', 'Salary', 'Other'];
 
-/** Ask, then delete an expense and redraw (profit and settlement update from what is left). */
-async function deleteExpense(expense) {
+/**
+ * Delete an expense with Undo (no confirm box): it disappears at once and profit/settlement redraw from what is left;
+ * the database delete runs after the Undo window (see undoable in app/ui.js).
+ */
+function deleteExpense(expense) {
   if (!expense) return;
-  if (!confirm(`Delete "${expense.description}" (${money(expense.amount)})? This cannot be undone.`)) return;
-  try {
-    await window.deletePropertyExpense(expense.id);
-    toast('Expense deleted');
-    renderExpensesPage();
-  } catch (err) {
-    toast('Could not delete expense: ' + err.message);
-  }
+  const before = window.pgExpenses || [];
+  return undoable({
+    message: `Deleted "${expense.description}" (${money(expense.amount)})`,
+    hide: () => {
+      window.pgExpenses = before.filter((x) => x.id !== expense.id);
+      renderExpensesPage();
+    },
+    restore: () => {
+      // Put just this row back (in its old place), keeping any other change made during the Undo window.
+      window.pgExpenses = putBack(window.pgExpenses || [], expense, before.indexOf(expense));
+      renderExpensesPage();
+    },
+    commit: () => window.deletePropertyExpense(expense.id)
+  });
 }
 
 /**
@@ -230,7 +240,7 @@ function openExpenseForm(expense = null) {
       <div class="field"><label>Date</label><input name="date" type="date" required value="${esc(expense?.expense_date || new Date().toISOString().slice(0, 10))}"></div>
       <div class="field"><label>Category</label><select name="category">${categoryOptions}</select></div>
       <div class="field full"><label>Description</label><input name="description" required placeholder="e.g. Plumbing repair" value="${esc(expense?.description || '')}"></div>
-      <div class="field"><label>Amount</label><input name="amount" type="number" min="0" step="0.01" required value="${expense ? Number(expense.amount) : ''}"></div>
+      <div class="field"><label>Amount</label><input name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" required value="${expense ? Number(expense.amount) : ''}"></div>
       <div class="field"><label>Paid to</label><input name="paidTo" placeholder="Vendor or partner" value="${esc(expense?.paid_to || '')}"></div>
       <div class="field full"><label>Paid by</label><select name="paidByUserId">${payerOptions}</select></div>
     </div>
@@ -247,7 +257,7 @@ function openExpenseForm(expense = null) {
       toast(editing ? 'Expense updated' : 'Expense saved');
       renderExpensesPage();
     } catch (err) {
-      toast('Could not save expense: ' + err.message);
+      formError(e.target, 'Could not save expense: ' + err.message); // stays in the open form, next to Save
     }
   };
   document.body.appendChild(box);

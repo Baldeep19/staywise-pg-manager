@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import {beforeAll, describe, expect, it, vi} from 'vitest';
+import {flushUndo} from '../app/ui.js';
 
 const today = new Date().toISOString().slice(0, 10);
 const month = today.slice(0, 7);
@@ -243,23 +244,30 @@ describe('editing and deleting expenses', () => {
     expect(document.querySelector('.overlay.show')).toBeNull(); // dialog closed
   });
 
-  it('does nothing when you cancel the delete confirmation', () => {
-    vi.stubGlobal('confirm', () => false);
-    rowFor('Plumber items').querySelector('[data-delete-expense]').click();
-    expect(window.deletePropertyExpense).not.toHaveBeenCalled();
-    expect(rowFor('Plumber items')).toBeTruthy();
-    vi.unstubAllGlobals();
-  });
-
-  it('deletes after confirming and recalculates profit', async () => {
+  it('hides the expense at once and brings it back on Undo, without asking or deleting', async () => {
     const asked = vi.fn(() => true);
     vi.stubGlobal('confirm', asked);
     rowFor('Plumber items').querySelector('[data-delete-expense]').click();
-    expect(asked.mock.calls[0][0]).toContain('Plumber items'); // says which expense
-    await vi.waitFor(() => expect(window.deletePropertyExpense).toHaveBeenCalledWith('e6'));
-    await vi.waitFor(() => expect(rowFor('Plumber items')).toBeUndefined());
-    expect($('#pageContent').textContent).toContain('₹64,384'); // 64,024 + the 360 that is no longer spent
+    expect(asked).not.toHaveBeenCalled(); // no confirm box any more
+    expect(rowFor('Plumber items')).toBeUndefined(); // gone straight away
+    expect($('#pageContent').textContent).toContain('₹64,384'); // profit already recalculated
+    const toastEl = $('#toast');
+    expect(toastEl.textContent).toContain('Plumber items'); // says which expense
+    toastEl.querySelector('.toast-action').click(); // Undo
+    expect(rowFor('Plumber items')).toBeTruthy();
+    expect($('#pageContent').textContent).toContain('₹64,024');
+    await flushUndo(); // nothing is waiting any more
+    expect(window.deletePropertyExpense).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+
+  it('really deletes once the Undo window is over', async () => {
+    rowFor('Plumber items').querySelector('[data-delete-expense]').click();
+    expect(window.deletePropertyExpense).not.toHaveBeenCalled(); // still in the Undo window
+    await flushUndo(); // what the 5 s timer (or leaving the page) does
+    expect(window.deletePropertyExpense).toHaveBeenCalledWith('e6');
+    expect(rowFor('Plumber items')).toBeUndefined();
+    expect($('#pageContent').textContent).toContain('₹64,384'); // 64,024 + the 360 that is no longer spent
   });
 
   it('adding a new expense still works and defaults the payer to the person adding it', () => {

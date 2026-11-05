@@ -1,7 +1,8 @@
 /**
  * Cloud (Supabase) handlers for adding, editing and removing residents.
  */
-import {toast} from '../app/ui.js';
+import {putBack, undoable} from '../app/ui.js';
+import {formError, showFieldError} from '../app/field-errors.js';
 import {supabase} from './client.js';
 import {session} from './session.js';
 
@@ -20,7 +21,8 @@ export function initResidentCloudForm() {
       const d = new FormData(form),
         editId = form.dataset.editResidentId,
         flat = session.flats.find((x) => x.flat_number === d.get('room'));
-      if (!flat) return alert('Could not find the selected flat in Supabase.');
+      if (!flat)
+        return showFieldError(form.elements.room, 'This flat is not in your building any more; choose another');
       const payload = {
         property_id: session.property.id,
         flat_id: flat.id,
@@ -42,7 +44,7 @@ export function initResidentCloudForm() {
             .select()
             .single()
         : await supabase.from('residents').insert(payload).select().single();
-      if (result.error) return alert(result.error.message);
+      if (result.error) return formError(form, 'Not saved: ' + result.error.message);
       const resident = result.data;
       form.dataset.cloudReady = '1';
       form.dataset.cloudResidentId = resident.id;
@@ -50,24 +52,40 @@ export function initResidentCloudForm() {
     },
     true
   );
-  window.removeResident = async (id) => {
-    if (!confirm('Remove this resident from the active resident list? Their rent and bill history will be retained.'))
-      return;
-    const moveOut = new Date().toISOString().slice(0, 10),
-      {error} = await supabase
-        .from('residents')
-        .update({active: false, move_out: moveOut})
-        .eq('id', id)
-        .eq('property_id', session.property.id);
-    if (error) {
-      alert(error.message);
-      return;
-    }
-    const rs = JSON.parse(localStorage.getItem('staywise_residents') || '[]').filter((r) => r.id !== id);
-    window.pgReportResidents = (window.pgReportResidents || []).map((r) =>
-      String(r.id) === String(id) ? {...r, active: false, moveout: moveOut} : r
-    );
-    window.applyCloudState(rs, JSON.parse(localStorage.getItem('staywise_bills') || '[]'));
-    toast('Resident removed from the active list.');
+  // Remove = move out (active false). No confirm box: the resident disappears at once and the toast offers Undo;
+  // the database is only updated after the Undo window (see undoable in app/ui.js).
+  window.removeResident = (id) => {
+    const list = () => JSON.parse(localStorage.getItem('staywise_residents') || '[]');
+    const bills = () => JSON.parse(localStorage.getItem('staywise_bills') || '[]');
+    const before = list();
+    const index = before.findIndex((r) => String(r.id) === String(id));
+    const resident = before[index];
+    const reportRow = (window.pgReportResidents || []).find((r) => String(r.id) === String(id));
+    const moveOut = new Date().toISOString().slice(0, 10);
+    const setReportRow = (row) =>
+      (window.pgReportResidents = (window.pgReportResidents || []).map((r) => (String(r.id) === String(id) ? row : r)));
+    return undoable({
+      message: `${resident?.name || 'Resident'} moved out`,
+      hide: () => {
+        if (reportRow) setReportRow({...reportRow, active: false, moveout: moveOut});
+        window.applyCloudState(
+          list().filter((r) => String(r.id) !== String(id)),
+          bills()
+        );
+      },
+      // Put just this resident back, keeping any other change made during the Undo window.
+      restore: () => {
+        if (reportRow) setReportRow(reportRow);
+        if (resident) window.applyCloudState(putBack(list(), resident, index), bills());
+      },
+      commit: async () => {
+        const {error} = await supabase
+          .from('residents')
+          .update({active: false, move_out: moveOut})
+          .eq('id', id)
+          .eq('property_id', session.property.id);
+        if (error) throw error;
+      }
+    });
   };
 }

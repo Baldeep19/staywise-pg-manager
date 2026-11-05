@@ -32,6 +32,11 @@
   overscroll-behavior: contain; /* reaching the end does not scroll the page behind */
   padding: 16px 24px 20px;
 }
+/* Whole-form error sits between the scrolling body and the fixed buttons, so it is always in view. */
+.modal-layout .form-error {
+  flex: none;
+  margin: 10px 24px 0;
+}
 .modal-foot {
   flex: none;
   margin: 0 !important;

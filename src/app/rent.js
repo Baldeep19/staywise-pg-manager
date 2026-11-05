@@ -3,7 +3,8 @@
  */
 import {state} from './store.js';
 import {persist} from './store.js';
-import {closeModal, esc, openModal, toast} from './ui.js';
+import {closeModal, emptyState, esc, openModal, statusPill, toast} from './ui.js';
+import {renderIcons} from './icons.js';
 
 export function rentBalanceForResident(r) {
   const now = new Date(),
@@ -16,55 +17,110 @@ export function rentBalanceForResident(r) {
   return Math.max(0, Number(r.rent || 0) - paid);
 }
 
+/** Filter chips on the Rent page. "Due" includes part-paid rent: money is still owed. */
+export const RENT_FILTERS = [
+  ['all', 'All', () => true],
+  ['overdue', 'Overdue', (r) => r.status === 'Overdue'],
+  ['due', 'Due', (r) => ['Due', 'Due soon', 'Part paid'].includes(r.status)],
+  ['paid', 'Paid', (r) => r.status === 'Paid']
+];
+// Most urgent first; anything unknown goes after the due ones and before paid.
+const URGENCY = {Overdue: 0, 'Part paid': 1, Due: 2, 'Due soon': 3, Paid: 5};
+const urgency = (r) => URGENCY[r.status] ?? 4;
+let rentFilter = 'all';
+
+export function setRentFilter(key) {
+  rentFilter = RENT_FILTERS.some(([k]) => k === key) ? key : 'all';
+  renderRent();
+}
+
+function rentRow(r) {
+  const balance = rentBalanceForResident(r),
+    reminder =
+      r.id && balance > 0
+        ? '<button class="secondary rowbtn" onclick="draftResidentRentReminder(\'' +
+          r.id +
+          '\')">WhatsApp reminder</button>'
+        : '<span class="rent-reminder-placeholder">—</span>';
+  return (
+    '<tr><td><b>' +
+    esc(r.name) +
+    '</b><div class="tiny">+91 ' +
+    esc(r.phone) +
+    ' · Deposit ₹' +
+    Number(r.deposit || 0).toLocaleString('en-IN') +
+    '</div></td><td>' +
+    esc(r.room) +
+    '</td><td>₹' +
+    Number(r.rent).toLocaleString('en-IN') +
+    '</td><td>' +
+    statusPill(r.status) +
+    '</td><td><button class="primary rowbtn" onclick="openForResident(\'' +
+    esc(r.name) +
+    '\')">Record payment</button> ' +
+    reminder +
+    '</td></tr>'
+  );
+}
+
 export function renderRent() {
   // The search box is shared with the Residents page; filter the same way (name, room, phone).
+  // Chips count what the search leaves, so search + chip work together ("overdue in flat A-101").
+  const content = document.getElementById('pageContent');
   const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase(),
-    rows = state.residents.filter((r) => (r.name + ' ' + r.room + ' ' + r.phone).toLowerCase().includes(query));
-  if (!rows.length) {
-    document.getElementById('pageContent').innerHTML =
-      '<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No residents found' +
-      (query ? ' for ' + esc(query) : '') +
-      '</h3><p class="sub">Try another name, room or phone number.</p><button class="secondary" onclick="document.getElementById(\'searchInput\').value=\'\';renderRent()">Clear search</button></div>';
-    return;
-  }
-  const body = rows
-    .map((r) => {
-      const balance = rentBalanceForResident(r),
-        reminder =
-          r.id && balance > 0
-            ? '<button class="secondary rowbtn" onclick="draftResidentRentReminder(\'' +
-              r.id +
-              '\')">WhatsApp reminder</button>'
-            : '<span class="rent-reminder-placeholder">—</span>';
-      return (
-        '<tr><td><b>' +
-        esc(r.name) +
-        '</b><div class="tiny">+91 ' +
-        esc(r.phone) +
-        ' · Deposit ₹' +
-        Number(r.deposit || 0).toLocaleString('en-IN') +
-        '</div></td><td>' +
-        esc(r.room) +
-        '</td><td>₹' +
-        Number(r.rent).toLocaleString('en-IN') +
-        '</td><td><span class="pill ' +
-        (r.status === 'Overdue' ? 'late' : ['Due', 'Due soon'].includes(r.status) ? 'soon' : '') +
-        '" style="' +
-        (r.status === 'Paid' ? 'color:#357551;background:#edf7ef' : '') +
-        '">' +
-        esc(r.status) +
-        '</span></td><td><button class="primary rowbtn" onclick="openForResident(\'' +
-        esc(r.name) +
-        '\')">Record payment</button> ' +
-        reminder +
-        '</td></tr>'
-      );
-    })
-    .join('');
-  document.getElementById('pageContent').innerHTML =
-    '<table class="table"><thead><tr><th>Resident</th><th>Room</th><th>Rent due</th><th>Status</th><th>Action</th></tr></thead><tbody>' +
-    body +
-    '</tbody></table>';
+    found = state.residents.filter((r) => (r.name + ' ' + r.room + ' ' + r.phone).toLowerCase().includes(query)),
+    test = RENT_FILTERS.find(([k]) => k === rentFilter)[2],
+    rows = found
+      .map((r, i) => [r, i])
+      .filter(([r]) => test(r))
+      .sort((a, b) => urgency(a[0]) - urgency(b[0]) || a[1] - b[1]) // stable: keep the list order within a status
+      .map(([r]) => r);
+  const chips =
+    '<div class="chips" role="group" aria-label="Show residents by rent status">' +
+    RENT_FILTERS.map(
+      ([key, label, fn]) =>
+        `<button type="button" class="chip${key === rentFilter ? ' active' : ''}" data-rent-filter="${key}" aria-pressed="${key === rentFilter}">${label} <span class="chip-count">${found.filter(fn).length}</span></button>`
+    ).join('') +
+    '</div>';
+  let list;
+  if (rows.length)
+    list =
+      '<table class="table"><thead><tr><th>Resident</th><th>Room</th><th>Rent due</th><th>Status</th><th>Action</th></tr></thead><tbody>' +
+      rows.map(rentRow).join('') +
+      '</tbody></table>';
+  else if (!found.length)
+    list = emptyState({
+      icon: 'search',
+      title: 'No residents found' + (query ? ' for ' + esc(query) : ''),
+      text: 'Try another name, room or phone number.',
+      action: {label: 'Clear search'}
+    });
+  else
+    list = emptyState({
+      icon: 'circle-check',
+      title:
+        rentFilter === 'overdue'
+          ? 'Nobody is overdue'
+          : rentFilter === 'due'
+            ? 'Nothing is due right now'
+            : 'No payments yet this month',
+      text: 'Residents with another status are under All.',
+      action: {label: 'Show all'}
+    });
+  content.innerHTML = chips + list;
+  // One clear action per empty state
+  const action = content.querySelector('.empty-state .secondary');
+  if (action)
+    action.onclick = () => {
+      if (!found.length) {
+        document.getElementById('searchInput').value = '';
+        renderRent();
+      } else setRentFilter('all');
+    };
+  content
+    .querySelectorAll('[data-rent-filter]')
+    .forEach((b) => (b.onclick = () => setRentFilter(b.dataset.rentFilter)));
+  renderIcons();
 }
 
 export function refreshOptions() {

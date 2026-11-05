@@ -244,6 +244,39 @@ describe('rent collector', () => {
   });
 });
 
+describe('moving a resident out (Undo instead of a confirm box)', () => {
+  const count = () => document.getElementById('residentCount').textContent;
+  const residentWrites = () => calls.filter((c) => c.table === 'residents');
+
+  it('hides the resident at once and Undo brings them back without touching the database', async () => {
+    const {flushUndo} = await import('../app/ui.js');
+    const asked = vi.fn(() => true);
+    vi.stubGlobal('confirm', asked);
+    calls.length = 0;
+    window.removeResident('r1');
+    expect(asked).not.toHaveBeenCalled();
+    expect(count()).toBe('0');
+    expect(document.getElementById('toast').textContent).toContain('Asha moved out');
+    document.querySelector('#toast .toast-action').click(); // Undo
+    expect(count()).toBe('1');
+    await flushUndo();
+    expect(residentWrites()).toEqual([]);
+    vi.unstubAllGlobals();
+  });
+
+  it('saves the move-out once the Undo window is over', async () => {
+    const {flushUndo} = await import('../app/ui.js');
+    calls.length = 0;
+    window.removeResident('r1');
+    expect(residentWrites()).toEqual([]); // nothing sent yet
+    await flushUndo();
+    const [write] = residentWrites();
+    expect(write.ops.find(([m]) => m === 'update')[1]).toMatchObject({active: false});
+    expect(write.ops).toContainEqual(['eq', 'id', 'r1']);
+    expect(count()).toBe('0');
+  });
+});
+
 describe('logout', () => {
   it('signs out and clears cached Staywise data', async () => {
     const reload = vi.fn();

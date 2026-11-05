@@ -8,6 +8,8 @@ import {refreshOptions, renderRent} from './rent.js';
 import {renderReports} from './reports.js';
 import {renderResidents, resetResidentForm} from './residents.js';
 import {renderRooms} from './rooms.js';
+import {clearFormErrors} from './field-errors.js';
+import {renderIcons} from './icons.js';
 
 export const pages = {
   dashboard: ['Overview', 'Your building at a glance'],
@@ -21,12 +23,88 @@ export const pages = {
   settings: ['Settings', 'Manage your buildings, partners and account.']
 };
 
-export function toast(s) {
-  let t = document.getElementById('toast');
+let toastTimer;
+/**
+ * Short message at the bottom of the screen. Pass {action, onAction} to add a button (e.g. Undo).
+ * One shared timer: a new toast replaces the old one instead of being hidden early by the old one's timeout.
+ * @returns {() => void} hides the toast
+ */
+export function toast(s, {action, onAction, ms = 2600} = {}) {
+  const t = document.getElementById('toast');
+  const hide = () => {
+    clearTimeout(toastTimer);
+    t.classList.remove('show');
+  };
+  clearTimeout(toastTimer);
   t.textContent = s;
+  if (action) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'toast-action';
+    b.textContent = action;
+    b.onclick = () => {
+      hide();
+      onAction?.();
+    };
+    t.append(' ', b);
+  }
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2600);
+  toastTimer = setTimeout(hide, ms);
+  return hide;
 }
+
+let pendingUndo = null;
+/**
+ * Delete with Undo instead of a confirm() box: the item disappears at once, the real delete runs after `ms`
+ * unless Undo is pressed. Nothing reaches the server during the wait, so Undo only has to put the local state back.
+ * A failed delete also puts it back. Starting a second delete, hiding the tab or leaving the page runs the first
+ * one straight away (worst case on a closed tab: the delete is dropped and the item is still there — the safe side).
+ * @param {{message: string, hide: () => void, restore: () => void, commit: () => Promise<void>, ms?: number}} job
+ */
+export function undoable({message, hide, restore, commit, ms = 5000}) {
+  flushUndo();
+  hide();
+  const job = {settled: false};
+  const settle = () => {
+    if (job.settled) return false;
+    job.settled = true;
+    clearTimeout(job.timer);
+    if (pendingUndo === job) pendingUndo = null;
+    return true;
+  };
+  job.run = async () => {
+    if (!settle()) return;
+    try {
+      await commit();
+    } catch (err) {
+      restore();
+      toast('Could not delete: ' + (err?.message || err));
+    }
+  };
+  job.timer = setTimeout(job.run, ms);
+  pendingUndo = job;
+  toast(message, {
+    action: 'Undo',
+    ms,
+    onAction: () => {
+      if (!settle()) return;
+      restore();
+      toast('Restored');
+    }
+  });
+  return job;
+}
+
+/** Copy of `list` with `item` back at `index` (no-op if a row with its id is already there). */
+export function putBack(list, item, index) {
+  if (list.some((x) => String(x.id) === String(item.id))) return list;
+  const next = [...list];
+  next.splice(index < 0 ? next.length : Math.min(index, next.length), 0, item);
+  return next;
+}
+
+/** Run a waiting delete now (if any). */
+export const flushUndo = () => pendingUndo?.run();
 
 export function applyDateDefaults(form) {
   const now = new Date(),
@@ -45,7 +123,9 @@ export function applyDateDefaults(form) {
 export function openModal(id) {
   if (id === 'residentModal' && !document.getElementById('residentForm').dataset.editResidentId) resetResidentForm();
   if (id === 'rentModal' || id === 'messageModal') refreshOptions();
-  applyDateDefaults(document.querySelector('#' + id + ' form'));
+  const form = document.querySelector('#' + id + ' form');
+  applyDateDefaults(form);
+  clearFormErrors(form); // errors from a previous attempt
   if (id === 'electricityModal') renderBillResidents();
   delete document.querySelector('#' + id + ' .modal')?.dataset.dirty; // a fresh open starts untouched
   document.getElementById(id).classList.add('show');
@@ -119,15 +199,42 @@ export function renderPage(p) {
   else if (p === 'messages') renderMessages();
   else if (p === 'settings') renderSettings();
   else if (p === 'expenses') window.renderExpensesPage?.();
-  else
-    document.getElementById('pageContent').innerHTML =
-      `<div style="padding:28px;text-align:center"><div style="font-size:28px">▤</div><h3 style="font:700 14px Manrope">${pages[p][0]} workspace</h3><p class="sub">Your ${pages[p][0].toLowerCase()} tools will live here.</p></div>`;
+  else {
+    document.getElementById('pageContent').innerHTML = emptyState({
+      icon: 'inbox',
+      title: `${pages[p][0]} workspace`,
+      text: `Your ${pages[p][0].toLowerCase()} tools will live here.`
+    });
+    renderIcons();
+  }
 }
 
 window.renderCurrentPage = () => {
   const page = Object.keys(pages).find((key) => pages[key][0] === document.getElementById('crumbPage').textContent);
   if (page && page !== 'dashboard') renderPage(page);
 };
+
+/**
+ * Shared empty state: icon, title, one hint, one action.
+ * `action.onclick` is an inline handler string (legacy pages); leave it out and bind the button yourself.
+ * @param {{icon: string, title: string, text: string, action?: {label: string, onclick?: string, primary?: boolean}}} o
+ */
+export function emptyState({icon, title, text, action}) {
+  const button = action
+    ? `<button type="button" class="${action.primary ? 'primary' : 'secondary'}"${action.onclick ? ` onclick="${action.onclick}"` : ''}>${action.label}</button>`
+    : '';
+  return `<div class="empty-state"><i data-lucide="${icon}"></i><h3>${title}</h3><p class="sub">${text}</p>${button}</div>`;
+}
+
+/** Coloured status pill used on the Residents, Rent and Reports pages (colours live in CSS, so themes can change them). */
+export function pillClass(status) {
+  if (status === 'Overdue') return 'late';
+  if (['Due', 'Due soon', 'Part paid'].includes(status)) return 'soon';
+  if (status === 'Paid') return 'paid';
+  if (status === 'Waived') return 'waived';
+  return '';
+}
+export const statusPill = (status) => `<span class="pill ${pillClass(status)}">${esc(status)}</span>`;
 
 export function initials(n) {
   return n
@@ -149,4 +256,7 @@ export function esc(s) {
 export function initUi() {
   // Backdrop clicks are handled for every popup in app/modal-layout.js (closes only when nothing was typed).
   document.querySelectorAll('.nav button').forEach((b) => (b.onclick = () => goPage(b.dataset.page)));
+  // A delete waiting for its Undo window should not be lost when the user leaves or switches app.
+  window.addEventListener('pagehide', flushUndo);
+  document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && flushUndo());
 }

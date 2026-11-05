@@ -18,7 +18,7 @@ export function initAuthForm() {
     const row = document.createElement('div');
     row.className = 'formgrid signup-flat';
     row.style.cssText = 'border:1px solid var(--line);padding:9px;border-radius:9px;align-items:end';
-    row.innerHTML = `<div class="field"><label>Flat name *</label><input name="signup_flat_number" required placeholder="Flat 101" value="${String(unit.flat_number || '').replaceAll('"', '&quot;')}"></div><div class="field"><label>Floor *</label><input name="signup_floor_name" required placeholder="Ground" value="${String(unit.floor_name || '').replaceAll('"', '&quot;')}"></div><div class="field"><label>Rooms *</label><input name="signup_rooms" required type="number" min="1" value="${unit.room_count || 1}"></div><button type="button" class="secondary remove-signup-flat">Remove</button>`;
+    row.innerHTML = `<div class="field"><label>Flat name *</label><input name="signup_flat_number" required placeholder="Flat 101" value="${String(unit.flat_number || '').replaceAll('"', '&quot;')}"></div><div class="field"><label>Floor *</label><input name="signup_floor_name" required placeholder="Ground" value="${String(unit.floor_name || '').replaceAll('"', '&quot;')}"></div><div class="field"><label>Rooms *</label><input name="signup_rooms" required type="number" min="1" inputmode="numeric" value="${unit.room_count || 1}"></div><button type="button" class="secondary remove-signup-flat">Remove</button>`;
     row.querySelector('button').onclick = () => {
       if (signupFlats.children.length > 1) row.remove();
     };

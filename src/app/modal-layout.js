@@ -1,3 +1,5 @@
+import {initDialogFocus} from './dialog-focus.js';
+
 /**
  * Give every popup the same three-part layout: fixed header, scrolling body, fixed footer.
  *
@@ -22,8 +24,20 @@ export function layoutModal(modal) {
   body.append(...middle);
   if (foot) foot.classList.add('modal-foot');
   ensureCloseButton(modal, head);
+  labelDialog(modal, head);
   if (host !== modal) host.classList.add('modal-host');
   modal.classList.add('modal-layout');
+}
+
+/** Screen readers announce the card as a dialog named by its heading. */
+let headingSeq = 0;
+function labelDialog(modal, head) {
+  if (!modal.hasAttribute('role')) modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  const heading = head?.querySelector('h1,h2,h3,h4');
+  if (!heading || modal.hasAttribute('aria-labelledby') || modal.hasAttribute('aria-label')) return;
+  if (!heading.id) heading.id = 'dlg-title-' + ++headingSeq;
+  modal.setAttribute('aria-labelledby', heading.id);
 }
 
 /** Every popup gets a × in its header. Existing ones just get an accessible name. */
@@ -100,4 +114,7 @@ export function initModalLayout() {
         n.querySelectorAll('.modal').forEach(layoutModal);
       }
   }).observe(document.body, {childList: true, subtree: true});
+  // Focus in / Tab trap / Esc / focus back (app/dialog-focus.js). Started after the layout observer on purpose:
+  // observers run in creation order, and layoutModal moves fields into .modal-body, which would drop a focus set earlier.
+  initDialogFocus();
 }

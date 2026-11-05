@@ -236,6 +236,13 @@ button {
   margin: 7px 0 4px;
   letter-spacing: -0.7px;
 }
+.greeting-icon svg {
+  width: 0.85em;
+  height: 0.85em;
+  margin-left: 2px;
+  vertical-align: -0.08em;
+  color: var(--orange);
+}
 .welcome p {
   font-size: 13px;
   color: var(--muted);
@@ -490,6 +497,78 @@ button {
   color: #8a5a00;
   background: #fff3bf;
 }
+.pill.paid {
+  color: #2f6b49;
+  background: #edf7ef;
+}
+.pill.waived {
+  color: var(--muted);
+  background: #f1f3f1;
+}
+/* Filter chips (Rent page) */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px 4px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px; /* comfortable tap target */
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+.chip:hover {
+  border-color: #b9d3c4;
+}
+.chip.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.chip-count {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--mint);
+  color: var(--green);
+  font-size: 11px;
+  text-align: center;
+}
+.chip.active .chip-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+/* Shared empty state: icon, one line, one hint, one action */
+.empty-state {
+  padding: 28px 20px;
+  text-align: center;
+}
+.empty-state svg {
+  width: 28px;
+  height: 28px;
+  color: var(--green);
+  opacity: 0.8;
+}
+.empty-state h3 {
+  margin: 8px 0 4px;
+}
+.empty-state .sub {
+  margin: 0 0 14px;
+}
+/* Small section heading used in JS-rendered pages (was an inline font:700 14px Manrope everywhere) */
+.section-title,
+.empty-state h3 {
+  font: 700 14px Manrope;
+  color: var(--ink);
+}
 .rent-reminder-placeholder {
   display: inline-block;
   min-width: 120px;
@@ -583,6 +662,38 @@ button {
 .field.full {
   grid-column: 1/-1;
 }
+/* Inline validation (app/field-errors.js) */
+.field :where(input, select, textarea)[aria-invalid='true'],
+.field :where(input, select, textarea)[aria-invalid='true']:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(215, 97, 92, 0.16);
+}
+.field-error {
+  color: #b23b36; /* ≈5.6:1 on white */
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.form-error {
+  margin: 0 0 4px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: #fff0ef;
+  border: 1px solid #f0c9c5;
+  color: #9c302b;
+  font-size: 12px;
+  font-weight: 600;
+}
+.toast-action {
+  margin-left: 10px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--lime);
+  font-weight: 700;
+  font-size: 12px;
+}
 .field label {
   font-size: 12px;
   font-weight: 700;
@@ -599,9 +710,24 @@ button {
   background: #fff;
 }
 .field input:focus,
-.field select:focus {
-  border-color: #73a88d;
-  box-shadow: 0 0 0 3px #e8f3ec;
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23, 104, 79, 0.22); /* the old #e8f3ec glow was almost invisible on white */
+}
+/* Keyboard focus ring for everything clickable. :focus-visible keeps it off for mouse and touch taps. */
+:where(button, a, [tabindex], summary, .nav button, .rowbtn):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px; /* the outline follows each element's own border-radius */
+}
+.field :where(input, select, textarea):focus-visible {
+  outline: none; /* form fields use the border + glow above */
+}
+/* A popup card focused on open (touch screens) should not show a ring around the whole card. */
+.modal[tabindex='-1']:focus,
+.sheet[tabindex='-1']:focus,
+#ownerSetupForm[tabindex='-1']:focus {
+  outline: none;
 }
 .hint {
   font-size: 12px;
@@ -671,10 +797,35 @@ button {
   opacity: 0;
   transition: 0.2s;
   z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: max-content; /* centred with left:50%, it would otherwise shrink to half the screen and wrap */
+  max-width: calc(100vw - 24px);
+  pointer-events: none; /* an invisible toast must not block taps on what is under it */
 }
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+.toast-action {
+  flex: none;
+}
+@media (max-width: 730px) {
+  .toast {
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px)); /* above the bottom tab bar */
+  }
+  .chips {
+    flex-wrap: nowrap; /* one row; swipe sideways if it does not fit */
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 10px 12px 4px;
+  }
+  .chip {
+    flex: none;
+    padding: 6px 10px;
+  }
 }
 .pagehead {
   display: flex;

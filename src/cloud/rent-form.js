@@ -2,6 +2,7 @@
  * Cloud (Supabase) handler for recording rent payments.
  */
 import {state} from '../app/store.js';
+import {formError, showFieldError} from '../app/field-errors.js';
 import {supabase} from './client.js';
 import {session} from './session.js';
 
@@ -20,11 +21,12 @@ export function initRentCloudForm() {
       e.stopImmediatePropagation();
       const d = new FormData(form),
         resident = state.residents.find((r) => r.name === d.get('resident'));
-      if (!resident?.id) return alert('Resident record not found in Supabase.');
+      if (!resident?.id)
+        return showFieldError(form.elements.resident, 'This resident could not be found; refresh and try again');
       const paidOn =
           d.get('date') || new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10),
         paidAmount = Number(d.get('amount'));
-      if (!(paidAmount > 0)) return alert('Enter an amount greater than zero.');
+      if (!(paidAmount > 0)) return showFieldError(form.elements.amount, 'Must be more than 0');
       const saveButton = form.querySelector('button.primary');
       form.dataset.rentSaving = '1';
       if (saveButton) saveButton.disabled = true;
@@ -39,7 +41,7 @@ export function initRentCloudForm() {
       if (error) {
         delete form.dataset.rentSaving;
         if (saveButton) saveButton.disabled = false;
-        return alert('Payment was not recorded: ' + error.message);
+        return formError(form, 'Payment was not recorded: ' + error.message);
       }
       const rentMonth = paidOn.slice(0, 7) + '-01';
       const {data: monthlyPayment, error: refreshError} = await supabase
@@ -52,7 +54,8 @@ export function initRentCloudForm() {
       if (refreshError || !monthlyPayment) {
         delete form.dataset.rentSaving;
         if (saveButton) saveButton.disabled = false;
-        return alert(
+        return formError(
+          form,
           'Payment was saved, but the monthly record could not refresh. Refresh the page before trying again.'
         );
       }

@@ -39,6 +39,7 @@ import {startTour} from './app/tour.js';
 import {initTabbar} from './app/tabbar.js';
 import {renderIcons} from './app/icons.js';
 import {initModalLayout} from './app/modal-layout.js';
+import {initFieldErrors} from './app/field-errors.js';
 
 // Handlers referenced from HTML attributes (legacy inline handlers).
 Object.assign(window, {
@@ -92,3 +93,4 @@ initResponsiveTables();
 initTabbar();
 renderIcons();
 initModalLayout();
+initFieldErrors();

@@ -48,6 +48,19 @@ describe('display name', () => {
     expect($('greetingText').textContent).toBe(text);
     expect($('ownerGreeting').textContent).toBe('Baldeep Singh');
   });
+  it.each([
+    [9, 'sun'],
+    [14, 'cloud-sun'],
+    [20, 'moon']
+  ])('shows a line icon, not an emoji, for the time of day (hour %i)', (hour, icon) => {
+    document.body.innerHTML =
+      '<span id="greetingText"></span><span id="ownerGreeting"></span><span id="greetingIcon"></span>';
+    showOwnerIdentity(user, new Date(2026, 0, 5, hour));
+    const box = $('greetingIcon');
+    expect(box.dataset.icon).toBe(icon);
+    expect(box.querySelector('svg')).not.toBeNull(); // rendered by Lucide
+    expect(box.textContent.trim()).toBe(''); // no emoji text
+  });
 });
 
 describe('new account that gave no building details', () => {

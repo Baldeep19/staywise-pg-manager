@@ -3,12 +3,19 @@
  */
 import {state} from './store.js';
 import {persist} from './store.js';
-import {closeModal, esc, openModal, renderPage, toast} from './ui.js';
+import {closeModal, emptyState, esc, openModal, renderPage, statusPill, toast} from './ui.js';
+import {renderIcons} from './icons.js';
 
 export function renderElectricity() {
   document.getElementById('pageContent').innerHTML = state.bills.length
-    ? `<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Received</th><th>Amount</th><th>Due date</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>${state.bills.map((b) => `<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.flat)}</td><td>${esc(b.month)}</td><td>₹${Number(b.amount).toLocaleString('en-IN')}</td><td>${esc(b.due)}</td><td><span class="pill">${esc(b.status)}</span></td><td>${['Paid', 'Waived'].includes(b.status) ? '—' : `<button class="link" onclick="openElectricityPayment('${b.id}')">Record payment</button>`}</td><td><button class="link" onclick="shareBill('${b.id}')">WhatsApp</button></td></tr>`).join('')}</tbody></table>`
-    : `<div style="padding:25px;text-align:center"><div style="font-size:30px">ϟ</div><h3 style="font:700 14px Manrope">No electricity bills created yet</h3><p class="sub">Select flats and enter individual shares.</p><button class="primary" onclick="openModal('electricityModal')">＋ Create electricity bills</button></div>`;
+    ? `<table class="table"><thead><tr><th>Resident</th><th>Flat</th><th>Received</th><th>Amount</th><th>Due date</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>${state.bills.map((b) => `<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.flat)}</td><td>${esc(b.month)}</td><td>₹${Number(b.amount).toLocaleString('en-IN')}</td><td>${esc(b.due)}</td><td>${statusPill(b.status)}</td><td>${['Paid', 'Waived'].includes(b.status) ? '—' : `<button class="link" onclick="openElectricityPayment('${b.id}')">Record payment</button>`}</td><td><button class="link" onclick="shareBill('${b.id}')">WhatsApp</button></td></tr>`).join('')}</tbody></table>`
+    : emptyState({
+        icon: 'zap',
+        title: 'No electricity bills yet',
+        text: 'Enter the meter readings and the app splits the bill for each resident.',
+        action: {label: '＋ Create electricity bills', onclick: "openModal('electricityModal')", primary: true}
+      });
+  renderIcons();
 }
 
 export function shareBill(id) {
@@ -228,7 +235,7 @@ export function renderBillResidents() {
               (side === 'left' ? 'selected' : '') +
               '>Room 1 · Left</option><option value="right" ' +
               (side === 'right' ? 'selected' : '') +
-              '>Room 2 · Right</option></select><label style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)">₹ <input type="number" min="0" step="0.01" name="amount_' +
+              '>Room 2 · Right</option></select><label style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)">₹ <input type="number" min="0" step="0.01" inputmode="decimal" name="amount_' +
               ri +
               '" value="" placeholder="Calculated" style="width:100%;border:1px solid #dfe8e2;border-radius:7px;padding:7px;font-size:11px" oninput="markElectricityAmount(this)"></label></div>'
             );

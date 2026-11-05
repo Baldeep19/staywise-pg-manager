@@ -2,7 +2,8 @@
  * Rooms & flats page, flat details modal and Wi-Fi display.
  */
 import {state} from './store.js';
-import {esc, goPage, toast} from './ui.js';
+import {emptyState, esc, goPage, toast} from './ui.js';
+import {renderIcons} from './icons.js';
 
 export function renderRooms() {
   const fs = window.pgFlats || [],
@@ -36,7 +37,13 @@ export function renderRooms() {
     .join('');
   document.getElementById('pageContent').innerHTML = fs.length
     ? '<div class="occupancy">' + body + '</div>'
-    : '<div style="padding:25px;text-align:center"><h3 style="font:700 14px Manrope">No flats added yet</h3><p class="sub">Add your building and flats in Settings.</p><button class="primary" onclick="window.editPropertySetup?.()">Set up building</button></div>';
+    : emptyState({
+        icon: 'building-2',
+        title: 'No flats added yet',
+        text: 'Add your building and its flats to see beds and availability.',
+        action: {label: 'Set up building', onclick: 'window.editPropertySetup?.()', primary: true}
+      });
+  renderIcons();
 }
 
 window.flatOccupancyInfo = (flat, list) => {
