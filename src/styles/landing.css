@@ -1,0 +1,253 @@
+/* Login / landing screen. #authGate is shown/hidden by JS via style.display ('grid' / 'none'). */
+#authGate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  background: #153b30;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.landing {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 520px);
+  gap: 48px;
+  align-items: start;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 48px 28px;
+}
+.landing-info {
+  color: #e8f3ed;
+}
+.landing-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font:
+    800 18px Manrope,
+    sans-serif;
+  margin-bottom: 36px;
+}
+.landing-info h1 {
+  font:
+    800 clamp(28px, 4vw, 42px) / 1.12 Manrope,
+    sans-serif;
+  margin: 0 0 14px;
+  color: #fff;
+}
+.landing-tag {
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0 0 30px;
+  max-width: 560px;
+  color: #bcd5c9;
+}
+.landing-info h2 {
+  font:
+    800 13px Manrope,
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin: 34px 0 14px;
+}
+.landing-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.landing-features li {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.landing-features li > span {
+  flex: 0 0 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--lime);
+  color: #153b30;
+  font-weight: 800;
+}
+.landing-features b,
+.landing-steps b {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+}
+.landing-features small,
+.landing-steps small {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #a9c6b9;
+}
+.landing-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: 12px;
+}
+.landing-steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 46px;
+}
+.landing-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--lime);
+  color: #153b30;
+  font:
+    800 14px Manrope,
+    sans-serif;
+}
+.landing-faq details {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 12px 0;
+}
+.landing-faq summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+}
+.landing-faq details p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #a9c6b9;
+}
+.landing-foot {
+  display: block;
+  margin-top: 34px;
+  color: #7ea796;
+}
+.landing-card {
+  position: sticky;
+  top: 24px;
+}
+#authForm {
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px;
+  width: 100%;
+  box-shadow: 0 25px 80px #0004;
+}
+@media (max-width: 900px) {
+  .landing {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding: 20px 14px 36px;
+  }
+  /* On phones the form comes first so signing in needs no scrolling. */
+  .landing-card {
+    order: -1;
+    position: static;
+  }
+  .landing-features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .landing-brand {
+    margin-bottom: 8px;
+  }
+}
+
+/* ---- Phone: bottom tab bar (like most mobile apps) instead of the narrow icon rail ---- */
+@media (max-width: 730px) {
+  .shell {
+    flex-direction: column;
+  }
+  .sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    width: 100%;
+    height: auto;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    flex-direction: row;
+    align-items: stretch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.18);
+    scrollbar-width: none;
+  }
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  .sidebottom {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .nav {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+  .brand,
+  .navlabel,
+  .help,
+  .profile {
+    display: none !important;
+  }
+  /* icon on top, small label underneath */
+  .nav button,
+  .logout {
+    flex: 0 0 auto;
+    min-width: 66px;
+    flex-direction: column;
+    gap: 3px;
+    padding: 7px 6px;
+    border-radius: 12px;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+  .nav button .label,
+  .logout .label {
+    display: block;
+    font-size: 10.5px;
+    line-height: 1.1;
+  }
+  .nav button .ico,
+  .logout .ico {
+    font-size: 18px;
+    line-height: 1;
+  }
+  .nav button.active {
+    background: var(--lime);
+    color: #153b30;
+  }
+  .logout {
+    width: auto;
+    margin-top: 0;
+    border: 0;
+    color: #c7d9d1;
+  }
+  .main {
+    height: calc(100dvh - 62px - env(safe-area-inset-bottom));
+  }
+}

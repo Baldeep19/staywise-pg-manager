@@ -42,8 +42,8 @@ export function initAuthForm() {
     authSubmit.textContent = registerMode ? 'Register' : 'Sign in';
     signupButton.textContent = registerMode ? 'Back to sign in' : 'Create account';
     errorBox.textContent = '';
-    document.querySelector('#authGate h2').textContent = registerMode ? 'Create owner account' : 'Owner sign in';
-    document.querySelector('#authGate p').textContent = registerMode
+    document.querySelector('#authForm h2').textContent = registerMode ? 'Create owner account' : 'Owner sign in';
+    document.querySelector('#authForm p').textContent = registerMode
       ? 'Add your name and account details. Building setup is optional and can be added later.'
       : 'Sign in to access your PG records securely.';
   }

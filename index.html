@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/overrides.css" />
     <link rel="stylesheet" href="/src/styles/onboarding.css" />
+    <link rel="stylesheet" href="/src/styles/landing.css" />
   </head>
   <body>
     <div class="shell">
@@ -222,70 +223,132 @@
         </div>
       </form>
     </div>
-    <div
-      id="authGate"
-      style="
-        position: fixed;
-        inset: 0;
-        background: #153b30;
-        z-index: 50;
-        display: none;
-        place-items: center;
-        padding: 20px;
-      "
-    >
-      <form
-        id="authForm"
-        style="
-          background: white;
-          border-radius: 18px;
-          padding: 24px;
-          width: min(520px, 100%);
-          max-height: 92vh;
-          overflow: auto;
-          box-shadow: 0 25px 80px #0004;
-        "
-      >
-        <div class="brandmark" style="margin-bottom: 16px">⌂</div>
-        <h2 style="font: 800 20px Manrope; margin: 0 0 6px">Owner sign in</h2>
-        <p class="sub" style="margin: 0 0 18px">Sign in to access your PG records securely.</p>
-        <div class="field">
-          <label>Email</label><input name="email" required type="email" autocomplete="username" />
-        </div>
-        <div class="field" style="margin-top: 12px">
-          <label>Password</label
-          ><input name="password" required type="password" autocomplete="current-password" minlength="8" />
-        </div>
-        <div class="field" id="ownerNameField" style="margin-top: 12px; display: none">
-          <label>Your name *</label
-          ><input name="ownerName" autocomplete="name" placeholder="Name to show in your owner dashboard" />
-        </div>
-        <button type="button" class="secondary" id="showSignupPropertyFields" style="display: none; margin-top: 16px">
-          ＋ Add building details
-        </button>
-        <div id="signupPropertyFields" style="display: none; margin-top: 16px">
-          <div class="formgrid">
-            <div class="field">
-              <label>Building / property name *</label
-              ><input name="signupPropertyName" placeholder="e.g. Greenwood Residency" />
-            </div>
-            <div class="field">
-              <label>Building address</label><input name="signupPropertyAddress" placeholder="Street, area, city" />
-            </div>
+    <div id="authGate">
+      <div class="landing">
+        <section class="landing-info">
+          <div class="landing-brand"><span class="brandmark">⌂</span><b>staywise</b></div>
+          <h1>Run your PG without the spreadsheets.</h1>
+          <p class="landing-tag">
+            Residents, rent, electricity bills and partner profit sharing in one place, built for PG and hostel owners
+            in India.
+          </p>
+          <ul class="landing-features">
+            <li>
+              <span>₹</span>
+              <div><b>Rent tracking</b><small>See who has paid, who is late, and send a WhatsApp reminder.</small></div>
+            </li>
+            <li>
+              <span>ϟ</span>
+              <div><b>Electricity bills</b><small>Meter readings split fairly between residents in a flat.</small></div>
+            </li>
+            <li>
+              <span>⌂</span>
+              <div><b>Rooms &amp; flats</b><small>Floors, beds and availability at a glance.</small></div>
+            </li>
+            <li>
+              <span>♙</span>
+              <div>
+                <b>Partners &amp; profit share</b
+                ><small>Expenses, ownership % and who pays whom, worked out for you.</small>
+              </div>
+            </li>
+            <li>
+              <span>▤</span>
+              <div><b>Monthly reports</b><small>Collections, expenses and profit month by month.</small></div>
+            </li>
+            <li>
+              <span>▢</span>
+              <div><b>Works on your phone</b><small>Install it to the home screen like an app.</small></div>
+            </li>
+          </ul>
+          <h2>How it works</h2>
+          <ol class="landing-steps">
+            <li><b>Create your account</b><small>Just your name and email. Building details are optional.</small></li>
+            <li><b>Add your building and residents</b><small>Flats, rooms and rent in a few taps.</small></li>
+            <li>
+              <b>Track rent and share profit</b
+              ><small>Record payments, then see the monthly summary and settlement.</small>
+            </li>
+          </ol>
+          <h2>Common questions</h2>
+          <div class="landing-faq">
+            <details>
+              <summary>Is my data private?</summary>
+              <p>
+                Yes. Each building is visible only to its owner and partners you add. Everything is stored in your own
+                secure account.
+              </p>
+            </details>
+            <details>
+              <summary>Can my partner use it too?</summary>
+              <p>Yes. Your partner creates an account, then you add them by email with their ownership share.</p>
+            </details>
+            <details>
+              <summary>Does it cost anything?</summary>
+              <p>No fees to start. Sign up and try it with your own building.</p>
+            </details>
+            <details>
+              <summary>Can I use it on my phone?</summary>
+              <p>Yes. Open it in your phone browser and use "Add to Home Screen" to install it.</p>
+            </details>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px">
-            <b style="font: 700 12px Manrope">Flats / rooms</b
-            ><button type="button" class="secondary" id="addSignupFlat">＋ Add flat</button>
-          </div>
-          <div id="signupFlats" style="display: grid; gap: 8px"></div>
+          <small class="landing-foot">© Staywise · PG management</small>
+        </section>
+        <div class="landing-card">
+          <form id="authForm">
+            <div class="brandmark" style="margin-bottom: 16px">⌂</div>
+            <h2 style="font: 800 20px Manrope; margin: 0 0 6px">Owner sign in</h2>
+            <p class="sub" style="margin: 0 0 18px">Sign in to access your PG records securely.</p>
+            <div class="field">
+              <label>Email</label><input name="email" required type="email" autocomplete="username" />
+            </div>
+            <div class="field" style="margin-top: 12px">
+              <label>Password</label
+              ><input name="password" required type="password" autocomplete="current-password" minlength="8" />
+            </div>
+            <div class="field" id="ownerNameField" style="margin-top: 12px; display: none">
+              <label>Your name *</label
+              ><input name="ownerName" autocomplete="name" placeholder="Name to show in your owner dashboard" />
+            </div>
+            <button
+              type="button"
+              class="secondary"
+              id="showSignupPropertyFields"
+              style="display: none; margin-top: 16px"
+            >
+              ＋ Add building details
+            </button>
+            <div id="signupPropertyFields" style="display: none; margin-top: 16px">
+              <div class="formgrid">
+                <div class="field">
+                  <label>Building / property name *</label
+                  ><input name="signupPropertyName" placeholder="e.g. Greenwood Residency" />
+                </div>
+                <div class="field">
+                  <label>Building address</label><input name="signupPropertyAddress" placeholder="Street, area, city" />
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px">
+                <b style="font: 700 12px Manrope">Flats / rooms</b
+                ><button type="button" class="secondary" id="addSignupFlat">＋ Add flat</button>
+              </div>
+              <div id="signupFlats" style="display: grid; gap: 8px"></div>
+            </div>
+            <div
+              id="authError"
+              class="hint"
+              role="status"
+              aria-live="polite"
+              style="color: #b44; margin-top: 10px"
+            ></div>
+            <div class="formactions">
+              <button type="button" class="secondary" id="signupButton">Create account</button
+              ><button class="primary" id="authSubmit">Sign in</button>
+            </div>
+            <div id="authInstall"></div>
+          </form>
         </div>
-        <div id="authError" class="hint" role="status" aria-live="polite" style="color: #b44; margin-top: 10px"></div>
-        <div class="formactions">
-          <button type="button" class="secondary" id="signupButton">Create account</button
-          ><button class="primary" id="authSubmit">Sign in</button>
-        </div>
-        <div id="authInstall"></div>
-      </form>
+      </div>
     </div>
     <div class="overlay" id="residentModal">
       <div class="modal">

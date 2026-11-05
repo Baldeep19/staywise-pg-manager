@@ -43,7 +43,7 @@ describe('creating an account', () => {
     signUpResult = {data: {user: {identities: [{id: 'x'}]}, session: null}, error: null};
     await register('new@example.com');
     await vi.waitFor(() => expect($('authSubmit').textContent).toBe('Sign in'));
-    expect(document.querySelector('#authGate h2').textContent).toBe('Owner sign in');
+    expect(document.querySelector('#authForm h2').textContent).toBe('Owner sign in');
     expect($('authError').textContent).toMatch(/confirm your email/i);
     expect($('authError').textContent).toContain('new@example.com');
     expect($('authForm').elements.email.value).toBe('new@example.com'); // ready to sign in after confirming
