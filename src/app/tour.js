@@ -15,7 +15,7 @@ export const TOUR_STEPS = [
   {
     target: '#propertySelect',
     title: 'Your buildings',
-    body: 'Switch between buildings here. Managing more than one property? Add another from Settings → Create new building.'
+    body: 'Switch between buildings here. Managing more than one building? Add another from Settings → Create new building.'
   },
   {
     page: 'dashboard',
@@ -32,7 +32,7 @@ export const TOUR_STEPS = [
   {
     page: 'rooms',
     target: nav('rooms'),
-    title: 'Rooms & flats',
+    title: 'Flats',
     body: 'See which rooms are occupied, who lives where, and keep each flat’s Wi-Fi details in one place.'
   },
   {

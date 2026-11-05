@@ -45,7 +45,7 @@
   line-height: 1.5;
 }
 .tour-progress {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   color: #5b7a6e;
   text-transform: uppercase;
@@ -99,7 +99,7 @@
   color: #17684f;
   border-radius: 999px;
   padding: 2px 9px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 .about-grid {

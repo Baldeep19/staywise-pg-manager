@@ -99,6 +99,7 @@ describe('user who gave building details at sign-up', () => {
     expect($('ownerSetupForm').elements.propertyName.value).toBe('Greenwood');
     expect($('skipPropertySetup').textContent).toBe('Skip for now');
     expect($('ownerSetupGate').classList.contains('setup-popup')).toBe(false); // first run stays full screen
+    expect($('setupClose').hidden).toBe(true); // it offers "Skip for now" instead of ×
     $('skipPropertySetup').click(); // they can still skip and add it later
     expect($('ownerSetupGate').style.display).toBe('none');
     expect($('noBuildingBanner').hidden).toBe(false);
@@ -137,6 +138,27 @@ describe('user who owns a building', () => {
     expect($('ownerSetupGate').style.display).toBe('none');
     openSettings().click();
     document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+    expect($('ownerSetupGate').style.display).toBe('none');
+  });
+
+  it('keeps the popup open on an outside click once something was typed', () => {
+    openSettings().click();
+    const name = $('ownerSetupForm').elements.propertyName;
+    name.value = 'Sunrise PG 2';
+    name.dispatchEvent(new Event('input', {bubbles: true}));
+    $('ownerSetupGate').click();
+    expect($('ownerSetupGate').style.display).toBe('block');
+    $('setupClose').click();
+    expect($('ownerSetupGate').style.display).toBe('none');
+    openSettings().click(); // reopening starts clean again
+    $('ownerSetupGate').click();
+    expect($('ownerSetupGate').style.display).toBe('none');
+  });
+
+  it('closes the popup with its ×', () => {
+    openSettings().click();
+    expect($('setupClose').hidden).toBe(false);
+    $('setupClose').click();
     expect($('ownerSetupGate').style.display).toBe('none');
   });
 

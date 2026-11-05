@@ -70,6 +70,12 @@ export async function initSession(user) {
     document.getElementById('ownerSetupGate').style.display = 'none';
     gate.style.display = 'none';
     if (banner && window.buildingAccess !== 'partner') banner.hidden = false;
+    const select = document.getElementById('propertySelect');
+    if (select && !session.property) {
+      select.innerHTML = '<option>No building yet</option>';
+      select.classList.remove('is-loading');
+      select.removeAttribute('aria-busy');
+    }
     startTourIfFirstTime(user); // the app is visible even though there is no building yet
     return;
   }
@@ -185,6 +191,8 @@ export async function initSession(user) {
       )
       .join('');
     propertySelect.onchange = () => window.switchProperty(propertySelect.value);
+    propertySelect.classList.remove('is-loading');
+    propertySelect.removeAttribute('aria-busy');
   }
   document.getElementById('propertyNameHeading').textContent = session.property.name;
   startTourIfFirstTime(user);

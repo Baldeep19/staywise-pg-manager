@@ -36,6 +36,9 @@ import {initApp} from './app/app.js';
 import {initInstall} from './app/install.js';
 import {initResponsiveTables} from './app/responsive-tables.js';
 import {startTour} from './app/tour.js';
+import {initTabbar} from './app/tabbar.js';
+import {renderIcons} from './app/icons.js';
+import {initModalLayout} from './app/modal-layout.js';
 
 // Handlers referenced from HTML attributes (legacy inline handlers).
 Object.assign(window, {
@@ -86,3 +89,6 @@ initRooms();
 initApp();
 initInstall();
 initResponsiveTables();
+initTabbar();
+renderIcons();
+initModalLayout();

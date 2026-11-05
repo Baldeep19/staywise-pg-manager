@@ -225,7 +225,7 @@ function openExpenseForm(expense = null) {
     .map((c) => `<option${c === (expense?.category || 'Utilities') ? ' selected' : ''}>${esc(c)}</option>`)
     .join('');
   box.innerHTML = `<form class="modal">
-    <div class="modalhead"><div><h2>${editing ? 'Edit expense' : 'Add expense'}</h2><p>${editing ? 'Change the details; profit and settlement update automatically.' : 'Record a property expense and who paid it.'}</p></div><button type="button" class="close">×</button></div>
+    <div class="modalhead"><div><h2>${editing ? 'Edit expense' : 'Add expense'}</h2><p>${editing ? 'Change the details; profit and settlement update automatically.' : 'Record a building expense and who paid it.'}</p></div><button type="button" class="close">×</button></div>
     <div class="formgrid">
       <div class="field"><label>Date</label><input name="date" type="date" required value="${esc(expense?.expense_date || new Date().toISOString().slice(0, 10))}"></div>
       <div class="field"><label>Category</label><select name="category">${categoryOptions}</select></div>
@@ -252,23 +252,5 @@ function openExpenseForm(expense = null) {
   };
   document.body.appendChild(box);
 }
-function installExpensesPage() {
-  if (!window.goPage || document.querySelector('[data-page="expenses"]')) return;
-  const nav = document.querySelector('.sidebottom .nav');
-  if (!nav) return;
-  const b = document.createElement('button');
-  b.dataset.page = 'expenses';
-  b.innerHTML = '<span class="ico">₹</span><span class="label">Expenses & profit</span>';
-  nav.appendChild(b);
-  b.onclick = () => {
-    document.querySelectorAll('.nav button').forEach((x) => x.classList.toggle('active', x === b));
-    document.getElementById('dashboardPage').classList.add('hidden');
-    document.getElementById('genericPage').classList.remove('hidden');
-    document.getElementById('crumbPage').textContent = 'Expenses & profitability';
-    document.getElementById('pageTitle').textContent = 'Expenses & profitability';
-    document.getElementById('pageDesc').textContent = 'Track property spending and partner profit allocation';
-    document.getElementById('pageCta').classList.add('hidden');
-    renderExpensesPage();
-  };
-}
-setTimeout(installExpensesPage, 0);
+// Routed like every other page (see pages/renderPage in app/ui.js); exposed on window to avoid an import cycle.
+window.renderExpensesPage = renderExpensesPage;

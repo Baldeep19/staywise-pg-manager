@@ -1,0 +1,177 @@
+/* Popups: header and footer fixed, only the middle (.modal-body) scrolls.
+   The structure is added by src/app/modal-layout.js for every .modal, including ones built later in JS. */
+.modal {
+  padding: 0;
+  max-height: 90vh;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* Before modal-layout.js has run (or if a popup is not wrapped): plain scrolling card, as before. */
+.modal:not(.modal-layout) {
+  padding: 24px;
+  overflow-y: auto;
+}
+.modal > .modal-host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.modal-layout .modalhead {
+  flex: none;
+  margin: 0;
+  padding: 22px 24px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* reaching the end does not scroll the page behind */
+  padding: 16px 24px 20px;
+}
+.modal-foot {
+  flex: none;
+  margin: 0 !important;
+  padding: 12px 24px calc(14px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+/* While a popup is open the page behind stays still. */
+.overlay {
+  overscroll-behavior: contain;
+}
+body:has(.overlay.show) .main,
+body:has(.sheet-overlay) .main,
+body:has(#ownerSetupGate[style*='display: block']) .main {
+  overflow: hidden;
+}
+
+/* Phone "More" sheet (src/app/tabbar.js) */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  background: #10251fa6;
+  display: flex;
+  align-items: flex-end;
+  animation: sheet-fade 0.15s ease-out;
+}
+.sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -10px 40px #0003;
+  animation: sheet-up 0.2s ease-out;
+}
+.sheet-grip {
+  width: 40px;
+  height: 4px;
+  border-radius: 4px;
+  background: #d5dfda;
+  margin: 4px auto 14px;
+}
+.sheet-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px 14px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.sheet-grid button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 6px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font:
+    600 12.5px Manrope,
+    sans-serif;
+  text-align: center;
+}
+.sheet-grid button .ico svg {
+  width: 22px;
+  height: 22px;
+  color: var(--green);
+}
+.sheet-grid button.active {
+  background: var(--mint);
+  border-color: #cfe3d7;
+}
+.sheet-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+.sheet-actions .sheet-logout {
+  color: #b44;
+  border-color: #eed2d0;
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes sheet-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* × buttons: same look in every popup */
+.modalhead .close,
+.sheet-close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--ink);
+}
+.modalhead .close:hover,
+.sheet-close:hover {
+  background: #e8efea;
+}
+.sheet {
+  position: relative;
+}
+.sheet-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+}
+
+/* Outside click on a popup with typed changes: small shake instead of closing */
+.modal.nudge {
+  animation: modal-nudge 0.3s ease;
+}
+@keyframes modal-nudge {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal.nudge {
+    animation: none;
+    box-shadow: 0 0 0 3px var(--lime);
+  }
+}

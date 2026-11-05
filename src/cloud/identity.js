@@ -34,6 +34,7 @@ export function showOwnerIdentity(user, now = new Date()) {
   set('greetingText', greeting);
   set('greetingIcon', icon);
   set('ownerGreeting', name);
+  document.getElementById('ownerGreeting')?.classList.remove('is-loading');
   set('ownerProfileName', name);
   set('ownerAvatar', initialsFor(name));
   set('ownerAvatarTop', initialsFor(name));

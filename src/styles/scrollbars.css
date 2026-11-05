@@ -1,0 +1,43 @@
+/* Slim, soft scrollbars everywhere instead of the heavy default ones. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c3d0c9 transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #c3d0c9;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #9fb2a8;
+  background-clip: content-box;
+}
+/* Dark surfaces (sidebar / phone tab bar, login page): lighter thumb */
+.sidebar,
+#authGate,
+#ownerSetupGate {
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+.sidebar::-webkit-scrollbar-thumb,
+#authGate::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  background-clip: content-box;
+}
+/* Phone tab bar is short: keep its scrollbar very slim so it does not crowd the tabs */
+@media (max-width: 730px) {
+  .sidebar::-webkit-scrollbar {
+    height: 4px;
+  }
+}
+/* Inside popups the scrollbar sits flush against the card edge */
+.modal {
+  scrollbar-gutter: stable;
+}

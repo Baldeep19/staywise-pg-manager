@@ -1,6 +1,7 @@
 /**
  * Owner property setup: the flats/rooms editor and its save handler.
  */
+import {closeOnBackdrop} from '../app/modal-layout.js';
 import {toast} from '../app/ui.js';
 import {supabase} from './client.js';
 import {gate} from './elements.js';
@@ -12,7 +13,7 @@ export function addSetupFlat(flat = {}) {
   row.className = 'formgrid setup-flat';
   row.style.cssText = 'border:1px solid var(--line);padding:10px;border-radius:10px;align-items:end';
   row.dataset.id = flat.id || '';
-  row.innerHTML = `<div class="field"><label>Flat / room name *</label><input name="flat_number" required value="${String(flat.flat_number || '').replaceAll('"', '&quot;')}" placeholder="e.g. Flat 101"></div><div class="field"><label>Floor *</label><input name="floor_name" required value="${String(flat.floor_name || 'Ground').replaceAll('"', '&quot;')}" placeholder="e.g. First floor"></div><div class="field"><label>Number of rooms *</label><input name="room_count" type="number" min="1" required value="${flat.room_count || 2}"></div><div class="field"><label>Wi-Fi network (optional)</label><input name="wifi_ssid" value="${String(flat.wifi_ssid || '').replaceAll('"', '&quot;')}" placeholder="Network name"></div><div class="field"><label>Wi-Fi password (optional)</label><input name="wifi_password" type="password" value="${String(flat.wifi_password || '').replaceAll('"', '&quot;')}" placeholder="Password"></div><button type="button" class="secondary remove-flat">Remove</button>`;
+  row.innerHTML = `<div class="field"><label>Flat name *</label><input name="flat_number" required value="${String(flat.flat_number || '').replaceAll('"', '&quot;')}" placeholder="e.g. Flat 101"></div><div class="field"><label>Floor *</label><input name="floor_name" required value="${String(flat.floor_name || 'Ground').replaceAll('"', '&quot;')}" placeholder="e.g. First floor"></div><div class="field"><label>Number of rooms *</label><input name="room_count" type="number" min="1" required value="${flat.room_count || 2}"></div><div class="field"><label>Wi-Fi network (optional)</label><input name="wifi_ssid" value="${String(flat.wifi_ssid || '').replaceAll('"', '&quot;')}" placeholder="Network name"></div><div class="field"><label>Wi-Fi password (optional)</label><input name="wifi_password" type="password" value="${String(flat.wifi_password || '').replaceAll('"', '&quot;')}" placeholder="Password"></div><button type="button" class="secondary remove-flat">Remove</button>`;
   row.querySelector('.remove-flat').onclick = () => {
     if (document.querySelectorAll('.setup-flat').length === 1) return;
     row.remove();
@@ -60,8 +61,14 @@ export function showSetup(existingProperty, existingFlats = [], pending = {}, op
     document.removeEventListener('keydown', escHandler);
   };
   escHandler = (e) => e.key === 'Escape' && closePopup();
-  setup.onclick = cancelOnly ? (e) => e.target === setup && closePopup() : null; // click on the dimmed backdrop
+  delete f.dataset.dirty; // fresh form; the shared outside-click rule lives in app/modal-layout.js
+  setup.onclick = cancelOnly ? (e) => e.target === setup && closeOnBackdrop(setup, f, closePopup) : null;
   if (cancelOnly) document.addEventListener('keydown', escHandler);
+  const closeBtn = document.getElementById('setupClose');
+  if (closeBtn) {
+    closeBtn.hidden = !cancelOnly; // first-run setup is full screen and offers "Skip for now" instead
+    closeBtn.onclick = closePopup;
+  }
   skip.onclick = () => {
     if (cancelOnly) {
       closePopup();
@@ -83,7 +90,7 @@ export function initOwnerSetup() {
   document.getElementById('ownerSetupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const err = document.getElementById('setupError');
-    err.textContent = 'Saving property and rooms…';
+    err.textContent = 'Saving building and flats…';
     const {
       data: {user: authUser},
       error: authErr
@@ -103,9 +110,9 @@ export function initOwnerSetup() {
         wifi_password: row.querySelector('[name=wifi_password]').value || null
       }));
     if (!rows.length || rows.some((x) => !x.flat_number || !x.floor_name || x.room_count < 1))
-      return (err.textContent = 'Add at least one room and complete its details.');
+      return (err.textContent = 'Add at least one flat and complete its details.');
     if (new Set(rows.map((x) => x.flat_number.toLowerCase())).size !== rows.length)
-      return (err.textContent = 'Flat / room names must be unique.');
+      return (err.textContent = 'Flat names must be unique.');
     let prop = session.setup.property;
     if (prop) {
       const {data, error} = await supabase

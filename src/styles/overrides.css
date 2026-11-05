@@ -48,7 +48,7 @@
     flex: 0 0 38%;
     text-align: left;
     color: var(--muted);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -101,7 +101,7 @@
     font-size: 12px;
   }
   .table.compact th {
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: 0.4px;
   }
   .table.compact td .link {
@@ -116,5 +116,77 @@
   .table.compact th:last-child,
   .table.compact td:last-child {
     padding-right: 8px;
+  }
+}
+
+/* Lucide icons */
+.ico svg,
+.staticon svg,
+.bell svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.brandmark svg {
+  width: 20px;
+  height: 20px;
+}
+.landing-features li > span svg {
+  width: 18px;
+  height: 18px;
+}
+.nav button .ico {
+  display: grid;
+  place-items: center;
+}
+.staticon {
+  color: var(--green);
+}
+
+/* Top header stays in view; only the page content scrolls under it (.main is the scroller). */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+
+/* Dashboard stats: an odd last card spans the row instead of sitting alone */
+@media (max-width: 730px) {
+  .stats .stat:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Row actions in tables: real buttons, compact */
+.rowbtn {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* Loading placeholders instead of "Owner" / "Loading…" text */
+.is-loading {
+  color: transparent !important;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e9efeb 25%, #f4f7f5 50%, #e9efeb 75%) 0 0 / 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Quick action icons */
+.actions button > span svg {
+  width: 18px;
+  height: 18px;
+  color: var(--green);
+}
+/* Short tab labels on the phone bar ("Expenses" instead of "Expenses & profit") */
+@media (max-width: 730px) {
+  .label-long {
+    display: none;
   }
 }

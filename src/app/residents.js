@@ -35,7 +35,7 @@ export function draftResidentRentReminder(id) {
     ' was due on ' +
     dueLabel +
     '. If you have already paid, kindly ignore this message. Thank you — ' +
-    (window.pgPropertyName || 'your property');
+    (window.pgPropertyName || 'your building');
   openModal('messageModal');
 }
 
@@ -53,7 +53,9 @@ export function renderResidents() {
     .map((r) => {
       const reminder =
         r.id && rentBalanceForResident(r) > 0
-          ? '<button class="link" onclick="draftResidentRentReminder(\'' + r.id + '\')">Rent reminder</button>'
+          ? '<button class="secondary rowbtn" onclick="draftResidentRentReminder(\'' +
+            r.id +
+            '\')">Rent reminder</button>'
           : ''; // nothing to remind about
       return (
         '<tr><td><div class="residentcell"><div class="miniava">' +
@@ -82,9 +84,9 @@ export function renderResidents() {
         // One "Actions" cell (reminder, edit, remove) so the buttons sit on a single line on phones
         (r.id
           ? reminder +
-            ' <button class="link" onclick="editResident(\'' +
+            ' <button class="secondary rowbtn" onclick="editResident(\'' +
             r.id +
-            '\')">Edit</button> <button class="secondary" style="color:#b44;border-color:#eed2d0" onclick="removeResident(\'' +
+            '\')">Edit</button> <button class="secondary rowbtn" style="color:#b44;border-color:#eed2d0" onclick="removeResident(\'' +
             r.id +
             '\')">Remove</button>'
           : '') +

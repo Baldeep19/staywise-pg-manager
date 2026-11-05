@@ -25,7 +25,7 @@ export function renderSettings() {
     <div style="padding:20px">
       <section class="report-block">
         <div class="report-blockhead" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-          <div><h3>Your buildings</h3><p>Manage several properties from one account and switch between them.</p></div>
+          <div><h3>Your buildings</h3><p>Manage several buildings from one account and switch between them.</p></div>
           <button class="primary" onclick="createNewBuilding()">＋ Create new building</button>
         </div>
         <div class="report-table"><table class="table">
@@ -37,7 +37,7 @@ export function renderSettings() {
       <section class="report-block" id="aboutSection">
         <div class="report-blockhead"><h3>About Staywise</h3><p>Version ${esc(pkg.version)}</p></div>
         <div class="about-grid">
-          <div>Staywise is an owner-first app for running a PG (paying-guest) property: residents, rent, electricity bills, expenses and partners in one place.</div>
+          <div>Staywise is an owner-first app for running a PG (paying-guest) building: residents, rent, electricity bills, expenses and partners in one place.</div>
           <div><b>What you can do</b>
             <ul>
               <li>Keep resident records and room assignments up to date</li>

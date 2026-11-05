@@ -153,6 +153,11 @@
   width: 100%;
   box-shadow: 0 25px 80px #0004;
 }
+@media (max-width: 1150px) {
+  .landing-features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 @media (max-width: 900px) {
   .landing {
     grid-template-columns: minmax(0, 1fr);
@@ -172,7 +177,10 @@
   }
 }
 
-/* ---- Phone: bottom tab bar (like most mobile apps) instead of the narrow icon rail ---- */
+/* ---- Phone: bottom tab bar — 4 main tabs + "More" (src/app/tabbar.js), like most mobile apps ---- */
+.nav-more {
+  display: none;
+}
 @media (max-width: 730px) {
   .shell {
     flex-direction: column;
@@ -182,85 +190,82 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 20;
+    z-index: 5; /* below popups (overlay z-index 10+), so they are never hidden behind the tab bar */
     width: 100%;
     height: auto;
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
     flex-direction: row;
     align-items: stretch;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: visible;
     box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.18);
-    scrollbar-width: none;
   }
-  .sidebar::-webkit-scrollbar {
-    display: none;
-  }
-  .sidebottom {
-    display: flex;
-    flex-direction: row;
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
+  .sidebottom,
   .nav {
-    display: flex;
-    flex-direction: row;
-    gap: 2px;
+    display: contents; /* the five tabs share the bar width equally */
   }
   .brand,
   .navlabel,
   .help,
-  .profile {
+  .profile,
+  .logout,
+  .nav button[data-more] {
     display: none !important;
   }
-  /* icon on top, small label underneath */
   .nav button,
-  .logout {
-    flex: 0 0 auto;
-    min-width: 66px;
+  .nav-more {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
     flex-direction: column;
-    gap: 3px;
-    padding: 7px 6px;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 7px 2px;
+    border: 0;
     border-radius: 12px;
-    font-size: 10.5px;
-    white-space: nowrap;
+    background: transparent;
+    color: #c7d9d1;
+    box-shadow: none;
   }
   .nav button .label,
-  .logout .label {
+  .nav-more .label {
     display: block;
-    font-size: 10.5px;
-    line-height: 1.1;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font:
+      600 11.5px Manrope,
+      sans-serif;
   }
-  .nav button .ico,
-  .logout .ico {
-    font-size: 18px;
-    line-height: 1;
-  }
-  .nav button.active {
+  .nav button.active,
+  .nav-more.active {
     background: var(--lime);
     color: #153b30;
-  }
-  .logout {
-    width: auto;
-    margin-top: 0;
-    border: 0;
-    color: #c7d9d1;
+    box-shadow: none;
   }
   .main {
-    height: calc(100dvh - 62px - env(safe-area-inset-bottom));
+    height: calc(100dvh - 64px - env(safe-area-inset-bottom));
   }
 }
 
-/* Building setup: full-screen on first run, a dismissable popup when opened from Settings. */
+/* Building setup: full-screen on first run, a dismissable popup when opened from Settings.
+   The backdrop never scrolls (card height + margins fit the screen); only the middle of the card scrolls. */
 #ownerSetupGate {
   background: #153b30;
+  overflow: hidden;
+  padding: 0 !important;
+}
+#ownerSetupForm {
+  max-height: 92vh;
+  max-height: 92dvh;
+  margin: 4vh auto !important;
+  margin: 4dvh auto !important;
 }
 #ownerSetupGate.setup-popup {
   background: rgba(10, 25, 20, 0.55);
   backdrop-filter: blur(2px);
 }
 #ownerSetupGate.setup-popup #ownerSetupForm {
-  margin: 4vh auto;
   box-shadow: 0 25px 80px #0006;
 }

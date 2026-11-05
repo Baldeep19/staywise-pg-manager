@@ -165,7 +165,7 @@ export function renderBillResidents() {
     flatIndex +
     '" checked hidden><div class="sub" style="margin:0 0 8px">' +
     previousHint +
-    ' Active flats in this property: ' +
+    ' Active flats in this building: ' +
     flatList.length +
     '.</div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><div style="border:1px solid var(--line);border-radius:9px;padding:9px"><b style="font-size:11px">Room 1 · Left meter</b>' +
     meterNumberInput(

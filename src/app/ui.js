@@ -10,14 +10,15 @@ import {renderResidents, resetResidentForm} from './residents.js';
 import {renderRooms} from './rooms.js';
 
 export const pages = {
-  dashboard: ['Overview', 'Your property at a glance'],
+  dashboard: ['Overview', 'Your building at a glance'],
   residents: ['Residents', 'Keep resident details, room assignments, and rent status up to date.'],
-  rooms: ['Rooms & flats', 'Manage floors, rooms, bed capacity, and availability.'],
+  rooms: ['Flats', 'Floors, flats, beds and availability.'],
+  expenses: ['Expenses & profitability', 'Track building spending and partner profit allocation'],
   rent: ['Rent & payments', 'Track monthly rent, payments received, and outstanding balances.'],
   electricity: ['Electricity bills', 'Calculate and review electricity charges for each resident.'],
   messages: ['Messages', 'Prepare WhatsApp reminders and keep a record of communication.'],
   reports: ['Reports', 'Review occupancy, collections, expenses, and dues.'],
-  settings: ['Settings', 'Manage your property, billing rules, and team access.']
+  settings: ['Settings', 'Manage your buildings, partners and account.']
 };
 
 export function toast(s) {
@@ -46,16 +47,22 @@ export function openModal(id) {
   if (id === 'rentModal' || id === 'messageModal') refreshOptions();
   applyDateDefaults(document.querySelector('#' + id + ' form'));
   if (id === 'electricityModal') renderBillResidents();
+  delete document.querySelector('#' + id + ' .modal')?.dataset.dirty; // a fresh open starts untouched
   document.getElementById(id).classList.add('show');
 }
 
 export function closeModal(id) {
   document.getElementById(id).classList.remove('show');
+  delete document.querySelector('#' + id + ' .modal')?.dataset.dirty;
   if (id === 'residentModal') resetResidentForm();
 }
 
 export function goPage(p) {
   document.querySelectorAll('.nav button').forEach((b) => b.classList.toggle('active', b.dataset.page === p));
+  // Phone tab bar: pages kept in the "More" sheet light up the More tab instead
+  document
+    .getElementById('navMore')
+    ?.classList.toggle('active', Boolean(document.querySelector(`.nav button[data-page="${p}"][data-more]`)));
   document.getElementById('crumbPage').textContent = pages[p][0];
   document.getElementById('dashboardPage').classList.toggle('hidden', p !== 'dashboard');
   document.getElementById('genericPage').classList.toggle('hidden', p === 'dashboard');
@@ -68,8 +75,8 @@ export function goPage(p) {
     cta.classList.remove('hidden');
     cta.disabled = false; // the button is shared by every page; undo a previous page's disabled state
     cta.removeAttribute('title');
-    if (p === 'reports') {
-      cta.classList.add('hidden');
+    if (p === 'reports' || p === 'expenses') {
+      cta.classList.add('hidden'); // these pages have their own action buttons
     } else if (p === 'residents') {
       cta.textContent = '＋ Add resident';
       cta.onclick = () => openModal('residentModal');
@@ -100,7 +107,7 @@ export function goPage(p) {
     }
     renderPage(p);
   }
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  document.querySelector('.main')?.scrollTo?.({top: 0, behavior: 'smooth'}); // .main is the scroller, not the window
 }
 
 export function renderPage(p) {
@@ -111,6 +118,7 @@ export function renderPage(p) {
   else if (p === 'reports') renderReports();
   else if (p === 'messages') renderMessages();
   else if (p === 'settings') renderSettings();
+  else if (p === 'expenses') window.renderExpensesPage?.();
   else
     document.getElementById('pageContent').innerHTML =
       `<div style="padding:28px;text-align:center"><div style="font-size:28px">▤</div><h3 style="font:700 14px Manrope">${pages[p][0]} workspace</h3><p class="sub">Your ${pages[p][0].toLowerCase()} tools will live here.</p></div>`;
@@ -139,10 +147,6 @@ export function esc(s) {
 
 /** Attach DOM event listeners for this feature. Called once from main.js. */
 export function initUi() {
-  document.querySelectorAll('.overlay').forEach((o) =>
-    o.addEventListener('click', (e) => {
-      if (e.target === o) o.classList.remove('show');
-    })
-  );
+  // Backdrop clicks are handled for every popup in app/modal-layout.js (closes only when nothing was typed).
   document.querySelectorAll('.nav button').forEach((b) => (b.onclick = () => goPage(b.dataset.page)));
 }

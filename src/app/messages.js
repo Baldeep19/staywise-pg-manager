@@ -14,7 +14,7 @@ export function renderMessages() {
 }
 
 export function draftRent() {
-  state.lastMessage = `Hello All, this is a friendly reminder that your rent is due. Please make the payment at your earliest convenience. If you have already paid, kindly ignore this message. Thank you — ${window.pgPropertyName || 'your property'}`;
+  state.lastMessage = `Hello All, this is a friendly reminder that your rent is due. Please make the payment at your earliest convenience. If you have already paid, kindly ignore this message. Thank you — ${window.pgPropertyName || 'your building'}`;
   document.getElementById('messageTitle').textContent = 'Draft rent reminder';
   document.getElementById('messageText').value = state.lastMessage;
   openModal('messageModal');

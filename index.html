@@ -15,30 +15,43 @@
     <link rel="stylesheet" href="/src/styles/overrides.css" />
     <link rel="stylesheet" href="/src/styles/onboarding.css" />
     <link rel="stylesheet" href="/src/styles/landing.css" />
+    <link rel="stylesheet" href="/src/styles/modals.css" />
+    <link rel="stylesheet" href="/src/styles/scrollbars.css" />
   </head>
   <body>
     <div class="shell">
       <aside class="sidebar">
         <div class="brand">
-          <div class="brandmark">⌂</div>
+          <div class="brandmark"><i data-lucide="house"></i></div>
           <div class="brandtext"><strong>staywise</strong><small>PG management</small></div>
         </div>
         <div class="navlabel">Workspace</div>
         <nav class="nav">
           <button class="active" data-page="dashboard">
-            <span class="ico">▦</span><span class="label">Overview</span></button
-          ><button data-page="residents"><span class="ico">♙</span><span class="label">Residents</span></button
-          ><button data-page="rooms"><span class="ico">⌂</span><span class="label">Rooms & flats</span></button
-          ><button data-page="rent"><span class="ico">₹</span><span class="label">Rent & payments</span></button
-          ><button data-page="electricity">
-            <span class="ico">ϟ</span><span class="label">Electricity bills</span></button
-          ><button data-page="messages"><span class="ico">◌</span><span class="label">Messages</span></button>
+            <span class="ico"><i data-lucide="layout-dashboard"></i></span><span class="label">Overview</span></button
+          ><button data-page="residents">
+            <span class="ico"><i data-lucide="users"></i></span><span class="label">Residents</span></button
+          ><button data-page="rent">
+            <span class="ico"><i data-lucide="indian-rupee"></i></span><span class="label">Rent</span></button
+          ><button data-page="expenses">
+            <span class="ico"><i data-lucide="wallet"></i></span
+            ><span class="label">Expenses<span class="label-long"> &amp; profit</span></span></button
+          ><button data-page="rooms" data-more>
+            <span class="ico"><i data-lucide="building-2"></i></span><span class="label">Flats</span></button
+          ><button data-page="electricity" data-more>
+            <span class="ico"><i data-lucide="zap"></i></span><span class="label">Electricity bills</span></button
+          ><button data-page="messages" data-more>
+            <span class="ico"><i data-lucide="message-circle"></i></span><span class="label">Messages</span>
+          </button>
         </nav>
         <div class="sidebottom">
           <div class="navlabel">Manage</div>
           <nav class="nav">
-            <button data-page="reports"><span class="ico">▤</span><span class="label">Reports</span></button
-            ><button data-page="settings"><span class="ico">⚙</span><span class="label">Settings</span></button>
+            <button data-page="reports" data-more>
+              <span class="ico"><i data-lucide="chart-column"></i></span><span class="label">Reports</span></button
+            ><button data-page="settings" data-more>
+              <span class="ico"><i data-lucide="settings"></i></span><span class="label">Settings</span>
+            </button>
           </nav>
           <div class="help">
             <b>Need a hand?</b>
@@ -50,7 +63,10 @@
             <div><b id="ownerProfileName">Owner</b><small>PG Owner</small></div>
           </div>
           <button class="logout" id="logoutButton" type="button" title="Log out" aria-label="Log out">
-            <span class="ico">⏻</span><span class="label">Log out</span>
+            <span class="ico"><i data-lucide="log-out"></i></span><span class="label">Log out</span>
+          </button>
+          <button class="nav-more" id="navMore" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <span class="ico"><i data-lucide="ellipsis"></i></span><span class="label">More</span>
           </button>
         </div>
       </aside>
@@ -60,9 +76,11 @@
             Workspace <span style="color: #c3cdc7"> / </span> <strong id="crumbPage">Overview</strong>
           </div>
           <div class="topright">
-            <select class="property-select" id="propertySelect">
-              <option>Loading property…</option></select
-            ><button class="bell" onclick="toast('You’re all caught up')">♧</button>
+            <select class="property-select is-loading" id="propertySelect" aria-busy="true">
+              <option>Loading…</option></select
+            ><button class="bell" onclick="toast('You’re all caught up')" aria-label="Notifications">
+              <i data-lucide="bell"></i>
+            </button>
             <div class="avatar" id="ownerAvatarTop">?</div>
           </div>
         </header>
@@ -71,7 +89,7 @@
             <div class="notice" id="noBuildingBanner" hidden>
               <div>
                 <b>Add your building to get started</b>
-                <p>Add your property and its flats, then you can add residents and record rent.</p>
+                <p>Add your building and its flats, then you can add residents and record rent.</p>
               </div>
               <button class="primary" type="button" onclick="editPropertySetup()">Add building details</button>
             </div>
@@ -79,36 +97,46 @@
               <div>
                 <div class="eyebrow" id="todayDate"></div>
                 <h1>
-                  <span id="greetingText">Good morning</span>, <span id="ownerGreeting">Owner</span>
+                  <span id="greetingText">Good morning</span>, <span id="ownerGreeting" class="is-loading">Owner</span>
                   <span id="greetingIcon">☀️</span>
                 </h1>
-                <p>Here’s what’s happening at your property today.</p>
+                <p>Here’s what’s happening at your building today.</p>
               </div>
               <button class="primary" onclick="openModal('residentModal')">＋ Add resident</button>
             </div>
             <div class="stats">
               <div class="stat">
-                <div class="stathead">Residents <span class="staticon">♙</span></div>
+                <div class="stathead">
+                  Residents <span class="staticon"><i data-lucide="users"></i></span>
+                </div>
                 <strong id="residentCount">0</strong>
                 <div class="statfoot" id="residentSummary">No residents added yet</div>
               </div>
               <div class="stat">
-                <div class="stathead">Flats occupied <span class="staticon">⌂</span></div>
+                <div class="stathead">
+                  Flats occupied <span class="staticon"><i data-lucide="building-2"></i></span>
+                </div>
                 <strong id="occupancyValue">0 / 0</strong>
                 <div class="statfoot" id="flatSummary">Add your flats in building setup</div>
               </div>
               <div class="stat">
-                <div class="stathead">Rent collected <span class="staticon">₹</span></div>
+                <div class="stathead">
+                  Rent collected <span class="staticon"><i data-lucide="indian-rupee"></i></span>
+                </div>
                 <strong id="rentCollectedValue">₹0</strong>
                 <div class="statfoot" id="rentCollectedSummary">This month · no payments recorded</div>
               </div>
               <div class="stat">
-                <div class="stathead">Pending dues <span class="staticon">◷</span></div>
+                <div class="stathead">
+                  Pending dues <span class="staticon"><i data-lucide="clock"></i></span>
+                </div>
                 <strong id="pendingDuesValue">₹0</strong>
                 <div class="statfoot" id="pendingDuesSummary">No pending rent</div>
               </div>
               <div class="stat">
-                <div class="stathead">Deposits collected <span class="staticon">₹</span></div>
+                <div class="stathead">
+                  Deposits collected <span class="staticon"><i data-lucide="piggy-bank"></i></span>
+                </div>
                 <strong id="depositTotalValue">₹0</strong>
                 <div class="statfoot" id="depositTotalSummary">No deposits recorded yet</div>
               </div>
@@ -117,7 +145,7 @@
               <div class="card">
                 <div class="cardhead">
                   <div>
-                    <h2>Room occupancy</h2>
+                    <h2>Flat occupancy</h2>
                     <div class="sub">Your saved flats and assigned residents</div>
                   </div>
                 </div>
@@ -127,7 +155,7 @@
                 <div class="cardhead">
                   <div>
                     <h2>Recent activity</h2>
-                    <div class="sub">Updates from your property</div>
+                    <div class="sub">Updates from your building</div>
                   </div>
                 </div>
                 <div class="activity-list" id="activityList">
@@ -157,13 +185,17 @@
                 </div>
                 <div class="actions">
                   <button class="action" onclick="openModal('residentModal')">
-                    <span>♙</span><b>Add a resident</b><small>Register a new move-in</small></button
+                    <span><i data-lucide="users"></i></span><b>Add a resident</b
+                    ><small>Register a new move-in</small></button
                   ><button class="action" onclick="openModal('rentModal')">
-                    <span>₹</span><b>Record a payment</b><small>Log rent received</small></button
+                    <span><i data-lucide="indian-rupee"></i></span><b>Record a payment</b
+                    ><small>Log rent received</small></button
                   ><button class="action" onclick="openModal('electricityModal')">
-                    <span>ϟ</span><b>Create electricity bill</b><small>Enter individual shares</small></button
+                    <span><i data-lucide="zap"></i></span><b>Create electricity bill</b
+                    ><small>Enter individual shares</small></button
                   ><button class="action" onclick="goPage('messages')">
-                    <span>◌</span><b>Send a reminder</b><small>Prepare a WhatsApp draft</small>
+                    <span><i data-lucide="message-circle"></i></span><b>Send a reminder</b
+                    ><small>Prepare a WhatsApp draft</small>
                   </button>
                 </div>
               </div>
@@ -174,7 +206,7 @@
               <div>
                 <div class="eyebrow" id="propertyNameHeading"></div>
                 <h1 id="pageTitle">Residents</h1>
-                <p id="pageDesc">Manage your property in one place.</p>
+                <p id="pageDesc">Manage your building in one place.</p>
               </div>
               <button class="primary" id="pageCta" onclick="openModal('residentModal')">＋ Add resident</button>
             </div>
@@ -193,23 +225,25 @@
       id="ownerSetupGate"
       style="display: none; position: fixed; inset: 0; z-index: 60; overflow: auto; padding: 24px"
     >
-      <form
-        id="ownerSetupForm"
-        style="background: white; border-radius: 18px; padding: 26px; width: min(760px, 100%); margin: 25px auto"
-      >
-        <div class="eyebrow">Property setup</div>
-        <h2 style="font: 800 21px Manrope; margin: 7px 0">Set up your building</h2>
-        <p class="sub" style="margin: 0 0 18px">Add your property and the flats or rooms you manage.</p>
+      <form id="ownerSetupForm" class="modal" style="width: min(760px, 100%); margin: 25px auto">
+        <div class="modalhead">
+          <div>
+            <div class="eyebrow">Building setup</div>
+            <h2 style="font: 800 21px Manrope; margin: 7px 0">Set up your building</h2>
+            <p class="sub" style="margin: 0">Add your building and the flats you manage.</p>
+          </div>
+          <button type="button" class="close" id="setupClose" aria-label="Close">×</button>
+        </div>
         <div class="formgrid">
           <div class="field">
-            <label>Property name *</label><input name="propertyName" required placeholder="e.g. Greenwood Residency" />
+            <label>Building name *</label><input name="propertyName" required placeholder="e.g. Greenwood Residency" />
           </div>
           <div class="field">
-            <label>Property address</label><input name="propertyAddress" placeholder="Street, area, city" />
+            <label>Building address</label><input name="propertyAddress" placeholder="Street, area, city" />
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin: 22px 0 10px">
-          <b style="font: 700 13px Manrope">Flats / rooms</b
+          <b style="font: 700 13px Manrope">Flats</b
           ><button type="button" class="secondary" id="addFlatRow">＋ Add flat</button>
         </div>
         <div id="setupFlats" style="display: grid; gap: 9px"></div>
@@ -219,14 +253,16 @@
         <div id="setupError" class="hint" style="color: #b44; margin-top: 12px"></div>
         <div class="formactions">
           <button type="button" class="secondary" id="skipPropertySetup">Skip for now</button
-          ><button class="primary" id="savePropertySetup">Save property setup</button>
+          ><button class="primary" id="savePropertySetup">Save building</button>
         </div>
       </form>
     </div>
     <div id="authGate">
       <div class="landing">
         <section class="landing-info">
-          <div class="landing-brand"><span class="brandmark">⌂</span><b>staywise</b></div>
+          <div class="landing-brand">
+            <span class="brandmark"><i data-lucide="house"></i></span><b>staywise</b>
+          </div>
           <h1>Run your PG without the spreadsheets.</h1>
           <p class="landing-tag">
             Residents, rent, electricity bills and partner profit sharing in one place, built for PG and hostel owners
@@ -234,30 +270,30 @@
           </p>
           <ul class="landing-features">
             <li>
-              <span>₹</span>
+              <span><i data-lucide="indian-rupee"></i></span>
               <div><b>Rent tracking</b><small>See who has paid, who is late, and send a WhatsApp reminder.</small></div>
             </li>
             <li>
-              <span>ϟ</span>
+              <span><i data-lucide="zap"></i></span>
               <div><b>Electricity bills</b><small>Meter readings split fairly between residents in a flat.</small></div>
             </li>
             <li>
-              <span>⌂</span>
-              <div><b>Rooms &amp; flats</b><small>Floors, beds and availability at a glance.</small></div>
+              <span><i data-lucide="building-2"></i></span>
+              <div><b>Flats &amp; rooms</b><small>Floors, beds and availability at a glance.</small></div>
             </li>
             <li>
-              <span>♙</span>
+              <span><i data-lucide="handshake"></i></span>
               <div>
                 <b>Partners &amp; profit share</b
                 ><small>Expenses, ownership % and who pays whom, worked out for you.</small>
               </div>
             </li>
             <li>
-              <span>▤</span>
+              <span><i data-lucide="chart-column"></i></span>
               <div><b>Monthly reports</b><small>Collections, expenses and profit month by month.</small></div>
             </li>
             <li>
-              <span>▢</span>
+              <span><i data-lucide="smartphone"></i></span>
               <div><b>Works on your phone</b><small>Install it to the home screen like an app.</small></div>
             </li>
           </ul>
@@ -296,7 +332,7 @@
         </section>
         <div class="landing-card">
           <form id="authForm">
-            <div class="brandmark" style="margin-bottom: 16px">⌂</div>
+            <div class="brandmark" style="margin-bottom: 16px"><i data-lucide="house"></i></div>
             <h2 style="font: 800 20px Manrope; margin: 0 0 6px">Owner sign in</h2>
             <p class="sub" style="margin: 0 0 18px">Sign in to access your PG records securely.</p>
             <div class="field">
@@ -321,7 +357,7 @@
             <div id="signupPropertyFields" style="display: none; margin-top: 16px">
               <div class="formgrid">
                 <div class="field">
-                  <label>Building / property name *</label
+                  <label>Building name *</label
                   ><input name="signupPropertyName" placeholder="e.g. Greenwood Residency" />
                 </div>
                 <div class="field">
@@ -329,7 +365,7 @@
                 </div>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px">
-                <b style="font: 700 12px Manrope">Flats / rooms</b
+                <b style="font: 700 12px Manrope">Flats</b
                 ><button type="button" class="secondary" id="addSignupFlat">＋ Add flat</button>
               </div>
               <div id="signupFlats" style="display: grid; gap: 8px"></div>
@@ -368,7 +404,7 @@
               <label>Phone number *</label><input name="phone" required type="tel" placeholder="+91 98765 43210" />
             </div>
             <div class="field">
-              <label>Room / flat *</label
+              <label>Flat *</label
               ><select name="room" required>
                 <option value="">Choose flat</option>
                 <option>Flat 1</option>
@@ -580,10 +616,7 @@
               resize: vertical;
             "
           ></textarea
-          ><span class="hint"
-            >WhatsApp will open with the message ready. You still need to press Send. Automated sending requires an
-            approved WhatsApp Business setup.</span
-          >
+          ><span class="hint">WhatsApp opens with this message ready. Choose the resident and tap Send.</span>
         </div>
         <div class="formactions">
           <button class="secondary" onclick="closeModal('messageModal')">Close</button

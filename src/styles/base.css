@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 :root {
   --ink: #172a25;
-  --muted: #75847e;
+  --muted: #5c6c66; /* ≈4.9:1 on #f6f8f6: passes WCAG AA for small text (old #75847e was ≈3.7:1) */
   --line: #e8eeea;
   --bg: #f6f8f6;
   --green: #17684f;
@@ -65,14 +65,14 @@ button {
 .brand small {
   display: block;
   color: #a5c4b6;
-  font-size: 11px;
+  font-size: 12px;
   margin-top: 1px;
 }
 .navlabel {
   color: #85a799;
   text-transform: uppercase;
   letter-spacing: 1.4px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   padding: 12px 12px 9px;
 }
@@ -120,7 +120,7 @@ button {
 }
 .help p {
   color: #a9c1b7;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   margin: 7px 0 12px;
 }
@@ -131,7 +131,7 @@ button {
   border-radius: 8px;
   padding: 8px 10px;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 12px;
 }
 .profile {
   display: flex;
@@ -156,7 +156,7 @@ button {
 }
 .profile small {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   color: #9db8ac;
   margin-top: 2px;
 }
@@ -226,7 +226,7 @@ button {
 }
 .eyebrow {
   color: var(--green);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.3px;
   text-transform: uppercase;
@@ -262,7 +262,7 @@ button {
   background: white;
   color: var(--ink);
   padding: 10px 13px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 .stats {
@@ -283,7 +283,7 @@ button {
   justify-content: space-between;
   align-items: center;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .staticon {
   width: 29px;
@@ -301,7 +301,7 @@ button {
   letter-spacing: -0.6px;
 }
 .statfoot {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
 }
 .good {
@@ -334,7 +334,7 @@ button {
   margin: 0;
 }
 .sub {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   margin-top: 5px;
 }
@@ -342,7 +342,7 @@ button {
   color: var(--green);
   border: 0;
   background: none;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 .occupancy {
@@ -355,7 +355,7 @@ button {
   margin-top: 16px;
 }
 .floorlabel {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   width: 57px;
 }
@@ -373,11 +373,11 @@ button {
   background: #fbfcfb;
 }
 .room b {
-  font-size: 11px;
+  font-size: 12px;
   display: block;
 }
 .room small {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   display: block;
   margin-top: 3px;
@@ -396,7 +396,7 @@ button {
 .legend {
   display: flex;
   gap: 15px;
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
 }
 .dot {
@@ -431,7 +431,7 @@ button {
 }
 .actbody {
   flex: 1;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
 }
 .actbody b {
@@ -440,11 +440,11 @@ button {
 .actbody small {
   display: block;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   margin-top: 4px;
 }
 .amount {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 .bottomgrid {
@@ -468,18 +468,18 @@ button {
 }
 .duetext b {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
 }
 .duetext small {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   margin-top: 3px;
 }
 .pill {
   border-radius: 99px;
   padding: 5px 8px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 .pill.late {
@@ -518,11 +518,11 @@ button {
 }
 .action b {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   margin-top: 8px;
 }
 .action small {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
 }
 .overlay {
@@ -558,7 +558,7 @@ button {
   margin: 0;
 }
 .modalhead p {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   margin: 6px 0;
 }
@@ -584,7 +584,7 @@ button {
   grid-column: 1/-1;
 }
 .field label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: #52655d;
 }
@@ -604,7 +604,7 @@ button {
   box-shadow: 0 0 0 3px #e8f3ec;
 }
 .hint {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.4;
 }
@@ -626,13 +626,13 @@ button {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  font-size: 9px;
+  font-size: 12px;
   padding: 10px 20px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
 .table td {
-  font-size: 11px;
+  font-size: 12px;
   padding: 13px 20px;
   border-bottom: 1px solid #f0f3f1;
   white-space: nowrap;
@@ -650,11 +650,11 @@ button {
   display: grid;
   place-items: center;
   color: var(--green);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 .tiny {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
 }
 .toast {
@@ -666,7 +666,7 @@ button {
   color: white;
   border-radius: 11px;
   padding: 12px 17px;
-  font-size: 11px;
+  font-size: 12px;
   box-shadow: var(--shadow);
   opacity: 0;
   transition: 0.2s;
@@ -690,7 +690,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 9px;
   padding: 9px 11px;
-  font-size: 11px;
+  font-size: 12px;
   width: 210px;
 }
 .hidden {
@@ -789,7 +789,7 @@ button {
     gap: 8px;
   }
   .crumb {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 @media (max-width: 390px) {
@@ -797,7 +797,7 @@ button {
     grid-template-columns: 1fr 1fr;
   }
   .statfoot {
-    font-size: 9px;
+    font-size: 12px;
   }
   .room {
     min-width: 58px;
@@ -876,7 +876,7 @@ button {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 .report-toolbar input {
@@ -886,7 +886,7 @@ button {
   font-size: 12px;
 }
 .report-note {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
 }
 .report-block {
@@ -904,7 +904,7 @@ button {
   margin: 0;
 }
 .report-blockhead p {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   margin: 5px 0 0;
 }
@@ -923,7 +923,7 @@ button {
 .report-metric span {
   display: block;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 .report-metric strong {
   display: block;
@@ -933,7 +933,7 @@ button {
 .report-metric small {
   display: block;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   margin-top: 4px;
 }
 .report-table .table th,

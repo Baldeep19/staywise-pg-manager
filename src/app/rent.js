@@ -32,7 +32,9 @@ export function renderRent() {
       const balance = rentBalanceForResident(r),
         reminder =
           r.id && balance > 0
-            ? '<button class="link" onclick="draftResidentRentReminder(\'' + r.id + '\')">WhatsApp reminder</button>'
+            ? '<button class="secondary rowbtn" onclick="draftResidentRentReminder(\'' +
+              r.id +
+              '\')">WhatsApp reminder</button>'
             : '<span class="rent-reminder-placeholder">—</span>';
       return (
         '<tr><td><b>' +
@@ -51,7 +53,7 @@ export function renderRent() {
         (r.status === 'Paid' ? 'color:#357551;background:#edf7ef' : '') +
         '">' +
         esc(r.status) +
-        '</span></td><td><button class="link" onclick="openForResident(\'' +
+        '</span></td><td><button class="primary rowbtn" onclick="openForResident(\'' +
         esc(r.name) +
         '\')">Record payment</button> ' +
         reminder +
