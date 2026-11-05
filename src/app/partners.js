@@ -45,7 +45,7 @@ export function openPartnerManager(onChange = () => {}) {
           <div class="field"><label>Ownership %</label><input name="ownershipPercent" type="number" min="0" max="100" step="0.01" value="0"></div>
         </div>
         <p class="hint">The partner must create an account first.</p>
-        <div class="formactions"><button type="button" class="secondary close">Close</button><button class="primary">Add partner</button></div>
+        <div class="formactions"><button class="primary">Add partner</button></div>
       </form>
     </div>`;
     box.querySelectorAll('.close').forEach((x) => (x.onclick = () => box.remove()));
