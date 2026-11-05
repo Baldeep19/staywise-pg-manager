@@ -34,6 +34,7 @@ import {renderReports} from './app/reports.js';
 import {goMessages, renderMessages, draftRent, launchWhatsApp} from './app/messages.js';
 import {initApp} from './app/app.js';
 import {initInstall} from './app/install.js';
+import {initResponsiveTables} from './app/responsive-tables.js';
 import {startTour} from './app/tour.js';
 
 // Handlers referenced from HTML attributes (legacy inline handlers).
@@ -84,3 +85,4 @@ initElectricity();
 initRooms();
 initApp();
 initInstall();
+initResponsiveTables();

@@ -1,32 +1,85 @@
+/*
+ * Phones: show each table row as a card instead of a sideways-scrolling table.
+ * The old approach pinned the first column at 118px, which cut off names and deposit details.
+ * Cells are labelled by src/app/responsive-tables.js (data-label = column header).
+ */
 @media (max-width: 700px) {
   .tablewrap {
-    position: relative;
-    overscroll-behavior-x: contain;
+    overflow: visible;
   }
-  .table th:first-child,
-  .table td:first-child {
-    position: sticky;
-    left: 0;
-    width: 118px;
-    min-width: 118px;
-    max-width: 118px;
-    background: #fff;
-    z-index: 2;
-    box-shadow: 5px 0 8px rgba(23, 42, 37, 0.08);
-    overflow: hidden;
-  }
-  .table th:first-child {
-    z-index: 3;
-  }
-  .table td:first-child b {
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
     display: block;
-    max-width: 82px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    width: 100%;
+    box-sizing: border-box; /* padding must not push the card past the screen edge */
+  }
+  .table thead {
+    display: none;
+  }
+  .table tr {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 6px 14px;
+    margin: 0 0 12px;
+  }
+  .table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 8px 0;
+    border: 0;
+    border-bottom: 1px dashed #edf1ee;
+    font-size: 13px;
+    text-align: right;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .table td:last-child {
+    border-bottom: 0;
+  }
+  /* Column name before the value */
+  .table td[data-label]::before {
+    content: attr(data-label);
+    flex: 0 0 38%;
+    text-align: left;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  /* Header-less columns (action buttons) and empty-state rows: no label */
+  .table td[data-label='']::before {
+    display: none;
+  }
+  .table td[data-label=''] {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .table td:not([data-label]) {
+    justify-content: center;
+    text-align: center;
+  }
+  /* First cell is the card title (name + phone + deposit, shown in full) */
+  .table td:first-child {
+    display: block;
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .table td:first-child::before {
+    display: none;
   }
   .table td:first-child .tiny {
-    max-width: 90px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    max-width: none;
+  }
+  .report-table {
+    overflow: visible;
   }
 }
