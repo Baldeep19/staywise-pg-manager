@@ -1,0 +1,32 @@
+@media (max-width: 700px) {
+  .tablewrap {
+    position: relative;
+    overscroll-behavior-x: contain;
+  }
+  .table th:first-child,
+  .table td:first-child {
+    position: sticky;
+    left: 0;
+    width: 118px;
+    min-width: 118px;
+    max-width: 118px;
+    background: #fff;
+    z-index: 2;
+    box-shadow: 5px 0 8px rgba(23, 42, 37, 0.08);
+    overflow: hidden;
+  }
+  .table th:first-child {
+    z-index: 3;
+  }
+  .table td:first-child b {
+    display: block;
+    max-width: 82px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .table td:first-child .tiny {
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
