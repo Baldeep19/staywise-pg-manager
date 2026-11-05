@@ -29,7 +29,7 @@ function showSetup(existingProperty, existingFlats=[], pending={}) {
   const f=document.getElementById('ownerSetupForm');f.elements.propertyName.value=existingProperty?.name||pending?.name||'';f.elements.propertyAddress.value=existingProperty?.address||pending?.address||''
   document.getElementById('setupFlats').innerHTML=''
   ;(existingFlats.length?existingFlats:(pending?.flats?.length?pending.flats:[{flat_number:'',floor_name:'',room_count:1}])).forEach(addSetupFlat)
-  document.getElementById('addFlatRow').onclick=()=>addSetupFlat()
+  document.getElementById('addFlatRow').onclick=()=>addSetupFlat();document.getElementById('skipPropertySetup').onclick=()=>{localStorage.setItem("staywise_skip_setup","1");document.getElementById("ownerSetupGate").style.display="none";gate.style.display="none";toast("You can add building details later from Settings")}
 }
 async function initSession(user) {
   currentUser=user
@@ -39,7 +39,7 @@ async function initSession(user) {
   let foundFlats=[]
   if(property){const q=await supabase.from('flats').select('*').eq('property_id',property.id).eq('active',true).order('floor_name').order('flat_number');if(q.error)throw q.error;foundFlats=q.data||[]}
   flats=foundFlats
-  if(!property||!property.setup_complete||!flats.length){showSetup(property,foundFlats,user.user_metadata?.pending_property||{});return}
+  if(!property||!property.setup_complete||!flats.length){if(localStorage.getItem("staywise_skip_setup")==="1"){document.getElementById("ownerSetupGate").style.display="none";gate.style.display="none";document.getElementById("ownerGreeting").textContent=user.user_metadata?.full_name||user.email?.split("@")[0]||"Owner";document.getElementById("todayDate").textContent=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});window.editPropertySetup=()=>showSetup(property,foundFlats,user.user_metadata?.pending_property||{});return}showSetup(property,foundFlats,user.user_metadata?.pending_property||{});return}
   const ownerName=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'Owner'
   const h=new Date().getHours(),g=h<12?["Good morning","☀️"]:h<17?["Good afternoon","🌤️"]:["Good evening","🌙"];document.getElementById("greetingText").textContent=g[0];document.getElementById("greetingIcon").textContent=g[1];document.getElementById('ownerGreeting').textContent=ownerName;document.getElementById('ownerProfileName').textContent=ownerName;const initials=ownerName.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');document.getElementById('ownerAvatar').textContent=initials||'?';document.getElementById('ownerAvatarTop').textContent=initials||'?';document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
   const {data:dbResidents,error:rError}=await supabase.from('residents').select('*, flats(flat_number)').eq('property_id',property.id).order('created_at')
