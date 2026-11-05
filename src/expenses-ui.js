@@ -1,3 +1,4 @@
+import {openPartnerManager} from './app/partners.js';
 import {toast} from './app/ui.js';
 
 const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN', {maximumFractionDigits: 2});
@@ -22,7 +23,7 @@ function renderExpensesPage() {
     `<div style="padding:20px"><div class="pagehead"><div><h2>Expenses & profitability</h2><div class="sub">Track spending and allocate net profit using configured ownership shares.</div></div><div style="display:flex;gap:8px"><button class="secondary" id="managePartnerButton">Manage partner</button><button class="primary" id="addExpenseButton">＋ Add expense</button></div></div><div class="report-toolbar"><label>Month <input id="expenseMonth" type="month" value="${month}"></label></div><div class="report-metrics"><div class="report-metric"><span>Rent collected</span><strong>${money(income)}</strong></div><div class="report-metric"><span>Expenses</span><strong>${money(total)}</strong></div><div class="report-metric"><span>Net profit</span><strong style="color:${profit >= 0 ? '#17684f' : '#b42318'}">${money(profit)}</strong></div></div><section class="report-block"><div class="report-blockhead"><h3>Partner profit allocation</h3><p>Based on the ownership percentages configured for this property.</p></div><div class="report-table"><table class="table"><thead><tr><th>Partner</th><th>Ownership</th><th>Profit share</th></tr></thead><tbody>${shares.length ? shares.map((x) => `<tr><td>${x.display_name || x.email || x.user_id}</td><td>${Number(x.ownership_percent || 0)}%</td><td>${money(x.profit)}</td></tr>`).join('') : '<tr><td colspan="3" class="sub">No partner ownership shares configured yet.</td></tr>'}</tbody></table></div></section><section class="report-block"><div class="report-blockhead"><h3>Expenses</h3></div><div class="report-table"><table class="table"><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Paid to</th><th>Paid by</th><th>Amount</th></tr></thead><tbody>${expenses.length ? expenses.map((x) => `<tr><td>${x.expense_date || '—'}</td><td>${x.category || 'Other'}</td><td>${x.description}</td><td>${x.paid_to || '—'}</td><td>${nameOf(x.paid_by_user_id)}</td><td>${money(x.amount)}</td></tr>`).join('') : '<tr><td colspan="6" class="sub">No expenses recorded for this month.</td></tr>'}</tbody></table></div></section></div>`;
   document.getElementById('expenseMonth').onchange = renderExpensesPage;
   document.getElementById('addExpenseButton').onclick = () => openExpenseForm();
-  document.getElementById('managePartnerButton').onclick = () => openPartnerForm();
+  document.getElementById('managePartnerButton').onclick = () => openPartnerManager(renderExpensesPage);
 }
 function openExpenseForm() {
   const box = document.createElement('div');
@@ -67,23 +68,3 @@ function installExpensesPage() {
   };
 }
 setTimeout(installExpensesPage, 0);
-function openPartnerForm() {
-  const box = document.createElement('div');
-  box.className = 'overlay show';
-  box.innerHTML =
-    '<form class="modal"><div class="modalhead"><div><h2>Allocate property to partner</h2><p>Partner must create an account first.</p></div><button type="button" class="close">×</button></div><div class="field"><label>Partner email address</label><input name="email" type="email" required placeholder="partner@example.com"></div><div class="field" style="margin-top:12px"><label>Ownership percentage</label><input name="ownershipPercent" type="number" min="0" max="100" step="0.01" required placeholder="50"></div><div class="formactions"><button class="primary">Save partner access</button></div></form>';
-  box.querySelectorAll('.close').forEach((x) => (x.onclick = () => box.remove()));
-  box.querySelector('form').onsubmit = async (e) => {
-    e.preventDefault();
-    const d = Object.fromEntries(new FormData(e.target));
-    try {
-      await window.savePropertyMember(d);
-      box.remove();
-      toast('Partner access saved');
-      renderExpensesPage();
-    } catch (err) {
-      toast('Could not save partner: ' + err.message);
-    }
-  };
-  document.body.appendChild(box);
-}

@@ -2,6 +2,7 @@
  * Shared UI helpers: toasts, modals, page navigation and small formatting helpers.
  */
 import {renderBillResidents, renderElectricity} from './electricity.js';
+import {renderSettings} from './settings.js';
 import {goMessages, renderMessages} from './messages.js';
 import {refreshOptions, renderRent} from './rent.js';
 import {renderReports} from './reports.js';
@@ -100,6 +101,7 @@ export function renderPage(p) {
   else if (p === 'electricity') renderElectricity();
   else if (p === 'reports') renderReports();
   else if (p === 'messages') renderMessages();
+  else if (p === 'settings') renderSettings();
   else
     document.getElementById('pageContent').innerHTML =
       `<div style="padding:28px;text-align:center"><div style="font-size:28px">▤</div><h3 style="font:700 14px Manrope">${pages[p][0]} workspace</h3><p class="sub">Your ${pages[p][0].toLowerCase()} tools will live here.</p></div>`;

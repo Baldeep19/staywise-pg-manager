@@ -38,6 +38,33 @@ export async function loadPartnerData() {
     window.pgExpenses = [data, ...(window.pgExpenses || [])];
     return data;
   };
+  // Change a partner's ownership share.
+  window.updatePropertyMember = async (userId, ownershipPercent) => {
+    const percent = Number(ownershipPercent);
+    if (!Number.isFinite(percent) || percent < 0 || percent > 100)
+      throw new Error('Ownership must be between 0 and 100');
+    const {data, error} = await supabase
+      .from('property_members')
+      .update({ownership_percent: percent})
+      .eq('property_id', session.property.id)
+      .eq('user_id', userId)
+      .select()
+      .single();
+    if (error) throw error;
+    window.pgPropertyMembers = (window.pgPropertyMembers || []).map((x) => (x.user_id === userId ? data : x));
+    return data;
+  };
+  // Remove a partner's access to this building. Their past expenses stay on record.
+  window.deletePropertyMember = async (userId) => {
+    const {error} = await supabase
+      .from('property_members')
+      .delete()
+      .eq('property_id', session.property.id)
+      .eq('user_id', userId);
+    if (error) throw error;
+    window.pgPropertyMembers = (window.pgPropertyMembers || []).filter((x) => x.user_id !== userId);
+    await window.refreshPropertyPeople();
+  };
   window.savePropertyMember = async (d) => {
     const lookup = await supabase.rpc('lookup_partner_by_email', {p_email: d.email});
     if (lookup.error || !lookup.data?.length) throw new Error('No registered account found for this email');

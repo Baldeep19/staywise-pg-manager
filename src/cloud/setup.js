@@ -19,8 +19,16 @@ export function addSetupFlat(flat = {}) {
   document.getElementById('setupFlats').append(row);
 }
 
-export function showSetup(existingProperty, existingFlats = [], pending = {}) {
-  session.property = existingProperty || null;
+/**
+ * Open the building setup form.
+ * @param {object|null} existingProperty Building being edited, or null when creating one.
+ * @param {object[]} [existingFlats] Its current flats.
+ * @param {object} [pending] Details captured at sign-up for a first-time setup.
+ * @param {{createNew?: boolean}} [options] createNew adds another building without touching the active one.
+ */
+export function showSetup(existingProperty, existingFlats = [], pending = {}, options = {}) {
+  // Kept apart from session.property so cancelling "new building" never disturbs the building in use.
+  session.setup = {property: existingProperty || null, flats: existingFlats, createNew: Boolean(options.createNew)};
   gate.style.display = 'none';
   const setup = document.getElementById('ownerSetupGate');
   setup.style.display = 'block';
@@ -35,7 +43,14 @@ export function showSetup(existingProperty, existingFlats = [], pending = {}) {
       : [{flat_number: '', floor_name: '', room_count: 1}]
   ).forEach(addSetupFlat);
   document.getElementById('addFlatRow').onclick = () => addSetupFlat();
-  document.getElementById('skipPropertySetup').onclick = () => {
+  setup.querySelector('h2').textContent = options.createNew ? 'Add a new building' : 'Set up your building';
+  const skip = document.getElementById('skipPropertySetup');
+  skip.textContent = options.createNew ? 'Cancel' : 'Skip for now';
+  skip.onclick = () => {
+    if (options.createNew) {
+      setup.style.display = 'none';
+      return;
+    }
     localStorage.setItem('staywise_skip_setup', '1');
     document.getElementById('ownerSetupGate').style.display = 'none';
     gate.style.display = 'none';
@@ -71,7 +86,7 @@ export function initOwnerSetup() {
       return (err.textContent = 'Add at least one room and complete its details.');
     if (new Set(rows.map((x) => x.flat_number.toLowerCase())).size !== rows.length)
       return (err.textContent = 'Flat / room names must be unique.');
-    let prop = session.property;
+    let prop = session.setup.property;
     if (prop) {
       const {data, error} = await supabase
         .from('properties')
@@ -102,7 +117,7 @@ export function initOwnerSetup() {
       }
       prop = data;
     }
-    const old = session.flats;
+    const old = session.setup.flats;
     for (const r of rows) {
       const payload = {
         property_id: prop.id,
@@ -142,6 +157,8 @@ export function initOwnerSetup() {
         return;
       }
     }
+    // Open the building that was just saved (a newly created one becomes the active building).
+    localStorage.setItem('staywise_property_id', prop.id);
     location.hash = '';
     location.reload();
   });

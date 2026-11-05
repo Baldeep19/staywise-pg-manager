@@ -1,7 +1,7 @@
 /**
  * Cloud entry point: sets up handlers, restores the session, then wires the forms.
  */
-import {initAuthForm, initAuthUnavailable} from './auth.js';
+import {initAuthForm, initAuthUnavailable, initLogout} from './auth.js';
 import {busyOverlay, busyText, supabase} from './client.js';
 import {initElectricityCloudForms} from './electricity-form.js';
 import {gate} from './elements.js';
@@ -33,6 +33,7 @@ if (supabase) {
     busyOverlay.classList.remove('show');
   }
   initAuthForm();
+  initLogout();
   initElectricityCloudForms();
   initRentCloudForm();
   initResidentCloudForm();

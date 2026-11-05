@@ -13,7 +13,22 @@ export async function initSession(user) {
   session.currentUser = user;
   const {data: foundRows, error} = await supabase.from('properties').select('*').limit(20);
   if (error) throw error;
-  session.property = (foundRows || []).find((x) => x.owner_id === user.id) || (foundRows || [])[0] || null;
+  // Every building this user can see (their own plus any shared with them as a partner).
+  session.properties = foundRows || [];
+  // Reopen the building chosen last time; otherwise prefer one the user owns.
+  const savedPropertyId = localStorage.getItem('staywise_property_id');
+  session.property =
+    session.properties.find((x) => x.id === savedPropertyId) ||
+    session.properties.find((x) => x.owner_id === user.id) ||
+    session.properties[0] ||
+    null;
+  window.pgProperties = session.properties;
+  window.pgCurrentUserId = user.id;
+  window.switchProperty = (id) => {
+    localStorage.setItem('staywise_property_id', id);
+    location.reload();
+  };
+  window.createNewBuilding = () => showSetup(null, [], {}, {createNew: true});
   let foundFlats = [];
   if (session.property) {
     const q = await supabase
@@ -170,7 +185,16 @@ export async function initSession(user) {
   subscribeToPropertyChanges();
   window.editPropertySetup = () => showSetup(session.property, session.flats);
   gate.style.display = 'none';
-  if (document.getElementById('propertySelect'))
-    document.getElementById('propertySelect').innerHTML = '<option>' + session.property.name + '</option>';
+  window.pgCurrentPropertyId = session.property.id;
+  const propertySelect = document.getElementById('propertySelect');
+  if (propertySelect) {
+    propertySelect.innerHTML = session.properties
+      .map(
+        (p) =>
+          `<option value="${p.id}"${p.id === session.property.id ? ' selected' : ''}>${window.esc(p.name)}</option>`
+      )
+      .join('');
+    propertySelect.onchange = () => window.switchProperty(propertySelect.value);
+  }
   document.getElementById('propertyNameHeading').textContent = session.property.name;
 }

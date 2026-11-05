@@ -122,3 +122,22 @@ export function initAuthUnavailable() {
     errorBox.textContent = 'Sign-in is unavailable because Supabase is not configured in this app deployment.';
   });
 }
+
+/**
+ * Make the "Log out" buttons work. Clears every cached Staywise value first so the next person who signs in
+ * on this browser never sees the previous account's data.
+ */
+export function initLogout() {
+  window.logout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error('Sign-out failed', e);
+    }
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith('staywise_'))
+      .forEach((key) => localStorage.removeItem(key));
+    location.reload();
+  };
+  document.getElementById('logoutButton').onclick = () => window.logout();
+}

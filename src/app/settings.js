@@ -1,0 +1,36 @@
+/**
+ * Settings page: the buildings the user can access (switch, create, edit) and account actions.
+ */
+import {esc} from './ui.js';
+
+/** Render the Settings page into #pageContent. Buildings come from window.pgProperties (set by the cloud loader). */
+export function renderSettings() {
+  const buildings = window.pgProperties || [];
+  const rows = buildings
+    .map((b) => {
+      const isCurrent = b.id === window.pgCurrentPropertyId;
+      const role = b.owner_id === window.pgCurrentUserId ? 'Owner' : 'Partner';
+      const action = isCurrent
+        ? '<span class="sub"><b>Current building</b></span>'
+        : `<button class="secondary" onclick="switchProperty('${esc(b.id)}')">Switch to this building</button>`;
+      return `<tr><td><b>${esc(b.name)}</b></td><td>${esc(b.address || '—')}</td><td>${role}</td><td>${action}</td></tr>`;
+    })
+    .join('');
+  document.getElementById('pageContent').innerHTML = `
+    <div style="padding:20px">
+      <section class="report-block">
+        <div class="report-blockhead" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <div><h3>Your buildings</h3><p>Manage several properties from one account and switch between them.</p></div>
+          <button class="primary" onclick="createNewBuilding()">＋ Create new building</button>
+        </div>
+        <div class="report-table"><table class="table">
+          <thead><tr><th>Building</th><th>Address</th><th>Your role</th><th></th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="4" class="sub">Sign in to manage your buildings.</td></tr>'}</tbody>
+        </table></div>
+      </section>
+      <section class="report-block">
+        <div class="report-blockhead"><h3>Account</h3><p>Sign out of Staywise on this device.</p></div>
+        <div style="padding:14px 16px"><button class="secondary" onclick="logout()">Log out</button></div>
+      </section>
+    </div>`;
+}
