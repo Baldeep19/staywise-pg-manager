@@ -36,6 +36,8 @@
   --warn-ink: #59402d;
   --warn-bg: #fff6e9;
   --warn-line: #f7ead3;
+  --avatar-bg: #f5c99c; /* owner initials (sidebar, top bar, More sheet) */
+  --avatar-ink: #59402d; /* ≈6.2:1 on --avatar-bg */
   /* Notice period: yellow -> orange -> red as the move-out day gets closer (ink on bg ≥ 4.5:1) */
   --notice-yellow-ink: #7a5600;
   --notice-yellow-bg: #fff3bf;
@@ -80,6 +82,8 @@
   --warn-ink: #f0d3b0;
   --warn-bg: #352a1d;
   --warn-line: #5a4630;
+  --avatar-bg: #4a3a2a; /* toned-down peach so the circle does not glare on the dark sidebar */
+  --avatar-ink: #f5c99c; /* ≈7:1 on --avatar-bg */
   --notice-yellow-ink: #f2cf72;
   --notice-yellow-bg: #3a3116;
   --notice-yellow-bar: #c99c12;
@@ -228,8 +232,8 @@ button {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #f5c99c;
-  color: var(--warn-ink);
+  background: var(--avatar-bg);
+  color: var(--avatar-ink);
   display: grid;
   place-items: center;
   font-weight: 700;

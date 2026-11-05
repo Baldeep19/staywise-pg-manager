@@ -131,4 +131,19 @@ describe('no white flash and complete dark palette', () => {
       expect(css, f).not.toMatch(/background(-color)?:\s*(#fff\b|#ffffff\b|white\b)/i);
     }
   });
+
+  it('no rule pairs theme-switching text with a fixed background (light-on-light in dark mode)', () => {
+    // The owner avatar had color: var(--warn-ink) on background: #f5c99c; in dark mode the ink turned light peach.
+    const bad = [];
+    for (const f of ['base.css', 'modals.css', 'overrides.css', 'onboarding.css', 'notice.css', 'landing.css']) {
+      const css = read('src/styles/' + f).replace(/\/\*[\s\S]*?\*\//g, '');
+      for (const [, sel, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        if (/:root|data-theme/.test(sel)) continue;
+        const color = body.match(/(?:^|;|\s)color:\s*([^;]+)/)?.[1] || '',
+          bg = body.match(/background(?:-color)?:\s*([^;]+)/)?.[1] || '';
+        if (color.includes('var(') && /^#[0-9a-f]{3,8}$/i.test(bg.trim())) bad.push(f + ' ' + sel.trim());
+      }
+    }
+    expect(bad).toEqual([]);
+  });
 });
